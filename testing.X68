@@ -1,7 +1,9 @@
 START:  
+    * Damian was here
         NOP
         RTS
         END     START
+
 
 *~Font name~Courier New~
 *~Font size~10~
