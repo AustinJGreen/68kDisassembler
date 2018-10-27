@@ -1,8 +1,10 @@
 START:  
     * Damian was here
+    * Jacob was here
         NOP
         RTS
         END     START
+
 
 
 *~Font name~Courier New~
