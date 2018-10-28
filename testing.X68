@@ -3,7 +3,7 @@ START:
     * Jacob was here
         NOP
         RTS
-        END     START
+
 
 
 

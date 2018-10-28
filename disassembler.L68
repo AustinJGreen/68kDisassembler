@@ -1,0 +1,317 @@
+00001110 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 10/28/2018 12:42:27 PM
+
+00000000                             1  *--------------------------------------------------------------------------
+00000000                             2  * Title      : 68k Disassembler
+00000000                             3  * Written by : Austin Green, Damian Forrester, Jacob Lefeat
+00000000                             4  * Date       : 10/20/2018
+00000000                             5  * Description: Disassmbles 68k machine code back into readable 68k opcodes
+00000000                             6  *--------------------------------------------------------------------------
+00000000                             7  
+00001000                             8                      ORG         $1000                       ; Organize code at 0x1000 (Specification 5)
+00001000                             9                  
+00001000                            10                      INCLUDE     "readhex.x68"               ; Load READHEX Function
+00001000                            11  
+00001000                            12  READHEX:
+00001000                            13                      ; MOVEM.W     D2-D7/A0-A6,(SP)+           ; Save all registers
+00001000                            14                      
+00001000  4281                      15                      CLR.L       D1
+00001002  4282                      16                      CLR.L       D2
+00001004                            17                      
+00001004  103C 0002                 18                      MOVE.B      #2,D0                       ; Task 2 for TRAP 15: Read a string
+00001008  4E4F                      19                      TRAP        #15                         ; Read the string and put it at A1, length is in D1
+0000100A  1001                      20                      MOVE.B      D1,D0                       ; Move string length stored in D1 to D0
+0000100C                            21  .LOOP_S:     
+0000100C  0C40 0000                 22                      CMPI.W      #0,D0                       ; Check if done looping
+00001010  6F00 0052                 23                      BLE         .READHEX_END                ; If read all characters, then go to end of the function
+00001014                            24              
+00001014  E98A                      25                      LSL.L       #4,D2                       ; Move D2 left 4 bits for the next hexadecimal number 
+00001016                            26              
+00001016  1219                      27                      MOVE.B      (A1)+,D1                    ; Read current character
+00001018                            28              
+00001018  0C01 0061                 29                      CMPI.B      #97,D1                      ; Check if D1 >= 97
+0000101C  6C00 0022                 30                      BGE         .CONVERT_LOWER              ; If D1 >= 97 then assume character is lowercase
+00001020                            31              
+00001020  0C01 0041                 32                      CMPI.B      #65,D1                      ; Check if D1 >= 65
+00001024  6C00 0026                 33                      BGE         .CONVERT_UPPER              ; If 97 >  D1 >= 65 then assume character is uppercase
+00001028                            34              
+00001028  0C41 0030                 35                      CMPI        #48,D1                      ; Check if D1 >= 48
+0000102C  6C00 002A                 36                      BGE         .CONVERT_NUMBER             ; If 65 >  D1 >= 48 then assume character is number
+00001030                            37                  
+00001030  6000 0008                 38                      BRA         .INPUT_INVALID              ; Character was invalid, brach to invalid case
+00001034                            39  .LOOP_E:           
+00001034  8481                      40                      OR.L        D1,D2
+00001036                            41  
+00001036  5340                      42                      SUBQ        #1,D0                       ; Decrement amount of characters left
+00001038  60D2                      43                      BRA         .LOOP_S                     ; Go back to beginning of loop
+0000103A                            44  
+0000103A                            45  .INPUT_INVALID:
+0000103A  72FF                      46                      MOVE.L      #-1,D1                      ; Put -1 in D1 to represent invalid input
+0000103C  6000 0026                 47                      BRA         .READHEX_END                ; Go to function end
+00001040                            48              
+00001040                            49  .CONVERT_LOWER:            
+00001040  0C01 0066                 50                      CMPI.B      #102,D1                     ; Check if D1 > 102
+00001044  6EF4                      51                      BGT         .INPUT_INVALID              ; If D1 > 102 then its actually not a lowercase letter, its invalid
+00001046  0401 0057                 52                      SUBI.B      #87,D1                      ; D1 is valid lowercase, subtract 87 to convert to correct hex value
+0000104A  60E8                      53                      BRA         .LOOP_E                     ; Branch back to the end of the loop
+0000104C                            54  
+0000104C                            55  .CONVERT_UPPER:
+0000104C  0C01 0046                 56                      CMPI.B      #70,D1                      ; Check if D1 > 70
+00001050  6EE8                      57                      BGT         .INPUT_INVALID              ; If D1 > 70 then its actually not a uppercase letter, its invalid
+00001052  0401 0037                 58                      SUBI.B      #55,D1                      ; D1 is valid uppercase, subtract 55 to convert to correct hex value
+00001056  60DC                      59                      BRA         .LOOP_E                     ; Branch back to the end of the loop
+00001058                            60                  
+00001058                            61  .CONVERT_NUMBER:
+00001058  0C01 0039                 62                      CMPI.B      #57,D1                      ; Check if D1 > 57
+0000105C  6EDC                      63                      BGT         .INPUT_INVALID              ; If D1 > 57 then its actually not a number, its invalid
+0000105E  0401 0030                 64                      SUBI.B      #48,D1                      ; D1 is valid number, subtract 48 to convert to correct hex value
+00001062  60D0                      65                      BRA         .LOOP_E                     ; Branch back to the end of the loop
+00001064                            66                  
+00001064                            67  .READHEX_END:
+00001064                            68                      ; MOVEM.L     D2-D7/A0-A6,-(SP)           ; Restore all registers
+00001064  4E75                      69                      RTS                                     ; Return
+00001066                            70  
+00001066                            71  
+00001066                            72  
+00001066                            73  -------------------- end include --------------------
+00001066                            74                      INCLUDE     "binarytree.x68"            ; Load Binary tree object
+00001066                            75  
+00001066= 00000001                  76  TREE_ADDRESS        DC.L        1                       ; Stores value of the head node address
+0000106A= 00000001                  77  LAST_NODE           DC.L        1                       ; Stores value of next available spot in memory
+0000106E                            78  
+0000106E                            79  TREE_INIT:
+0000106E  21C0 1066                 80                      MOVE.L      D0,TREE_ADDRESS
+00001072  21C0 106A                 81                      MOVE.L      D0,LAST_NODE
+00001076  4E75                      82                      RTS 
+00001078                            83  
+00001078                            84  TREE_GOTO:
+00001078  48E7 0706                 85                      MOVEM.L     A5-A6/D5-D7,-(SP)           ; Save registers  
+0000107C                            86                                                  
+0000107C  2C78 1066                 87                      MOVE.L      TREE_ADDRESS,A6             ; Move tree head address to A6
+00001080                            88                      
+00001080                            89  .READ_START:        ; Start reading bits from node (16-bits)           
+00001080                            90                      
+00001080  3E00                      91                      MOVE.W      D0,D7 
+00001082  0C47 0000                 92                      CMPI.W      #0,D7                       ; Loop while bits left aren't zero
+00001086  6700 003A                 93                      BEQ         .END                        ; Done reading, go to end         
+0000108A                            94                      
+0000108A  CEBC 00008000             95                      AND.L       #$8000,D7                   ; Put most significant bit in D7
+00001090  E35F                      96                      ROL.W       #1,D7                       ; Put the msb at the 0th bit, by rotating left 1 (rotating right 15)
+00001092  E388                      97                      LSL.L       #1,D0                       ; Shift D1 left 1 bit
+00001094                            98                      
+00001094                            99                      ; Add value to address to get correct node
+00001094                           100                      
+00001094  CEFC 0008                101                      MULU.W      #$8,D7                      ; Multiply by 64-bits for offset
+00001098  DDC7                     102                      ADD.L       D7,A6                       ; Move pointer by offset
+0000109A                           103                      
+0000109A                           104                      ; Read current node from tree
+0000109A                           105                      
+0000109A  2A1E                     106                      MOVE.L      (A6)+,D5                    ; Store node pointer in D6
+0000109C  2C16                     107                      MOVE.L      (A6),D6                     ; Store node value in D5
+0000109E                           108                      
+0000109E                           109                      ; Top 32-bits in D6 are for the value, lower 32-bits are for pointer
+0000109E                           110                      
+0000109E  0C86 FFFFFFFF            111                      CMPI.L      #$FFFFFFFF,D6               ; Check the pointer bits for NULLPTR (0xFFFFFFFF)
+000010A4  6700 0006                112                      BEQ         .EMPTY_NODE                 ; Node ptr is empty     
+000010A8  6000 0014                113                      BRA         .FILLED_NODE                ; Node ptr is not empty
+000010AC                           114                      
+000010AC                           115  .EMPTY_NODE:        ; Empty node case, set pointer to next available spot                  
+000010AC                           116                      
+000010AC                           117                      ; Add 0x10 to LAST_NODE to get next available spot in memory
+000010AC                           118                      
+000010AC  06B8 00000010 106A       119                      ADD.L       #$10,LAST_NODE              ; Update LAST_NODE
+000010B4  2CB8 106A                120                      MOVE.L      LAST_NODE,(A6)              ; Set the current node's pointer
+000010B8  2C78 106A                121                      MOVE.L      LAST_NODE,A6                ; Set the pointer to the new node
+000010BC                           122                      
+000010BC  60C2                     123                      BRA         .READ_START
+000010BE                           124                      
+000010BE                           125  .FILLED_NODE:       ; Filled node case  
+000010BE                           126                         
+000010BE  2C46                     127                      MOVE.L      D6,A6                       ; Set pointer to next node
+000010C0  60BE                     128                      BRA         .READ_START
+000010C2                           129                      
+000010C2                           130  .END                ; End of function
+000010C2                           131  
+000010C2  224E                     132                      MOVE.L      A6,A1                       ; Set output to current node
+000010C4  4CDF 60E0                133                      MOVEM.L     (SP)+,A5-A6/D5-D7           ; Restore registers
+000010C8  4E75                     134                      RTS
+000010CA                           135                      
+000010CA                           136  TREE_ADD_NODE:
+000010CA  4EB8 1078                137                      JSR         TREE_GOTO
+000010CE  2282                     138                      MOVE.L      D2,(A1)                     ; Set value of node                    
+000010D0  4E75                     139                      RTS                                     ; Return
+000010D2                           140  
+000010D2                           141  TREE_READ_VALUE:
+000010D2  4EB8 1078                142                      JSR         TREE_GOTO                                       
+000010D6  2411                     143                      MOVE.L      (A1),D2                     ; Read value of node                    
+000010D8  4E75                     144                      RTS
+000010DA                           145                      
+000010DA                           146                      
+000010DA                           147                      
+000010DA                           148  
+000010DA                           149  
+000010DA                           150  -------------------- end include --------------------
+000010DA                           151                      INCLUDE     "goto.x68"
+000010DA                           152  GOTO_ADDR:
+000010DA  43F9 000010EA            153                          LEA         .END,A1
+000010E0  594F                     154                          SUBQ        #$4,SP          ; Move SP back 4 slots
+000010E2  2E89                     155                          MOVE.L      A1,(SP)         ; Add the end of the this function as return value for the function we are about to call so they can call RTS
+000010E4  594F                     156                          SUBQ        #$4,SP          ; Move SP back 4 slots
+000010E6  2E88                     157                          MOVE.L      A0,(SP)         ; Add Target address to SP                  
+000010E8  4E75                     158                          RTS                         ; Call "RTS" which simulates a call back to the current value in the SP, which allows us to go to any address
+000010EA  4E75                     159  .END                    RTS                         ; Returns back from this function
+000010EC                           160                          
+000010EC                           161  
+000010EC                           162  
+000010EC                           163  -------------------- end include --------------------
+000010EC                           164                      
+000010EC                           165                      INCLUDE     "opcodes\nop.x68"           ; Load NOP Opcode Handler
+000010EC= 4E 4F 50 0D 0A 00        166  NOP_OUT         DC.B        'NOP',CR,LF,0
+000010F2                           167  HANDLE_NOP:
+000010F2  43F8 10EC                168                  LEA         NOP_OUT,A1
+000010F6  103C 000E                169                  MOVE.B      #14,D0
+000010FA  4E4F                     170                  TRAP        #15
+000010FC  4E75                     171                  RTS
+000010FE                           172  
+000010FE                           173  
+000010FE                           174  
+000010FE                           175  
+000010FE                           176  
+000010FE                           177  
+000010FE                           178  
+000010FE                           179  
+000010FE                           180  
+000010FE                           181  -------------------- end include --------------------
+000010FE                           182                      INCLUDE     "opcodes\rts.x68"           ; Load RTS Opcode Handler
+000010FE= 52 54 53 0D 0A 00        183  RTS_OUT         DC.B        'RTS',CR,LF,0
+00001104                           184  HANDLE_RTS:
+00001104  43F8 10FE                185                  LEA         RTS_OUT,A1
+00001108  103C 000E                186                  MOVE.B      #14,D0
+0000110C  4E4F                     187                  TRAP        #15
+0000110E  4E75                     188                  RTS
+00001110                           189  
+00001110                           190  
+00001110                           191  -------------------- end include --------------------
+00001110                           192             
+00001110  =0000000D                193  CR                  EQU         $0D                         ; ASCII code for Carriage Return
+00001110  =0000000A                194  LF                  EQU         $0A                         ; ASCII code for Line Feed
+00001110                           195      
+00001110                           196                      
+00001110                           197                      
+00001110                           198  START:              ; Load information for tree
+00001110                           199                      
+00001110  203C EEEE0000            200                      MOVE.L      #$EEEE0000,D0
+00001116  4EB8 106E                201                      JSR         TREE_INIT                   ; Initialize binary tree
+0000111A                           202                      
+0000111A                           203                      ; Add opcodes to tree
+0000111A                           204                      
+0000111A                           205                      ; Add address for NOP, can later use address label for
+0000111A                           206                      ; specific handler of code
+0000111A                           207                      
+0000111A  203C 00004E71            208                      MOVE.L      #$4E71,D0                    
+00001120  41F8 10F2                209                      LEA         HANDLE_NOP,A0
+00001124                           210                      
+00001124  2208                     211                      MOVE.L      A0,D1               
+00001126  4EB8 10CA                212                      JSR         TREE_ADD_NODE               ; 4E71 for NOP
+0000112A                           213                      
+0000112A                           214                      ; Add address for RTS, can later use address for specific handler of code instead
+0000112A                           215                      ; of the direct label
+0000112A                           216                      
+0000112A  203C 00004E75            217                      MOVE.L      #$4E75,D0
+00001130  41F8 1104                218                      LEA         HANDLE_RTS,A0
+00001134  2208                     219                      MOVE.L      A0,D1
+00001136  4EB8 10CA                220                      JSR         TREE_ADD_NODE
+0000113A                           221                      
+0000113A                           222                      ; At startup, prompt the user for the starting location and 
+0000113A                           223                      ; ending location in hexadecimal format. (Specification 6)
+0000113A                           224                                                              
+0000113A  43F9 00001176            225                      LEA         START_ADDR_Q,A1             ; Load question and prompt to user
+00001140  103C 000E                226                      MOVE.B      #14,D0                      ; Set task to 14 to display string
+00001144  4E4F                     227                      TRAP        #15                         ; Display the question and prompt to the user
+00001146                           228  
+00001146  4EB8 1000                229                      JSR         READHEX
+0000114A                           230                      
+0000114A                           231                      ; TODO: Check for invalid input -1, for now I'm assuming input is valid
+0000114A                           232                      
+0000114A  2441                     233                      MOVE.L      D1,A2                       ; Move start address to A2                    
+0000114C                           234              
+0000114C  43F9 000011D0            235                      LEA         END_ADDR_Q,A1               ; Load question and prompt to user
+00001152  103C 000E                236                      MOVE.B      #14,D0                      ; Set task to 14 to display string
+00001156  4E4F                     237                      TRAP        #15                         ; Display the question and prompt to the user
+00001158                           238              
+00001158  4EB8 1000                239                      JSR         READHEX
+0000115C                           240                      
+0000115C                           241                      ; TODO: Check for invalid input -1 and make sure end address is greater than start
+0000115C                           242                      ; For now I'm assuming input is valid
+0000115C                           243                                          
+0000115C  2641                     244                      MOVE.L      D1,A3                       ; Move end address to A3   
+0000115E                           245                                       
+0000115E                           246  READ_START:         ; Begin reading at start address
+0000115E                           247                                     
+0000115E  B7CA                     248                      CMPA.L      A2,A3
+00001160  6700 0010                249                      BEQ         END                         ; Go to end if reached end address
+00001164                           250                      
+00001164                           251                      ; Read from binary stream 
+00001164                           252                      
+00001164  301A                     253                      MOVE.W      (A2)+,D0                    ; Read 16-bits at a time
+00001166                           254                      
+00001166  4EB8 10D2                255                      JSR         TREE_READ_VALUE             ; Reads value in tree into D0
+0000116A                           256                      
+0000116A                           257                      ; TODO: Check if invalid operator (AKA unhandled opcode)
+0000116A                           258                      
+0000116A  2041                     259                      MOVE.L      D1,A0
+0000116C  4EB8 10DA                260                      JSR         GOTO_ADDR                
+00001170                           261                      
+00001170  60EC                     262                      BRA         READ_START                  ; Go back to start                   
+00001172                           263  
+00001172                           264  END:
+00001172  FFFF FFFF                265                      SIMHALT                                 ; Halt simulator 
+00001176                           266  
+00001176                           267  * Put variables and constants here
+00001176                           268  
+00001176= 50 6C 65 61 73 65 ...    269  START_ADDR_Q        DC.B        'Please enter in the starting address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
+000011D0= 50 6C 65 61 73 65 ...    270  END_ADDR_Q          DC.B        'Please enter in the ending address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
+00001228                           271  
+00001228                           272  * Opcodes?
+00001228                           273  
+00001228                           274                      END         START                       ; Last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+CR                  D
+END                 1172
+END_ADDR_Q          11D0
+GOTO_ADDR           10DA
+GOTO_ADDR:END       10EA
+HANDLE_NOP          10F2
+HANDLE_RTS          1104
+LAST_NODE           106A
+LF                  A
+NOP_OUT             10EC
+READHEX             1000
+READHEX:CONVERT_LOWER  1040
+READHEX:CONVERT_NUMBER  1058
+READHEX:CONVERT_UPPER  104C
+READHEX:INPUT_INVALID  103A
+READHEX:LOOP_E      1034
+READHEX:LOOP_S      100C
+READHEX:READHEX_END  1064
+READ_START          115E
+RTS_OUT             10FE
+START               1110
+START_ADDR_Q        1176
+TREE_ADDRESS        1066
+TREE_ADD_NODE       10CA
+TREE_GOTO           1078
+TREE_GOTO:EMPTY_NODE  10AC
+TREE_GOTO:END       10C2
+TREE_GOTO:FILLED_NODE  10BE
+TREE_GOTO:READ_START  1080
+TREE_INIT           106E
+TREE_READ_VALUE     10D2
