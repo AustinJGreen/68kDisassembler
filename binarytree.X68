@@ -11,20 +11,20 @@ LAST_NODE           DC.L        1                       ; Stores value of next a
 * Initializes the tree at a specified address in the stack
 *
 * INPUTS
-* D1 - Address to build tree at
+* D0 - Address to build tree at
 *--------------------------------------------------------------------
 TREE_INIT:
-                    MOVE.L      D1,TREE_ADDRESS
-                    MOVE.L      D1,LAST_NODE
+                    MOVE.L      D0,TREE_ADDRESS
+                    MOVE.L      D0,LAST_NODE
                     RTS 
 
 *--------------------------------------------------------------------
 * TREE_GOTO
-* Goes to the specified node on the tree given the value in D1 and
+* Goes to the specified node on the tree given the value in D0 and
 * stores the address in A1
 *
 * INPUTS
-* D1 - Binary node (16-bit)
+* D0 - Binary node (16-bit)
 *
 * OUTPUTS
 * A1 - Used for value of node address
@@ -43,13 +43,13 @@ TREE_GOTO:
                     
 .READ_START:        ; Start reading bits from node (16-bits)           
                     
-                    MOVE.W      D1,D7 
+                    MOVE.W      D0,D7 
                     CMPI.W      #0,D7                       ; Loop while bits left aren't zero
                     BEQ         .END                        ; Done reading, go to end         
                     
                     AND.L       #$8000,D7                   ; Put most significant bit in D7
                     ROL.W       #1,D7                       ; Put the msb at the 0th bit, by rotating left 1 (rotating right 15)
-                    LSL.L       #1,D1                       ; Shift D1 left 1 bit
+                    LSL.L       #1,D0                       ; Shift D1 left 1 bit
                     
                     ; Add value to address to get correct node
                     
@@ -93,14 +93,14 @@ TREE_GOTO:
 * Adds a node to the tree with the specified value
 *
 * INPUTS
-* D1 - Binary node
-* D2 - Node value
+* D0 - Binary node
+* D1 - Node value
 *
 * REGISTER USE
 *--------------------------------------------------------------------
 TREE_ADD_NODE:
                     JSR         TREE_GOTO
-                    MOVE.L      D2,(A1)                     ; Set value of node                    
+                    MOVE.L      D1,(A1)                     ; Set value of node                    
                     RTS                                     ; Return
 
 *--------------------------------------------------------------------
@@ -108,21 +108,22 @@ TREE_ADD_NODE:
 * Reads the value of the node in the binary tree
 *
 * INPUTS
-* D1 - Binary node
+* D0 - Binary node
 *
 * OUTPUTS
-* D0 - Binary node value
+* D1 - Binary node value
 *
 * REGISTER USE
 * D0 - used for outputting value
 *--------------------------------------------------------------------                    
 TREE_READ_VALUE:
                     JSR         TREE_GOTO                                       
-                    MOVE.L      (A1),D0                     ; Read value of node                    
+                    MOVE.L      (A1),D1                     ; Read value of node                    
                     RTS
                     
                     
                     
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~

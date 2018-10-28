@@ -21,7 +21,7 @@ LF                  EQU         $0A                         ; ASCII code for Lin
                     
 START:              ; Load information for tree
                     
-                    MOVE.L      #$EEEE0000,D1
+                    MOVE.L      #$EEEE0000,D0
                     JSR         TREE_INIT                   ; Initialize binary tree
                     
                     ; Add opcodes to tree
@@ -29,16 +29,18 @@ START:              ; Load information for tree
                     ; Add address for NOP, can later use address label for
                     ; specific handler of code
                     
-                    MOVE.L      #$4E71,D1
-                    MOVE.L      HANDLE_NOP,D2               
+                    MOVE.L      #$4E71,D0                    
+                    LEA         HANDLE_NOP,A0
+                    MOVE.L      A0,D1               
                     JSR         TREE_ADD_NODE               ; 4E71 for NOP
                     
                     ; Add address for RTS, can later use address for specific handler of code instead
                     ; of the direct label
                     
-                    ; MOVE.L      #$4E75,D1
-                    ; MOVE.L      OPCODE_RTS,D2
-                    ; JSR         TREE_ADD_NODE
+                    MOVE.L      #$4E75,D0
+                    LEA         HANDLE_RTS,A0
+                    MOVE.L      A0,D1
+                    JSR         TREE_ADD_NODE
                     
                     ; At startup, prompt the user for the starting location and 
                     ; ending location in hexadecimal format. (Specification 6)
@@ -71,13 +73,13 @@ READ_START:         ; Begin reading at start address
                     
                     ; Read from binary stream 
                     
-                    MOVE.W      (A2)+,D1                    ; Read 16-bits at a time
+                    MOVE.W      (A2)+,D0                    ; Read 16-bits at a time
                     
                     JSR         TREE_READ_VALUE             ; Reads value in tree into D0
                     
                     ; TODO: Check if invalid operator (AKA unhandled opcode)
                     
-                    MOVE.L      D0,A0
+                    MOVE.L      D1,A0
                     JSR         GOTO_ADDR                
                     
                     BRA         READ_START                  ; Go back to start                   
@@ -93,6 +95,7 @@ END_ADDR_Q          DC.B        'Please enter in the ending address location in 
 * Opcodes?
 
                     END         START                       ; Last line of source
+
 
 
 *~Font name~Courier New~
