@@ -25,6 +25,7 @@ TREE_INIT:
 *
 * INPUTS
 * D0 - Binary node (16-bit)
+* D1 - Amount of bits to use
 *
 * OUTPUTS
 * A1 - Used for value of node address
@@ -94,13 +95,14 @@ TREE_GOTO:
 *
 * INPUTS
 * D0 - Binary node
-* D1 - Node value
+* D1 - Node bits to use
+* D2 - Node value
 *
 * REGISTER USE
 *--------------------------------------------------------------------
 TREE_ADD_NODE:
                     JSR         TREE_GOTO
-                    MOVE.L      D1,(A1)                     ; Set value of node                    
+                    MOVE.L      D2,(A1)                     ; Set value of node                    
                     RTS                                     ; Return
 
 *--------------------------------------------------------------------
@@ -109,20 +111,22 @@ TREE_ADD_NODE:
 *
 * INPUTS
 * D0 - Binary node
-*
+* D1 - Binary node bit count
+* 
 * OUTPUTS
-* D1 - Binary node value
+* D2 - Binary node value
 *
 * REGISTER USE
 * D0 - used for outputting value
 *--------------------------------------------------------------------                    
 TREE_READ_VALUE:
                     JSR         TREE_GOTO                                       
-                    MOVE.L      (A1),D1                     ; Read value of node                    
+                    MOVE.L      (A1),D2                     ; Read value of node                    
                     RTS
                     
                     
                     
+
 
 *~Font name~Courier New~
 *~Font size~10~
