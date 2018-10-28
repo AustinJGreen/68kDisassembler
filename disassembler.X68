@@ -31,6 +31,7 @@ START:              ; Load information for tree
                     
                     MOVE.L      #$4E71,D0                    
                     LEA         HANDLE_NOP,A0
+                    
                     MOVE.L      A0,D1               
                     JSR         TREE_ADD_NODE               ; 4E71 for NOP
                     
