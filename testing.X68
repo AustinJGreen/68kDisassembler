@@ -1,8 +1,8 @@
-START:  
-    * Damian was here
+        * Damian was here
         NOP
         RTS
         END     START
+
 
 
 *~Font name~Courier New~
