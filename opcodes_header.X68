@@ -5,13 +5,15 @@
 * Description:	Loads OpCode handlers.
 *-----------------------------------------------------------
 
-  	INCLUDE     "opcodes\nop.x68"           
-    INCLUDE     "opcodes\rts.x68"           
-    INCLUDE		"opcodes\moveb.x68"
-    INCLUDE		"opcodes\addq.x68"
-    INCLUDE		"opcodes\or.x68"
-    INCLUDE		"opcodes\sub.x68"
-    INCLUDE		"opcodes\moveq.x68"
+  	INCLUDE     "opcodes\nop.X68"           
+    INCLUDE     "opcodes\rts.X68"           
+    INCLUDE		"opcodes\moveb.X68"
+    INCLUDE		"opcodes\addq.X68"
+    INCLUDE		"opcodes\or.X68"
+    INCLUDE		"opcodes\sub.X68"
+    INCLUDE		"opcodes\moveq.X68"
+    INCLUDE     "opcodes\not.X68"
+
 
 
 
