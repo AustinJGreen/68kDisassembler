@@ -1,9 +1,8 @@
-        * Damian was here
+START:  
+		* Damian was here
+		* Jacob was here
         NOP
         RTS
-        END     START
-
-
 
 *~Font name~Courier New~
 *~Font size~10~

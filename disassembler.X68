@@ -15,13 +15,12 @@
                     INCLUDE     "opcodes\rts.x68"           ; Load RTS Opcode Handler
            
 CR                  EQU         $0D                         ; ASCII code for Carriage Return
-LF                  EQU         $0A                         ; ASCII code for Line Feed
-    
-                    
+
+LF                  EQU         $0A                         ; ASCII code for Line Feed                    
                     
 START:              ; Load information for tree
-                    
-                    MOVE.L      #$EEEE0000,D1
+
+                    MOVE.L      #$EEEE0000,D0
                     JSR         TREE_INIT                   ; Initialize binary tree
                     
                     ; Add opcodes to tree
@@ -29,16 +28,21 @@ START:              ; Load information for tree
                     ; Add address for NOP, can later use address label for
                     ; specific handler of code
                     
-                    MOVE.L      #$4E71,D1
-                    MOVE.L      HANDLE_NOP,D2               
+                    MOVE.L      #$4E71,D0
+                    MOVE.L      #16,D1                    
+                    LEA         HANDLE_NOP,A0                   
+                    MOVE.L      A0,D2              
                     JSR         TREE_ADD_NODE               ; 4E71 for NOP
                     
                     ; Add address for RTS, can later use address for specific handler of code instead
                     ; of the direct label
                     
-                    ; MOVE.L      #$4E75,D1
-                    ; MOVE.L      OPCODE_RTS,D2
-                    ; JSR         TREE_ADD_NODE
+
+                    MOVE.L      #$4E75,D0
+                    MOVE.L      #16,D1
+                    LEA         HANDLE_RTS,A0                    
+                    MOVE.L      A0,D2
+                    JSR         TREE_ADD_NODE
                     
                     ; At startup, prompt the user for the starting location and 
                     ; ending location in hexadecimal format. (Specification 6)
@@ -51,8 +55,8 @@ START:              ; Load information for tree
                     
                     ; TODO: Check for invalid input -1, for now I'm assuming input is valid
                     
-                    MOVE.L      D1,A2                       ; Move start address to A2                    
-            
+                    MOVE.L      D2,A2                       ; Move start address to A2                    
+
                     LEA         END_ADDR_Q,A1               ; Load question and prompt to user
                     MOVE.B      #14,D0                      ; Set task to 14 to display string
                     TRAP        #15                         ; Display the question and prompt to the user
@@ -62,7 +66,8 @@ START:              ; Load information for tree
                     ; TODO: Check for invalid input -1 and make sure end address is greater than start
                     ; For now I'm assuming input is valid
                                         
-                    MOVE.L      D1,A3                       ; Move end address to A3   
+
+                    MOVE.L      D2,A3                       ; Move end address to A3   
                                      
 READ_START:         ; Begin reading at start address
                                    
@@ -71,13 +76,13 @@ READ_START:         ; Begin reading at start address
                     
                     ; Read from binary stream 
                     
-                    MOVE.W      (A2)+,D1                    ; Read 16-bits at a time
-                    
+                    MOVE.W      (A2)+,D0                    ; Read 16-bits at a time       
+                    MOVE.L      #16,D1          
                     JSR         TREE_READ_VALUE             ; Reads value in tree into D0
                     
                     ; TODO: Check if invalid operator (AKA unhandled opcode)
-                    
-                    MOVE.L      D0,A0
+                            
+                    MOVE.L      D2,A0
                     JSR         GOTO_ADDR                
                     
                     BRA         READ_START                  ; Go back to start                   

@@ -2,7 +2,7 @@
 * Title      : RTS Handler file
 * Description: Handles the RTS opcode
 *-----------------------------------------------------------
-RTS_OUT         DC.B        'RTS',0
+RTS_OUT         DC.B        'RTS',CR,LF,0
 HANDLE_RTS:
                 LEA         RTS_OUT,A1
                 MOVE.B      #14,D0
