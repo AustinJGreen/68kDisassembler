@@ -26,9 +26,9 @@ READHEX:
                     CLR.L       D1
                     CLR.L       D2
                     
-                    MOVE.B      #2,D0                       ; Task 2 for TRAP 15: Read a string
+                    MOVE.L      #2,D0                       ; Task 2 for TRAP 15: Read a string
                     TRAP        #15                         ; Read the string and put it at A1, length is in D1
-                    MOVE.B      D1,D0                       ; Move string length stored in D1 to D0
+                    MOVE.L      D1,D0                       ; Move string length stored in D1 to D0
 .LOOP_S:     
                     CMPI.W      #0,D0                       ; Check if done looping
                     BLE         .READHEX_END                ; If read all characters, then go to end of the function
@@ -78,6 +78,7 @@ READHEX:
 .READHEX_END:
                     ; MOVEM.L     D2-D7/A0-A6,-(SP)           ; Restore all registers
                     RTS                                     ; Return
+
 
 
 
