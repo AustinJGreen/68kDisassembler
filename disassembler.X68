@@ -55,19 +55,18 @@ START:              ; Load information for tree
                     LEA         HANDLE_SUB,A0                              
                     JSR         TREE_ADD_NODE
                     
-                    ; Add address for NOP, can later use address label for
-                    ; specific handler of code
+                    ; Add NOP
                     MOVE.L      #%0100111001110001,D0
                     MOVE.L      #16,D1                    
                     LEA         HANDLE_NOP,A0                              
                     JSR         TREE_ADD_NODE
                     
-                    ; Add address for RTS, can later use address for specific handler of code instead
-                    ; of the direct label                   
+                    ; Add RTS               
                     MOVE.L      #%0100111001110101,D0
                     MOVE.L      #16,D1
                     LEA         HANDLE_RTS,A0                    
                     JSR         TREE_ADD_NODE
+                    
 *--------------------------------------------------------------------------
 * Prompt user for start and end memory address
 *--------------------------------------------------------------------------
@@ -125,6 +124,7 @@ START_ADDR_Q        DC.B        'Please enter in the starting address location i
 END_ADDR_Q          DC.B        'Please enter in the ending address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
 
                     END         START                       ; Last line of source
+
 
 
 

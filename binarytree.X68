@@ -8,31 +8,48 @@ LAST_NODE           DC.L        1                       ; Stores value of next a
 
 *--------------------------------------------------------------------
 * GET_MASK
-* Gets a MSB mask for the specified amount of bits using a 16-bit system
+* Gets a MSB mask for the specified amount of bits using a n-bit system
 *
 * INPUTS
 * D0 - Bit to create a mask for
+* D1 - Amount of bits to use in the system
 *
 * OUTPUTS
 * D1 - Mask
 *
 * REGISTER USE
 * D2 - Holds original value of D0
+* D3 - Holds original value of D1
 *--------------------------------------------------------------------
 GET_MASK:
-                    MOVEM.L     D2,-(SP)                    ; Save D2
+                    MOVEM.L     D2-D3,-(SP)                 ; Save D2 and D3
                     MOVE.L      D0,D2                       ; Move original value of D0 in D2
-                    MOVE.L      #$8000,D1                   ; Initialize mask with 1 at 16th bit
-.START:              
+                    MOVE.L      D1,D3                       ; Move original value of D1 in D3
+                    
+                    MOVE.L      #1,D1                       ; Initialize mask with 1
+                    SUBQ        #1,D3                       ; Subtract 1 from the amount of bits needed to be shifted, since we intialized with 1
+                    
+.MASK_START:        ; Shift until 1 is at nth bit for the n-bit system
+
+                    CMPI.L      #0,D3                       ; Shift as long as n bits still need to be shifted
+                    BEQ         .START                      ; Mask is ready, go to start
+                    
+                    LSL.L       #1,D1                       ; Shift mask left 1
+                    SUBQ        #1,D3                       ; Decrease amount of bits needed to be shifted
+                                
+                    BRA         .MASK_START                 ; Branch back to beginning of the first loop
+                    
+.START:             ; Now start shifting the bits over using the mask
+
                     CMPI        #1,D0                       ; Loop until D0 is <= 1
                     BLE         .END                        ; Goto end when D0 is <= 1
 
                     LSR.W       #1,D1                       ; Shift mask right 1
                     SUBQ        #1,D0                       ; Subtract 1 from D0
                     BRA         .START                      ; Go back to start
-.END
+.END:
                     MOVE.L      D2,D0                       ; Put original value back in D0 from D2                      
-                    MOVEM.L     (SP)+,D2                    ; Restore D2
+                    MOVEM.L     (SP)+,D2-D3                 ; Restore D2
                     RTS
 
 *--------------------------------------------------------------------
@@ -55,7 +72,7 @@ ALIGN_RIGHT:
                     
                     LSR.L       #1,D0                       ; 0th bit is still 0, shift right
                     BRA         .START                      ; Go back to start
-.END                
+.END:                
                     RTS                                     ; Return
                     
 *--------------------------------------------------------------------
@@ -103,7 +120,7 @@ TREE_LOOKUP:
                     MOVE.L      D0,D2                       ; Save registers before calling GET_MASK   
                     MOVE.L      D1,D4                       ; Save D1 in D4
                     
-                    MOVE.L      D3,D0                       ; Set D3 as input to GET_MASK                    
+                    MOVE.L      D3,D0                       ; Set D3 as input to GET_MASK                  
                     JSR         GET_MASK
                     
                     EXG         D1,D4                       ; Swap MASK from D1 into D4 and old D1 from D4 back into D1
@@ -123,7 +140,7 @@ TREE_LOOKUP:
                     ADD.L       D7,A6                       ; Move pointer by offset
                     
 					CMP.W       D1,D3                       ; Check if we have iterated through all the bits
-                    BGT         .END                        ; If D3 (Bit placeholder) is > bits to use then go to end 
+                    BGT         .END_BITS                   ; If D3 (Bit placeholder) is > bits to use then go to end 
                     
                     ; We still have more bits to iterate, continue processing
                     
@@ -133,17 +150,27 @@ TREE_LOOKUP:
                     ; Top 32-bits in D6 are for the value, lower 32-bits are for pointer
                     
                     CMPI.L      #$FFFFFFFF,D6               ; Check the pointer bits for NULLPTR (0xFFFFFFFF)
-                    BEQ         .END                        ; Node ptr is empty, exit     
+                    BEQ         .END_TREE                   ; Node ptr is empty, exit     
                     BRA         .FILLED_NODE                ; Node ptr is not empty                    
                     
 .FILLED_NODE:       ; Filled node case  
                        
                     MOVE.L      D6,A6                       ; Set pointer to next node
                     BRA         .READ_START
-                    
-.END                ; End of function, we are at the value location of the node in memory
 
+.END_BITS           ; We've reached the end of the bits we needed to read and are still in the tree, stop and read current value
+                    
+                    MOVE.L      (A6),A0                     ; Read current value
+                    BRA         .END
+                    
+.END_TREE:          ; We've reached the end of the tree, go back to last value and read that value
+
+                    SUB.L       #$4,A6                      ; We are currently pointing to ptr, subtract 0x4 to get last value
                     MOVE.L      (A6),A0
+                    BRA         .END
+                    
+.END                ; End of the function, restore registers and return
+
                     MOVEM.L     (SP)+,A5-A6/D2-D7           ; Restore registers
                     RTS
 
@@ -229,16 +256,12 @@ TREE_ADD_NODE:
                     MOVE.L      D6,A6                       ; Set pointer to next node
                     BRA         .READ_START
                     
-.END                ; End of function, we are at the value location of the node in memory
+.END:               ; End of function, we are at the value location of the node in memory
 
                     MOVE.L      A0,(A6)                     ; Set value of created node
                     MOVEM.L     (SP)+,A5-A6/D2-D7           ; Restore registers
                     RTS
                     
-                    
-                    
-
-
 
 
 
