@@ -74,13 +74,13 @@ READ_START:         ; Begin reading at start address
                     
                     ; Read from binary stream 
                     
-                    MOVE.W      (A2)+,D0                    ; Read 16-bits at a time                 
+                    MOVE.W      (A2)+,D0                    ; Read 16-bits at a time       
+                    MOVE.L      #16,D1          
                     JSR         TREE_READ_VALUE             ; Reads value in tree into D0
                     
                     ; TODO: Check if invalid operator (AKA unhandled opcode)
                             
-                    MOVE.L      D1,A0
-                    MOVE.L      #16,D1
+                    MOVE.L      D2,A0
                     JSR         GOTO_ADDR                
                     
                     BRA         READ_START                  ; Go back to start                   
