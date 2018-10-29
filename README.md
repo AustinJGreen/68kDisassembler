@@ -1,8 +1,12 @@
 # 68k Disassembler
 Disassembles 68k machine code into readable 68k opcode instructions.
 
-## Setting up the 68k Editor
+## Quick Links
+- [68k Manual](https://canvas.uw.edu/courses/1232689/files/50718950/download?wrap=1)
+- [68k OpCode Cheat Sheet](http://goldencrystal.free.fr/M68kOpcodes-v2.3.pdf)
+- [EASy68k Quick Reference](http://www.easy68k.com/files/EASy68KQuickRef.pdf)
 
+## Setting up the 68k Editor
 Lets make sure we are all using the same settings for editing so we don't bother each other and the code stays uniform.
 Make sure your EASy68K editor complies with the following: (Options -> Editor Options)
 
@@ -12,7 +16,6 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - Fixed Tabs Checked
 
 ## Editing (Code) Style guidelines
-
 - When in doubt, comment the line so we are all on the same page.
 - When commenting a line, always use a ; even if its at the end of the line so everything is straightforward
 - Keep all code that performs a single task grouped together, use a newline for a new step in logic
@@ -20,10 +23,33 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - Make sure all your LABELS are UPPERCASE.
 
 ## Project Status
-
 - [X] Setup github
 - [X] Create disassembler and testing files
 - [X] Read memory
+
+## Op-Codes Supported
 - [X] NOP
-- [X] RTS
 - [ ] MOVE
+- [ ] MOVEA
+- [ ] MOVEQ
+- [ ] MOVEM
+- [ ] ADD
+- [ ] ADDA
+- [ ] ADDQ
+- [ ] SUB
+- [ ] MULS
+- [ ] DIVU
+- [ ] LEA
+- [ ] AND
+- [ ] OR
+- [ ] NOT
+- [ ] LSL
+- [ ] LSR
+- [ ] ASR
+- [ ] ASL
+- [ ] BGT
+- [ ] BLE
+- [ ] BEQ
+- [ ] JSR
+- [X] RTS
+- [ ] BRA
