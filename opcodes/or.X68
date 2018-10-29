@@ -2,12 +2,13 @@
 * Title      : OR Handler file
 * Description: Handles the OR opcode
 *-----------------------------------------------------------
-OR_OUT              DC.B        'OR',CR,LF,0
+OR_OUT              DC.B        'OR',0
 
 HANDLE_OR:          LEA         OR_OUT,A1
                     MOVE.B      #14,D0
                     TRAP        #15
                     RTS
+
 
 
 

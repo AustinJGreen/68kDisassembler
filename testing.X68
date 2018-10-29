@@ -1,7 +1,12 @@
 START:  
                 NOP
-                OR	    D0,D1       ; For now just test D0,D1 so nothing is added to 16-bit opcode
                 RTS
+                NOT         D0          ; For now just test with registers so its only 16-bit opcodes
+                OR.B	    D0,D1       
+                MOVE.B      D0,D1
+                ADD.L       D0,D1
+                SUB.L       D0,D1
+
 
 
 

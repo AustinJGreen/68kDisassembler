@@ -1,14 +1,13 @@
 *-----------------------------------------------------------
-* Title      : RTS Handler file
-* Description: Handles the RTS opcode
+* Title      : NOT Handler file
+* Description: Handles the NOT opcode
 *-----------------------------------------------------------
-RTS_OUT             DC.B        'RTS',0
+NOT_OUT             DC.B        'NOT',0
 
-HANDLE_RTS:         LEA         RTS_OUT,A1
+HANDLE_NOT:         LEA         NOT_OUT,A1
                     MOVE.B      #14,D0
                     TRAP        #15
                     RTS
-
 
 
 *~Font name~Courier New~

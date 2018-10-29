@@ -1,30 +1,22 @@
 *--------------------------------------------------------------
-* Function Name : ReadHex
-* Description   : Reads a hexadecimal string from the user
-* Input         : NONE
-* Output        : Outputs converted hexadecimal longword in D1
-* D0            : Used for task number and string length
-* D1            : Used for reading character
-* D2            : Used to store output
-* D3            : *
-* D4            : *
-* D5            : *
-* D6            : *
-* D7            : *
-* A0            : *
-* A1            : Used for reading input
-* A2            : *
-* A3            : *
-* A4            : *
-* A5            : *
-* A6            : *
+* READHEX
+* Reads a hexadecimal string from the user and 
+* outputs converted hexadecimal longword in D2
+*
+* OUTPUTS
+* D2 - Hexadecimal number inputted by user
+*
+* REGISTER USE
+* D0 - Used for task number and string length
+* D1 - Used for reading character
+* A1 - Used for reading input
 *--------------------------------------------------------------
 
 READHEX:
-                    ; MOVEM.W     D2-D7/A0-A6,(SP)+           ; Save all registers
+                    MOVEM.L     D0-D1/A1,-(SP)              ; Save all registers
                     
-                    CLR.L       D1
-                    CLR.L       D2
+                    CLR.L       D1                          ; Clear D1 so length is put into cleared register
+                    CLR.L       D2                          ; Clear D2 for output
                     
                     MOVE.L      #2,D0                       ; Task 2 for TRAP 15: Read a string
                     TRAP        #15                         ; Read the string and put it at A1, length is in D1
@@ -76,8 +68,10 @@ READHEX:
                     BRA         .LOOP_E                     ; Branch back to the end of the loop
                 
 .READHEX_END:
-                    ; MOVEM.L     D2-D7/A0-A6,-(SP)           ; Restore all registers
+                    MOVEM.L     (SP)+,D0-D1/A1              ; Restore all registers
                     RTS                                     ; Return
+
+
 
 
 

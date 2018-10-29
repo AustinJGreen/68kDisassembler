@@ -7,14 +7,15 @@
 
                     ORG         $1000                       ; Organize code at 0x1000 (Specification 5)
                 
-                    INCLUDE     "readhex.x68"               ; Load ReadHex Function
-                    INCLUDE     "binarytree.x68"            ; Load Binary tree object
-                    INCLUDE     "goto.x68"                  ; Load Goto function
+                    INCLUDE     "readhex.X68"               ; Load ReadHex Function
+                    INCLUDE     "binarytree.X68"            ; Load Binary tree object
+                    INCLUDE     "goto.X68"                  ; Load Goto function
                     
-                    INCLUDE		"opcodes_header.x68"
+                    INCLUDE		"opcodes_header.X68"        ; Load all opcodes
            
 CR                  EQU         $0D                         ; ASCII code for Carriage Return
-LF                  EQU         $0A                         ; ASCII code for Line Feed                    
+LF                  EQU         $0A                         ; ASCII code for Line Feed
+TAB                 EQU         $08                         ; ASCII code for Horizontal Tab                    
                     
 START:              ; Load information for tree
 
@@ -55,6 +56,12 @@ START:              ; Load information for tree
                     LEA         HANDLE_SUB,A0                              
                     JSR         TREE_ADD_NODE
                     
+                    ; Add NOT
+                    MOVE.L      #%01000110,D0
+                    MOVE.L      #8,D1
+                    LEA         HANDLE_NOT,A0
+                    JSR         TREE_ADD_NODE
+                    
                     ; Add NOP
                     MOVE.L      #%0100111001110001,D0
                     MOVE.L      #16,D1                    
@@ -74,7 +81,7 @@ START:              ; Load information for tree
                     ; At startup, prompt the user for the starting location and 
                     ; ending location in hexadecimal format. (Specification 6)
                                                             
-                    LEA         START_ADDR_Q,A1             ; Load question and prompt to user
+                    LEA         START_ADDR_STR,A1             ; Load question and prompt to user
                     MOVE.B      #14,D0                      ; Set task to 14 to display string
                     TRAP        #15                         ; Display the question and prompt to the user
 
@@ -84,7 +91,7 @@ START:              ; Load information for tree
                     
                     MOVE.L      D2,A4                       ; Move start address to A4                    
 
-                    LEA         END_ADDR_Q,A1               ; Load question and prompt to user
+                    LEA         END_ADDR_STR,A1               ; Load question and prompt to user
                     MOVE.B      #14,D0                      ; Set task to 14 to display string
                     TRAP        #15                         ; Display the question and prompt to the user
             
@@ -104,14 +111,27 @@ READ_START:         ; Begin reading at start address
                     CMPA.L      A4,A5
                     BEQ         END                         ; Go to end if reached end address
                     
-                    ; Read from binary stream 
+                    ; TODO: Write current memory location (Specification 10)                    
+                    ; Can't use Trap 15 task 15 :(
+                    ; MOVE.L    A4,A0
+                    ; JSR       WRITEHEX
+                    
+                    ; Read from binary stream                                         
                     
                     MOVE.W      (A4)+,D0                    ; Read 16-bits at a time       
                     MOVE.L      #16,D1                      ; Set tree to use 16-bits from                    
-                    JSR         TREE_LOOKUP                 ; Looks for opcode handler
+                    JSR         TREE_LOOKUP                 ; Looks for opcode handler, stores result in A0
                     
                     ; TODO: Check if invalid operator (AKA unhandled opcode)
-                    JSR         GOTO_ADDR                
+                    
+                    JSR         GOTO_ADDR                   ; Goto A0 found in tree 
+                    
+                    ; Print newline
+                    
+                    LEA         NEWLINE_STR,A1
+                    MOVE.B      #14,D0
+                    TRAP        #15
+                     
                     
                     BRA         READ_START                  ; Go back to start                   
 
@@ -120,8 +140,10 @@ END:
 
 * Put variables and constants here
 
-START_ADDR_Q        DC.B        'Please enter in the starting address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
-END_ADDR_Q          DC.B        'Please enter in the ending address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
+TAB_STR             DC.B        TAB,0
+NEWLINE_STR         DC.B        CR,LF,0
+START_ADDR_STR      DC.B        'Please enter in the starting address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
+END_ADDR_STR        DC.B        'Please enter in the ending address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
 
                     END         START                       ; Last line of source
 
