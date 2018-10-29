@@ -122,7 +122,7 @@ TREE_LOOKUP:
                     MULU.W      #$8,D7                      ; Multiply by 64-bits for offset
                     ADD.L       D7,A6                       ; Move pointer by offset
                     
-                    CMP.W       D1,D3                       ; Check if we have iterated through all the bits
+					CMP.W       D1,D3                       ; Check if we have iterated through all the bits
                     BGT         .END                        ; If D3 (Bit placeholder) is > bits to use then go to end 
                     
                     ; We still have more bits to iterate, continue processing
@@ -237,6 +237,11 @@ TREE_ADD_NODE:
                     
                     
                     
+
+
+
+
+
 
 *~Font name~Courier New~
 *~Font size~10~

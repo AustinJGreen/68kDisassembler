@@ -11,8 +11,7 @@
                     INCLUDE     "binarytree.x68"            ; Load Binary tree object
                     INCLUDE     "goto.x68"                  ; Load Goto function
                     
-                    INCLUDE     "opcodes\nop.x68"           ; Load NOP Opcode Handler
-                    INCLUDE     "opcodes\rts.x68"           ; Load RTS Opcode Handler
+                    INCLUDE		"opcodes_header.x68"
            
 CR                  EQU         $0D                         ; ASCII code for Carriage Return
 LF                  EQU         $0A                         ; ASCII code for Line Feed                    
@@ -22,11 +21,42 @@ START:              ; Load information for tree
                     MOVE.L      #$EEEE0000,D0
                     JSR         TREE_INIT                   ; Initialize binary tree
                     
-                    ; Add opcodes to tree
+*--------------------------------------------------------------------------
+* Add OpCodes to tree
+*--------------------------------------------------------------------------
+                    
+                    ; Add MOVE.B
+                    MOVE.L      #%0001,D0
+                    MOVE.L      #4,D1                    
+                    LEA         HANDLE_MOVE_B,A0                              
+                    JSR         TREE_ADD_NODE
+
+                    ; Add ADDQ
+					MOVE.L      #%0101,D0
+                    MOVE.L      #4,D1                    
+                    LEA         HANDLE_ADDQ,A0                              
+                    JSR         TREE_ADD_NODE
+
+					; Add MOVEQ
+					MOVE.L      #%0111,D0
+                    MOVE.L      #4,D1                    
+                    LEA         HANDLE_MOVEQ,A0                              
+                    JSR         TREE_ADD_NODE
+
+					; Add OR
+					MOVE.L      #%1000,D0
+                    MOVE.L      #4,D1                    
+                    LEA         HANDLE_OR,A0                              
+                    JSR         TREE_ADD_NODE
+
+					; Add SUB 
+					MOVE.L      #%1001,D0
+                    MOVE.L      #4,D1                    
+                    LEA         HANDLE_SUB,A0                              
+                    JSR         TREE_ADD_NODE
                     
                     ; Add address for NOP, can later use address label for
                     ; specific handler of code
-                    
                     MOVE.L      #%0100111001110001,D0
                     MOVE.L      #16,D1                    
                     LEA         HANDLE_NOP,A0                              
@@ -34,11 +64,13 @@ START:              ; Load information for tree
                     
                     ; Add address for RTS, can later use address for specific handler of code instead
                     ; of the direct label                   
-
                     MOVE.L      #%0100111001110101,D0
                     MOVE.L      #16,D1
                     LEA         HANDLE_RTS,A0                    
                     JSR         TREE_ADD_NODE
+*--------------------------------------------------------------------------
+* Prompt user for start and end memory address
+*--------------------------------------------------------------------------
                     
                     ; At startup, prompt the user for the starting location and 
                     ; ending location in hexadecimal format. (Specification 6)
@@ -65,6 +97,9 @@ START:              ; Load information for tree
 
                     MOVE.L      D2,A5                       ; Move end address to A5   
                                      
+*--------------------------------------------------------------------------
+* Read and process memory
+*--------------------------------------------------------------------------
 READ_START:         ; Begin reading at start address
                                    
                     CMPA.L      A4,A5
@@ -90,6 +125,11 @@ START_ADDR_Q        DC.B        'Please enter in the starting address location i
 END_ADDR_Q          DC.B        'Please enter in the ending address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
 
                     END         START                       ; Last line of source
+
+
+
+
+
 
 
 
