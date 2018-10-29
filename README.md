@@ -9,15 +9,7 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - Check Auto Indent
 - Check Real Tabs
 - Fixed Tab Size set to 4
-- Fixed Tabs Checked 
-
-## Setting up the project for editing
-
-1. Make sure git is installed. Click [here](https://git-scm.com/downloads) to install git.
-2. If you don't have one already, create a folder somewhere for all of your 68k Projects.
-3. Open up commend prompt
-4. Change directory to your 68k Projects folder.
-5. Clone this project into that directory. `git clone https://github.com/ajosg/68kDisassembler.git`
+- Fixed Tabs Checked
 
 ## Editing (Code) Style guidelines
 
@@ -25,13 +17,13 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - When commenting a line, always use a ; even if its at the end of the line so everything is straightforward
 - Keep all code that performs a single task grouped together, use a newline for a new step in logic
 - If writing a function, tell everyone what the function does and what registers you are using.
-- Make sure all your LABELS are UPPERCASE. 
-
-## Commiting your changes
-
-- `git commit -m "Added some stuff."`
+- Make sure all your LABELS are UPPERCASE.
 
 ## Project Status
 
-- [ ] Setup github
-- [ ] Create disassembler and testing files
+- [X] Setup github
+- [X] Create disassembler and testing files
+- [X] Read memory
+- [X] NOP
+- [X] RTS
+- [ ] MOVE
