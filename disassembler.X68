@@ -15,11 +15,11 @@
                     INCLUDE     "opcodes\rts.x68"           ; Load RTS Opcode Handler
            
 CR                  EQU         $0D                         ; ASCII code for Carriage Return
-LF                  EQU         $0A                         ; ASCII code for Line Feed    
-                    
+
+LF                  EQU         $0A                         ; ASCII code for Line Feed                    
                     
 START:              ; Load information for tree
-                    
+
                     MOVE.L      #$EEEE0000,D0
                     JSR         TREE_INIT                   ; Initialize binary tree
                     
@@ -31,12 +31,13 @@ START:              ; Load information for tree
                     MOVE.L      #$4E71,D0
                     MOVE.L      #16,D1                    
                     LEA         HANDLE_NOP,A0                   
-                    MOVE.L      A0,D2               
+                    MOVE.L      A0,D2              
                     JSR         TREE_ADD_NODE               ; 4E71 for NOP
                     
                     ; Add address for RTS, can later use address for specific handler of code instead
                     ; of the direct label
                     
+
                     MOVE.L      #$4E75,D0
                     MOVE.L      #16,D1
                     LEA         HANDLE_RTS,A0                    
@@ -55,7 +56,7 @@ START:              ; Load information for tree
                     ; TODO: Check for invalid input -1, for now I'm assuming input is valid
                     
                     MOVE.L      D2,A2                       ; Move start address to A2                    
-            
+
                     LEA         END_ADDR_Q,A1               ; Load question and prompt to user
                     MOVE.B      #14,D0                      ; Set task to 14 to display string
                     TRAP        #15                         ; Display the question and prompt to the user
@@ -65,6 +66,7 @@ START:              ; Load information for tree
                     ; TODO: Check for invalid input -1 and make sure end address is greater than start
                     ; For now I'm assuming input is valid
                                         
+
                     MOVE.L      D2,A3                       ; Move end address to A3   
                                      
 READ_START:         ; Begin reading at start address
@@ -96,9 +98,6 @@ END_ADDR_Q          DC.B        'Please enter in the ending address location in 
 * Opcodes?
 
                     END         START                       ; Last line of source
-
-
-
 
 
 *~Font name~Courier New~

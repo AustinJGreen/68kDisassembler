@@ -44,12 +44,13 @@ TREE_GOTO:
                     
 .READ_START:        ; Start reading bits from node (16-bits)           
                     
-                    MOVE.W      D0,D7 
+                    MOVE.W      D0,D7
                     CMPI.W      #0,D7                       ; Loop while bits left aren't zero
                     BEQ         .END                        ; Done reading, go to end         
                     
                     AND.L       #$8000,D7                   ; Put most significant bit in D7
                     ROL.W       #1,D7                       ; Put the msb at the 0th bit, by rotating left 1 (rotating right 15)
+
                     LSL.L       #1,D0                       ; Shift D1 left 1 bit
                     
                     ; Add value to address to get correct node
@@ -126,9 +127,6 @@ TREE_READ_VALUE:
                     
                     
                     
-
-
-
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
