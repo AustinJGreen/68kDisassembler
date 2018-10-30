@@ -9,10 +9,17 @@
 *-------------------------------------------------------------------------------------- 
 RTS_OUT             DC.B        'RTS',0
 
+LOAD_RTS:           MOVE.L      #%0100111001110101,D0
+                    MOVE.L      #16,D1
+                    LEA         HANDLE_RTS,A0                    
+                    JSR         TREE_ADD_NODE
+                    RTS
+
 HANDLE_RTS:         LEA         RTS_OUT,A1
                     MOVE.B      #14,D0
                     TRAP        #15
                     RTS
+
 
 
 

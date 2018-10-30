@@ -9,10 +9,17 @@
 *-------------------------------------------------------------------------------------- 
 SUB_OUT             DC.B        'SUB',0
 
+LOAD_SUB:           MOVE.L      #%1001,D0
+                    MOVE.L      #4,D1                    
+                    LEA         HANDLE_SUB,A0                              
+                    JSR         TREE_ADD_NODE
+                    RTS
+
 HANDLE_SUB:         LEA         SUB_OUT,A1
                     MOVE.B      #14,D0
                     TRAP        #15
                     RTS
+
 
 
 

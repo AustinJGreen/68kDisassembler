@@ -9,10 +9,18 @@
 *--------------------------------------------------------------------------------------
 ADDQ_OUT         DC.B        'ADDQ',0
 
+LOAD_ADDQ:      MOVE.L      #%0101,D0
+                MOVE.L      #4,D1                    
+                LEA         HANDLE_ADDQ,A0                              
+                JSR         TREE_ADD_NODE
+                RTS
+
 HANDLE_ADDQ:    LEA         ADDQ_OUT,A1
                 MOVE.B      #14,D0
                 TRAP        #15
                 RTS
+
+
 
 
 

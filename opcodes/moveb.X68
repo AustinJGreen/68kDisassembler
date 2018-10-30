@@ -9,10 +9,17 @@
 *-------------------------------------------------------------------------------------- 
 MOVE_B_OUT          DC.B        'MOVE.B',0
 
+LOAD_MOVE_B:        MOVE.L      #%0001,D0
+                    MOVE.L      #4,D1                    
+                    LEA         HANDLE_MOVE_B,A0                              
+                    JSR         TREE_ADD_NODE
+                    RTS
+
 HANDLE_MOVE_B:      LEA         MOVE_B_OUT,A1
                     MOVE.B      #14,D0
                     TRAP        #15
                     RTS
+
 
 
 
