@@ -7,16 +7,13 @@
 
                     ORG         $1000                       ; Organize code at 0x1000 (Specification 5)
                 
+                    INCLUDE     "stringutils.X68"           ; Load String Utils
                     INCLUDE     "readhex.X68"               ; Load ReadHex Function
                     INCLUDE     "writehex.X68"              ; Load WriteHex Function
                     INCLUDE     "binarytree.X68"            ; Load Binary tree object
                     INCLUDE     "goto.X68"                  ; Load Goto function
                     
-                    INCLUDE		"opcodes_header.X68"        ; Load all opcodes
-           
-CR                  EQU         $0D                         ; ASCII code for Carriage Return
-LF                  EQU         $0A                         ; ASCII code for Line Feed
-TAB                 EQU         $09                         ; ASCII code for Horizontal Tab                    
+                    INCLUDE		"opcodes_header.X68"        ; Load all opcodes, all opcodes should have access to the included files above                 
                     
 START:              ; Load information for tree
 
@@ -100,7 +97,6 @@ START:              ; Load information for tree
                     
                     ; TODO: Check for invalid input -1 and make sure end address is greater than start
                     ; For now I'm assuming input is valid
-                                        
 
                     MOVE.L      D2,A5                       ; Move end address to A5   
                                      
@@ -114,14 +110,10 @@ READ_START:         ; Begin reading at start address
                     
                     ; Write current memory location (Specification 10)                    
 
-                    MOVE.L    A4,A0
-                    JSR       WRITEHEX
-                    
-                    ; Print tab
-                    
-                    LEA         TAB_STR,A1
-                    MOVE.B      #14,D0
-                    TRAP        #15
+                    MOVE.L      A4,A0
+                    JSR         WRITEHEX
+        
+                    JSR         PRINT_TAB                   ; Print tab
                     
                     ; Read from binary stream                                         
                     
@@ -134,11 +126,7 @@ READ_START:         ; Begin reading at start address
                     
                     JSR         GOTO_ADDR                   ; Goto A0 found in tree 
                     
-                    ; Print newline
-                    
-                    LEA         NEWLINE_STR,A1
-                    MOVE.B      #14,D0
-                    TRAP        #15               
+                    JSR         PRINT_NEWLINE               ; Print newline           
                     
                     BRA         READ_START                  ; Go back to start                   
 
@@ -147,8 +135,6 @@ END:
 
 * Put variables and constants here
 
-TAB_STR             DC.B        TAB,0
-NEWLINE_STR         DC.B        CR,LF,0
 START_ADDR_STR      DC.B        'Please enter in the starting address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
 END_ADDR_STR        DC.B        'Please enter in the ending address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
 
