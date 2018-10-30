@@ -1,11 +1,18 @@
 START:  
                 NOP
-                RTS
-                NOT         D0          ; For now just test with registers so its only 16-bit opcodes
+                RTS      
+                NOT.L       (A3)+
+                NOT.B       -(A0)
+                NOT.B       (A6)
+                NOT.W       D5          ; For now just test with registers so its only 16-bit opcodes
                 OR.B	    D0,D1       
                 MOVE.B      D0,D1
-                ADD.L       D0,D1
-                SUB.L       D0,D1
+
+
+
+
+
+
 
 
 
