@@ -16,7 +16,6 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - Fixed Tabs Checked
 
 ## Editing (Code) Style guidelines
-- When in doubt, comment the line so we are all on the same page.
 - When commenting a line, always use a ; even if its at the end of the line so everything is straightforward
 - Keep all code that performs a single task grouped together, use a newline for a new step in logic
 - If writing a function, tell everyone what the function does and what registers you are using.
@@ -50,6 +49,6 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - [ ] BGT
 - [ ] BLE
 - [ ] BEQ
-- [ ] JSR
+- [X] JSR
 - [X] RTS
 - [ ] BRA

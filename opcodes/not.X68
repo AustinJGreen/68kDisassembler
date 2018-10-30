@@ -87,11 +87,12 @@ HANDLE_NOT:         MOVEM.L     D0-D7,-(SP)
                     JSR         PRINT_A_PRE 
                     BRA         .END
 .INVALID:
-                    ; TODO: I'm not sure
-                    BRA         .END
+                    ; TODO: I'm not sure what to do here...
+                    SIMHALT
 .END         
                     MOVEM.L     (SP)+,D0-D7
                     RTS
+
 
 
 
