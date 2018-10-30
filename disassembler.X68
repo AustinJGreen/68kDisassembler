@@ -38,6 +38,8 @@ START:              ; Display about
                     JSR         LOAD_NOP                    ; Add NOP             
                     JSR         LOAD_RTS                    ; Add RTS
                     JSR         LOAD_JSR                    ; Add JSR
+                    JSR         LOAD_ASR                    ; Add ASR
+                    JSR         LOAD_ASL                    ; Add ASL
                     
                     ;--------------------------------------------------------------------------
                     ; Prompt user for start and end memory address

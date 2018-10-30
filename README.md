@@ -2,7 +2,7 @@
 Disassembles 68k machine code into readable 68k opcode instructions.
 
 ## Quick Links
-- [68k Manual](https://canvas.uw.edu/courses/1232689/files/50718950/download?wrap=1)
+- [68k Manual](https://www.nxp.com/files-static/archives/doc/ref_manual/M68000PRM.pdf)
 - [68k OpCode Cheat Sheet](http://goldencrystal.free.fr/M68kOpcodes-v2.3.pdf)
 - [EASy68k Quick Reference](http://www.easy68k.com/files/EASy68KQuickRef.pdf)
 
