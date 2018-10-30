@@ -42,7 +42,7 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - [ ] LEA
 - [ ] AND
 - [ ] OR
-- [ ] NOT
+- [X] NOT
 - [ ] LSL
 - [ ] LSR
 - [ ] ASR
