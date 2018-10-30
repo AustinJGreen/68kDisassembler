@@ -15,11 +15,10 @@
                     
                     INCLUDE		"opcodes_header.X68"        ; Load all opcodes, all opcodes should have access to the included files above                 
                     
-START:              ; Display about 
-
-                    LEA         ABOUT_STR,A1                ; Load question and prompt to user
-                    MOVE.B      #14,D0                      ; Set task to 14 to display string
-                    TRAP        #15                         ; Display the question and prompt to the user
+START:              ; Display about
+                    
+                    LEA         ABOUT_STR,A0                ; Load about string
+                    JSR         PRINT_STR                   ; Print about information
                     
                     ; Load information for tree
                     
@@ -39,32 +38,28 @@ START:              ; Display about
                     JSR         LOAD_NOP                    ; Add NOP             
                     JSR         LOAD_RTS                    ; Add RTS
                     JSR			LOAD_MOVE_MOVEA_L			; Add MOVE.L/MOVEA.L
+                    JSR         LOAD_JSR                    ; Add JSR
                     
                     ;--------------------------------------------------------------------------
                     ; Prompt user for start and end memory address
                     ;--------------------------------------------------------------------------
                     
-                    LEA         BEGIN_PROMPT,A1                ; Load question and prompt to user
-                    MOVE.B      #14,D0                      ; Set task to 14 to display string
-                    TRAP        #15                         ; Display the question and prompt to the user
+                    LEA         BEGIN_PROMPT,A0             ; Load information about input
+                    JSR         PRINT_STR
                     
                     ; At startup, prompt the user for the starting location and 
                     ; ending location in hexadecimal format. (Specification 6)
                                                             
-                    LEA         START_ADDR_STR,A1           ; Load question and prompt to user
-                    MOVE.B      #14,D0                      ; Set task to 14 to display string
-                    TRAP        #15                         ; Display the question and prompt to the user
-
+                    LEA         START_ADDR_STR,A0           ; Load question and prompt to user
+                    JSR         PRINT_STR                   ; Print question
                     JSR         READHEX
                     
                     ; TODO: Check for invalid input -1, for now I'm assuming input is valid
                     
                     MOVE.L      D2,A4                       ; Move start address to A4                    
 
-                    LEA         END_ADDR_STR,A1             ; Load question and prompt to user
-                    MOVE.B      #14,D0                      ; Set task to 14 to display string
-                    TRAP        #15                         ; Display the question and prompt to the user
-            
+                    LEA         END_ADDR_STR,A0             ; Load question and prompt to user
+                    JSR         PRINT_STR                   ; Print question            
                     JSR         READHEX
                     
                     ; TODO: Check for invalid input -1 and make sure end address is greater than start
@@ -76,7 +71,9 @@ START:              ; Display about
                     ; Read and process memory
                     ;--------------------------------------------------------------------------
                     
-                    JSR         PRINT_NEWLINE               ; Print newline to separate input from disassembled code
+                    ; MOVE.B      #11,D0
+                    ; MOVE.W      #$FF00,D1                    
+                    ; TRAP        #15                         ; Clear screen to separate input from disassembled code          
                     
 READ_START:         ; Begin reading at start address
                                    
@@ -86,8 +83,8 @@ READ_START:         ; Begin reading at start address
                     ; Write current memory location (Specification 10)                    
 
                     MOVE.L      A4,A0
-                    JSR         WRITEHEX
-        
+                    MOVE.L      #8,D0
+                    JSR         WRITEHEX        
                     JSR         PRINT_TAB                   ; Print tab
                     
                     ; Read from binary stream                                         
@@ -99,13 +96,12 @@ READ_START:         ; Begin reading at start address
                     
                     ; TODO: Check if invalid operator (AKA unhandled opcode)
                     
-                    JSR         GOTO_ADDR                   ; Goto A0 found in tree 
-                    
-                    JSR         PRINT_NEWLINE               ; Print newline           
-                    
+                    JSR         GOTO_ADDR                   ; Goto A0 found in tree                     
+                    JSR         PRINT_NEWLINE               ; Print newline                               
                     BRA         READ_START                  ; Go back to start                   
 
 END:
+
                     SIMHALT                                 ; Halt simulator 
 
 ABOUT_STR           DC.B        '68k Disassembler by Austin Green, Damian Forrester, Jacob Lefeat.',CR,LF,0
