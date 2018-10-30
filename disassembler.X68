@@ -38,6 +38,7 @@ START:              ; Display about
                     JSR         LOAD_NOT                    ; Add NOT
                     JSR         LOAD_NOP                    ; Add NOP             
                     JSR         LOAD_RTS                    ; Add RTS
+                    JSR			LOAD_MOVE_MOVEA_L			; Add MOVE.L/MOVEA.L
                     
                     ;--------------------------------------------------------------------------
                     ; Prompt user for start and end memory address
@@ -113,6 +114,7 @@ START_ADDR_STR      DC.B        'Starting address : ',0
 END_ADDR_STR        DC.B        'Ending address   : ',0
 
                     END         START                       ; Last line of source
+
 
 
 
