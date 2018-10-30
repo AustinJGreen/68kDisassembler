@@ -14,7 +14,7 @@ LEFT_PAREN          DC.B        '(',0
 RIGHT_PAREN         DC.B        ')',0
 DECREMENT           DC.B        '-',0
 INCREMENT           DC.B        '+',0
-DIVIDER		    DC.B	',',0	
+DIVIDER		        DC.B	    ',',0	
 ADDRESS_STR         DC.B        '$',0
 HEXDATA_STR         DC.B        '#$',0
 
@@ -205,20 +205,21 @@ PRINT_A_POST:       MOVEM.L     D0-D1/A1,-(SP)              ; Save registers
                     TRAP        #15                         ; Print +
                     MOVEM.L     (SP)+,D0-D1/A1              ; Restore registers
                     RTS                                     ; Return
+                    
 *--------------------------------------------------------------------
 * PRINT_DIVIDER
 * Prints a comma, used to separate source and destination
 *
-*
 * REGISTER USE
 * A1 - Holds register string
 *--------------------------------------------------------------------                    
-PRINT_DIVIDER:       MOVEM.L     D0-D1/A1,-(SP)              ; Save registers    
-					LEA         DIVIDER,A1                ; Load ,
+PRINT_DIVIDER:      MOVEM.L     D0-D1/A1,-(SP)              ; Save registers    
+					LEA         DIVIDER,A1                  ; Load ,
                     MOVE.B      #14,D0
                     TRAP        #15                         ; Print ,
                     MOVEM.L     (SP)+,D0-D1/A1              ; Restore registers
                     RTS                                     ; Return
+
 
 
 
