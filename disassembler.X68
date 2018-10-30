@@ -15,66 +15,37 @@
                     
                     INCLUDE		"opcodes_header.X68"        ; Load all opcodes, all opcodes should have access to the included files above                 
                     
-START:              ; Load information for tree
+START:              ; Display about 
 
+                    LEA         ABOUT_STR,A1                ; Load question and prompt to user
+                    MOVE.B      #14,D0                      ; Set task to 14 to display string
+                    TRAP        #15                         ; Display the question and prompt to the user
+                    
+                    ; Load information for tree
+                    
                     MOVE.L      #$EEEE0000,D0
                     JSR         TREE_INIT                   ; Initialize binary tree
                     
-*--------------------------------------------------------------------------
-* Add OpCodes to tree
-*--------------------------------------------------------------------------
+                    ;--------------------------------------------------------------------------
+                    ; Add OpCodes to tree
+                    ;--------------------------------------------------------------------------
+                                                  
+					JSR         LOAD_ADDQ                   ; Add ADDQ
+					JSR         LOAD_MOVE_B                 ; Add MOVE.B
+					JSR         LOAD_MOVEQ                  ; Add MOVEQ
+					JSR         LOAD_OR                     ; Add OR
+                    JSR         LOAD_SUB                    ; Add SUB
+                    JSR         LOAD_NOT                    ; Add NOT
+                    JSR         LOAD_NOP                    ; Add NOP             
+                    JSR         LOAD_RTS                    ; Add RTS
                     
-                    ; Add MOVE.B
-                    MOVE.L      #%0001,D0
-                    MOVE.L      #4,D1                    
-                    LEA         HANDLE_MOVE_B,A0                              
-                    JSR         TREE_ADD_NODE
-
-                    ; Add ADDQ
-					MOVE.L      #%0101,D0
-                    MOVE.L      #4,D1                    
-                    LEA         HANDLE_ADDQ,A0                              
-                    JSR         TREE_ADD_NODE
-
-					; Add MOVEQ
-					MOVE.L      #%0111,D0
-                    MOVE.L      #4,D1                    
-                    LEA         HANDLE_MOVEQ,A0                              
-                    JSR         TREE_ADD_NODE
-
-					; Add OR
-					MOVE.L      #%1000,D0
-                    MOVE.L      #4,D1                    
-                    LEA         HANDLE_OR,A0                              
-                    JSR         TREE_ADD_NODE
-
-					; Add SUB 
-					MOVE.L      #%1001,D0
-                    MOVE.L      #4,D1                    
-                    LEA         HANDLE_SUB,A0                              
-                    JSR         TREE_ADD_NODE
+                    ;--------------------------------------------------------------------------
+                    ; Prompt user for start and end memory address
+                    ;--------------------------------------------------------------------------
                     
-                    ; Add NOT
-                    MOVE.L      #%01000110,D0
-                    MOVE.L      #8,D1
-                    LEA         HANDLE_NOT,A0
-                    JSR         TREE_ADD_NODE
-                    
-                    ; Add NOP
-                    MOVE.L      #%0100111001110001,D0
-                    MOVE.L      #16,D1                    
-                    LEA         HANDLE_NOP,A0                              
-                    JSR         TREE_ADD_NODE
-                    
-                    ; Add RTS               
-                    MOVE.L      #%0100111001110101,D0
-                    MOVE.L      #16,D1
-                    LEA         HANDLE_RTS,A0                    
-                    JSR         TREE_ADD_NODE
-                    
-*--------------------------------------------------------------------------
-* Prompt user for start and end memory address
-*--------------------------------------------------------------------------
+                    LEA         BEGIN_PROMPT,A1                ; Load question and prompt to user
+                    MOVE.B      #14,D0                      ; Set task to 14 to display string
+                    TRAP        #15                         ; Display the question and prompt to the user
                     
                     ; At startup, prompt the user for the starting location and 
                     ; ending location in hexadecimal format. (Specification 6)
@@ -100,9 +71,12 @@ START:              ; Load information for tree
 
                     MOVE.L      D2,A5                       ; Move end address to A5   
                                      
-*--------------------------------------------------------------------------
-* Read and process memory
-*--------------------------------------------------------------------------
+                    ;--------------------------------------------------------------------------
+                    ; Read and process memory
+                    ;--------------------------------------------------------------------------
+                    
+                    JSR         PRINT_NEWLINE               ; Print newline to separate input from disassembled code
+                    
 READ_START:         ; Begin reading at start address
                                    
                     CMPA.L      A4,A5
@@ -133,10 +107,10 @@ READ_START:         ; Begin reading at start address
 END:
                     SIMHALT                                 ; Halt simulator 
 
-* Put variables and constants here
-
-START_ADDR_STR      DC.B        'Please enter in the starting address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
-END_ADDR_STR        DC.B        'Please enter in the ending address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
+ABOUT_STR           DC.B        '68k Disassembler by Austin Green, Damian Forrester, Jacob Lefeat.',CR,LF,0
+BEGIN_PROMPT        DC.B        'Please enter hexadecimal characters only. (0123456789abcdefABCDEF)',CR,LF,0
+START_ADDR_STR      DC.B        'Starting address : ',0
+END_ADDR_STR        DC.B        'Ending address   : ',0
 
                     END         START                       ; Last line of source
 

@@ -19,7 +19,6 @@ INCREMENT           DC.B        '+',0
 * PRINT_TAB
 * Prints a tab (\t)
 *
-*
 * REGISTER USE
 * D0 - Holds task codes
 * A1 - Holds tab string
@@ -34,7 +33,6 @@ PRINT_TAB:          MOVEM.L     D0/A1,-(SP)                 ; Save registers
 *--------------------------------------------------------------------
 * PRINT_NEWLINE
 * Prints a tab (\n)
-*
 *
 * REGISTER USE
 * D0 - Holds task codes
@@ -147,6 +145,7 @@ PRINT_A_POST:       MOVEM.L     D0-D1/A1,-(SP)              ; Save registers
                     TRAP        #15                         ; Print +
                     MOVEM.L     (SP)+,D0-D1/A1              ; Restore registers
                     RTS                                     ; Return
+
 
 
 
