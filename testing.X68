@@ -7,6 +7,11 @@ START:
                 NOT.W       D5          ; For now just test with registers so its only 16-bit opcodes
                 OR.B	    D0,D1       
                 MOVE.B      D0,D1
+                MOVEA.L		A0,A1
+                MOVE.L		D0,D1
+
+
+
 
 
 
