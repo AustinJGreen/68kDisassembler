@@ -32,6 +32,7 @@ START:              ; Display about
 					JSR         LOAD_ADDQ                   ; Add ADDQ
 					JSR         LOAD_MOVE_B                 ; Add MOVE.B
 					JSR         LOAD_MOVEQ                  ; Add MOVEQ
+					JSR			LOAD_MOVE_MOVEA_L			; Load MOVE.L and MOVEA.L
 					JSR         LOAD_OR                     ; Add OR
                     JSR         LOAD_SUB                    ; Add SUB
                     JSR         LOAD_NOT                    ; Add NOT
@@ -143,6 +144,7 @@ START_ADDR_STR      DC.B        'Starting address : ',0
 END_ADDR_STR        DC.B        'Ending address   : ',0
 
                     END         START                       ; Last line of source
+
 
 
 
