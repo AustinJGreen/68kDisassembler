@@ -37,7 +37,6 @@ START:              ; Display about
                     JSR         LOAD_NOT                    ; Add NOT
                     JSR         LOAD_NOP                    ; Add NOP             
                     JSR         LOAD_RTS                    ; Add RTS
-                    JSR			LOAD_MOVE_MOVEA_L			; Add MOVE.L/MOVEA.L
                     JSR         LOAD_JSR                    ; Add JSR
                     
                     ;--------------------------------------------------------------------------
@@ -71,9 +70,9 @@ START:              ; Display about
                     ; Read and process memory
                     ;--------------------------------------------------------------------------
                     
-                    ; MOVE.B      #11,D0
-                    ; MOVE.W      #$FF00,D1                    
-                    ; TRAP        #15                         ; Clear screen to separate input from disassembled code          
+                    MOVE.B      #11,D0
+                    MOVE.W      #$FF00,D1                    
+                    TRAP        #15                         ; Clear screen to separate input from disassembled code          
                     
 READ_START:         ; Begin reading at start address
                                    
@@ -110,7 +109,6 @@ START_ADDR_STR      DC.B        'Starting address : ',0
 END_ADDR_STR        DC.B        'Ending address   : ',0
 
                     END         START                       ; Last line of source
-
 
 
 

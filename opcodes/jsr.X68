@@ -19,9 +19,83 @@ LOAD_JSR:           MOVE.L      #%0100111010,D0
                     JSR         TREE_ADD_NODE
                     RTS
 
-HANDLE_JSR:         LEA         JSR_OUT,A0                  ; Load "JSR"
+HANDLE_JSR:         MOVEM.L     D0-D7/A0,-(SP)              ; Save registers
+
+                    LEA         JSR_OUT,A0                  ; Load "JSR"
                     JSR         PRINT_STR
+                    
+                    ; Read effective address mode
+                    
+                    MOVE.L      D0,D7                       ; Copy over D0 to D7
+                    AND.L       #%111000,D0                 ; AND 5 4 3 bits
+                    LSR.L       #3,D0                       ; Shift over to right
+                    
+                    ; Read effective address register
+                    
+                    MOVE.L      D7,D6                       ; Copy D7 over to D6
+                    AND.L       #%111,D6                    ; D6 is register value
+                    
+                    ; Go to correct address mode handler
+                    
+                    CMPI        #%010,D0
+                    BEQ         .DIRECTAN                   ; Goto direct addressing mode
+                    
+                    CMPI        #%111,D0
+                    BEQ         .DATA                       ; Goto data to figure out if WORD or LONG addressing mode
+                    
+                    BRA         .INVALID
+                    
+.DIRECTAN:          ; Direct addressing mode
+
+                    MOVE.L      D6,A0
+                 
+                    JSR         PRINT_TAB                   ; Print tab
+                    JSR         PRINT_A_DIR                 ; Print direct address
+                    
+                    BRA         .END
+
+.DATA:              ; Check for WORD or LONG addressing
+
+                    CMPI        #%000,D6                    ; Check if WORD addressing mode
+                    BEQ         .WORD
+                    
+                    CMPI        #%001,D6                    ; Check if LONG addressing mode
+                    BEQ         .LONG
+                    
+                    BRA         .INVALID
+                    
+.WORD:              ; WORD addressing mode, read in word from A4
+                    
+                    MOVE.W      (A4)+,D5
+                    
+                    JSR         PRINT_TAB                   ; Print tab
+                    
+                    MOVE.L      #4,D0
+                    MOVE.L      D5,A0
+                    JSR         PRINT_ADDRESS               ; Print the word part of the address
+                    
+                    BRA         .END
+                    
+.LONG:              ; LONG addressing mode, read in long from A4
+                 
+                    MOVE.L      (A4)+,D5
+                  
+                    JSR         PRINT_TAB                   ; Print tab
+  
+                    MOVE.L      #8,D0
+                    MOVE.L      D5,A0
+                    JSR         PRINT_ADDRESS               ; Print the full address
+                    
+                    BRA         .END
+                    
+.INVALID:           ; TODO: I'm not sure what to do here...
+
+                    SIMHALT                                 
+                    
+.END:               
+                    MOVEM.L     (SP)+,D0-D7/A0              ; Restore registers
                     RTS
+
 
 
 
