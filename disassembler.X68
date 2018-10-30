@@ -102,7 +102,7 @@ READ_START:			; Begin reading at start address
 					EXG			D1,D0						; Swap back D1 and D0 so D0 can be used in tree lookup
 					
 					; Lookup value in opcode tree
-	   
+		
 					MOVE.L		#16,D1						; Set tree to use 16-bits from					  
 					JSR			TREE_LOOKUP					; Looks for opcode handler, stores result in A0
 					

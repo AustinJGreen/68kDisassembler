@@ -1,8 +1,8 @@
 *-----------------------------------------------------------
-* Title      :	MOVE and MOVEA Longword Handler function
+* Title		 :	MOVE and MOVEA Longword Handler function
 * Written by :	Damian
-* Date       :  10/29/2018
-* Description:  Handles the MOVE and MOVEA OpCode for
+* Date		 :	10/29/2018
+* Description:	Handles the MOVE and MOVEA OpCode for
 *				longword length.
 * D6 - Destination register
 * D5 - Destination address mode
@@ -64,7 +64,7 @@ HANDLE_MOVE_MOVEA_L:		MOVEM.L	D0-D7,-(SP)
 .PRINT:					MOVE.B	#14,D0
 						TRAP		#15
 						
-						JSR         PRINT_TAB    * Print a tab
+						JSR		  PRINT_TAB	   * Print a tab
 						
 *-----------------------------------------------------------
 *	DISPLAY Source
@@ -117,7 +117,7 @@ HANDLE_MOVE_MOVEA_L:		MOVEM.L	D0-D7,-(SP)
 						BEQ		.D_DATA_ADDR							
 *-----------------------------------------------------------	
 					
-.END_DEST				MOVEM.L     (SP)+,D0-D7
+.END_DEST				MOVEM.L	 (SP)+,D0-D7
 .FIN:					RTS
 
 *-----------------------------------------------------------

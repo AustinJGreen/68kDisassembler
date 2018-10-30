@@ -3,8 +3,8 @@
 * Description: Binary tree object for retrieving opcode information
 *--------------------------------------------------------------------
 
-TREE_ADDRESS		DC.L		1						; Stores value of the head node address
-LAST_NODE			DC.L		1						; Stores value of next available spot in memory
+TREE_ADDRESS		DC.L		1							; Stores value of the head node address
+LAST_NODE			DC.L		1							; Stores value of next available spot in memory
 
 *--------------------------------------------------------------------
 * GET_MASK
@@ -262,6 +262,7 @@ TREE_ADD_NODE:
 					MOVEM.L		(SP)+,A5-A6/D2-D7			; Restore registers
 					RTS
 					
+
 
 
 
