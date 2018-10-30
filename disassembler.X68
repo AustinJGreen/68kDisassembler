@@ -80,31 +80,63 @@ READ_START:         ; Begin reading at start address
                                    
                     CMPA.L      A4,A5
                     BEQ         END                         ; Go to end if reached end address
-                    
-                    ; Write current memory location (Specification 10)                    
 
+                    ; Read from binary stream                                         
+                    
+                    CLR.L       D0                          ; Clear all 32-bits so handler files are looking at a clean 16-bits just to be safe
+                    MOVE.W      (A4)+,D0                    ; Read 16-bits at a time
+
+                    CMPI.W      #$FFFF,D0                   ; Check if data is 0xFFFF (at the end of loaded program memory)
+                    BEQ         END                         ; Go to end if data is 0xFFFF
+                    
+                    ; Write current memory location (Specification 10) 
+                   
+                    EXG         D1,D0                       ; Swap D1 with D0 temporarily for writehex
+                    
                     MOVE.L      A4,A0
                     MOVE.L      #8,D0
                     JSR         WRITEHEX        
                     JSR         PRINT_TAB                   ; Print tab
                     
-                    ; Read from binary stream                                         
+                    EXG         D1,D0                       ; Swap back D1 and D0 so D0 can be used in tree lookup
                     
-                    CLR.L       D0                          ; Clear all 32-bits so handler files are looking at a clean 16-bits just to be safe
-                    MOVE.W      (A4)+,D0                    ; Read 16-bits at a time       
+                    ; Lookup value in opcode tree
+       
                     MOVE.L      #16,D1                      ; Set tree to use 16-bits from                    
                     JSR         TREE_LOOKUP                 ; Looks for opcode handler, stores result in A0
                     
-                    ; TODO: Check if invalid operator (AKA unhandled opcode)
+                    ; Check if invalid operator (unhandled opcode)
+                    
+                    CMP.L       #$FFFFFFFF,A0
+                    BEQ         INVALID_OPCODE
+                    BRA         VALID_OPCODE
+                    
+INVALID_OPCODE:     ; Print invalid opcode as DATA $ABCD (Specification 8)
+
+                    LEA         DATA_STR,A0
+                    JSR         PRINT_STR
+                    JSR         PRINT_TAB
+                    
+                    ; Print unreadable data in D0
+                    
+                    MOVE.L      D0,A0
+                    MOVE.L      #4,D0
+                    JSR         PRINT_ADDRESS                    
+                    JSR         PRINT_NEWLINE
+                    
+                    BRA         READ_START
+                    
+VALID_OPCODE:       ; Print valid opcode
                     
                     JSR         GOTO_ADDR                   ; Goto A0 found in tree                     
                     JSR         PRINT_NEWLINE               ; Print newline                               
                     BRA         READ_START                  ; Go back to start                   
 
-END:
+END:                ; TODO: prompt the user to disassemble another memory image, or prompt the user to quit (Specification 11)
 
-                    SIMHALT                                 ; Halt simulator 
-
+                    SIMHALT                                 ; Halt simulator
+ 
+DATA_STR            DC.B        'DATA',0
 ABOUT_STR           DC.B        '68k Disassembler by Austin Green, Damian Forrester, Jacob Lefeat.',CR,LF,0
 BEGIN_PROMPT        DC.B        'Please enter hexadecimal characters only. (0123456789abcdefABCDEF)',CR,LF,0
 START_ADDR_STR      DC.B        'Starting address : ',0
