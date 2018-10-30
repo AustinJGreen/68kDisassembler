@@ -3,8 +3,23 @@
 * Description: Binary tree object for retrieving opcode information
 *--------------------------------------------------------------------
 
+TREE_END_ADDR		DS.L		40000						; 2^16 * 4 slots for binary tree
 TREE_ADDRESS		DC.L		1							; Stores value of the head node address
 LAST_NODE			DC.L		1							; Stores value of next available spot in memory
+
+*--------------------------------------------------------------------
+* TREE_INIT
+* Initializes the tree at a specified address in the stack
+*
+* INPUTS
+* A0 - Address to build tree at
+*--------------------------------------------------------------------
+TREE_INIT:			MOVEM.L		A0,-(SP)
+					LEA			TREE_END_ADDR,A0
+					MOVE.L		A0,TREE_ADDRESS
+					MOVE.L		A0,LAST_NODE
+					MOVEM.L		(SP)+,A0
+					RTS
 
 *--------------------------------------------------------------------
 * GET_MASK
@@ -74,18 +89,6 @@ ALIGN_RIGHT:
 					BRA			.START					; Go back to start
 .END:				
 					RTS									; Return
-					
-*--------------------------------------------------------------------
-* TREE_INIT
-* Initializes the tree at a specified address in the stack
-*
-* INPUTS
-* D0 - Address to build tree at
-*--------------------------------------------------------------------
-TREE_INIT:
-					MOVE.L		D0,TREE_ADDRESS
-					MOVE.L		D0,LAST_NODE
-					RTS
 
 *--------------------------------------------------------------------
 * TREE_LOOKUP
@@ -262,6 +265,9 @@ TREE_ADD_NODE:
 					MOVEM.L		(SP)+,A5-A6/D2-D7			; Restore registers
 					RTS
 					
+
+
+
 
 
 

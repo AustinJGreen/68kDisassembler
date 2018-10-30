@@ -26,7 +26,8 @@ LOAD_MOVE_MOVEA_L:	MOVE.L	#%0010,D0
 *-----------------------------------------------------------
 
 HANDLE_MOVE_MOVEA_L:		MOVEM.L	D0-D7,-(SP)	
-						MOVE.L D0,D7
+						
+						MOVE.L 	D0,D7
 						
 						MOVE.L	D7,D1
 						
@@ -64,7 +65,7 @@ HANDLE_MOVE_MOVEA_L:		MOVEM.L	D0-D7,-(SP)
 .PRINT:					MOVE.B	#14,D0
 						TRAP		#15
 						
-						JSR		  PRINT_TAB	   * Print a tab
+						JSR		PRINT_OPCODE_TAB	   * Print a tab
 						
 *-----------------------------------------------------------
 *	DISPLAY Source
@@ -162,6 +163,8 @@ HANDLE_MOVE_MOVEA_L:		MOVEM.L	D0-D7,-(SP)
 * TO_DO
 .S_DATA_ADDR:		BRA		.END_SOURCE			* (XXX).W/(XXX).L/#<data>	
 *-----------------------------------------------------------
+
+
 
 
 
