@@ -1,6 +1,6 @@
 *--------------------------------------------------------------------------------------
-* Title         : ASR Handler function
-* Description   : Handles the ASR opcode, outputs the full disassembled instruction
+* Title			: ASR Handler function
+* Description	: Handles the ASR opcode, outputs the full disassembled instruction
 * Manual Page # : 126
 * 
 * INPUTS
@@ -11,13 +11,13 @@
 * D6 - Holds register value
 * D7 - Register used to hold Opcode data
 *--------------------------------------------------------------------------------------  
-LOAD_ASR:           MOVE.L      #%11100000,D0
-                    MOVE.L      #8,D1
-                    LEA         HANDLE_ASR,A0
-                    JSR         TREE_ADD_NODE
-                    RTS
+LOAD_ASR:			MOVE.L		#%11100000,D0
+					MOVE.L		#8,D1
+					LEA			HANDLE_ASR,A0
+					JSR			TREE_ADD_NODE
+					RTS
 
-HANDLE_ASR:         RTS
+HANDLE_ASR:			RTS
 
 
 

@@ -1,6 +1,6 @@
 *--------------------------------------------------------------------------------------
-* Title         : NOT Handler function
-* Description   : Handles the NOT opcode, outputs the full disassembled instruction
+* Title			: NOT Handler function
+* Description	: Handles the NOT opcode, outputs the full disassembled instruction
 * Manual Page # : 252
 * 
 * INPUTS
@@ -11,87 +11,87 @@
 * D6 - Holds register value
 * D7 - Register used to hold Opcode data
 *--------------------------------------------------------------------------------------  
-NOT_OUT             DC.B        'NOT.',0
-SIZE_CODES          DC.B        'B',0,'W',0,'L',0
+NOT_OUT				DC.B		'NOT.',0
+SIZE_CODES			DC.B		'B',0,'W',0,'L',0
 
-LOAD_NOT:           MOVE.L      #%01000110,D0
-                    MOVE.L      #8,D1
-                    LEA         HANDLE_NOT,A0
-                    JSR         TREE_ADD_NODE
-                    RTS
+LOAD_NOT:			MOVE.L		#%01000110,D0
+					MOVE.L		#8,D1
+					LEA			HANDLE_NOT,A0
+					JSR			TREE_ADD_NODE
+					RTS
 
-HANDLE_NOT:         MOVEM.L     D0-D7,-(SP)
+HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 
-                    MOVE        D0,D7                    
-                    LEA         NOT_OUT,A0
-                    JSR         PRINT_STR                   ; Output "NOT."
-                    
-                    ; Next, read size code
-                    
-                    MOVE.L      D7,D1
-                    AND.L       #%11000000,D1
-                    LSR.L       #6,D1
+					MOVE		D0,D7					 
+					LEA			NOT_OUT,A0
+					JSR			PRINT_STR					; Output "NOT."
+					
+					; Next, read size code
+					
+					MOVE.L		D7,D1
+					AND.L		#%11000000,D1
+					LSR.L		#6,D1
 
-                    ; Output the size code
-                    
-                    LEA         SIZE_CODES,A1               ; Load size codes address into A1
-                    MULU.W      #2,D1                       ; Multiply D1 by 3
-                    ADD.L       D1,A1                       ; Add that to the starting address
-                    MOVE.L      #1,D0                       ; Use Task 1
-                    MOVE.L      #2,D1                       ; Display 2 bytes (1st byte is letter, 2nd is null terminator)
-                    TRAP        #15                         ; Run Trap 15
-                    
-                    JSR         PRINT_TAB                   ; Print a tab
-                    
-                    ; Read effective address register
-                    
-                    MOVE.L      D7,D1
-                    AND.L       #%111,D1
-                    MOVE.L      D1,D6           
-                    
-                    ; Read effective address mode
-                    
-                    MOVE.L      D7,D1
-                    AND.L       #%111000,D1
-                    LSR.L       #3,D1
-                    
-                    ; Go to correct mode
-                    
-                    CMPI        #%000,D1
-                    BEQ         .DN
-                    
-                    CMPI        #%010,D1
-                    BEQ         .DIRECTAN
-                    
-                    CMPI        #%011,D1
-                    BEQ         .POSTINCAN
-                    
-                    CMPI        #%100,D1
-                    BEQ         .PREDECAN
-                    
-                    BRA         .INVALID
+					; Output the size code
+					
+					LEA			SIZE_CODES,A1				; Load size codes address into A1
+					MULU.W		#2,D1						; Multiply D1 by 3
+					ADD.L		D1,A1						; Add that to the starting address
+					MOVE.L		#1,D0						; Use Task 1
+					MOVE.L		#2,D1						; Display 2 bytes (1st byte is letter, 2nd is null terminator)
+					TRAP		#15							; Run Trap 15
+					
+					JSR			PRINT_TAB					; Print a tab
+					
+					; Read effective address register
+					
+					MOVE.L		D7,D1
+					AND.L		#%111,D1
+					MOVE.L		D1,D6			
+					
+					; Read effective address mode
+					
+					MOVE.L		D7,D1
+					AND.L		#%111000,D1
+					LSR.L		#3,D1
+					
+					; Go to correct mode
+					
+					CMPI		#%000,D1
+					BEQ			.DN
+					
+					CMPI		#%010,D1
+					BEQ			.DIRECTAN
+					
+					CMPI		#%011,D1
+					BEQ			.POSTINCAN
+					
+					CMPI		#%100,D1
+					BEQ			.PREDECAN
+					
+					BRA			.INVALID
 .DN: 
-                    MOVE.L      D6,D0
-                    JSR         PRINT_D_REG
-                    BRA         .END
-.DIRECTAN:          
-                    MOVE.L      D6,D0       
-                    JSR         PRINT_A_DIR
-                    BRA         .END
-.POSTINCAN:      
-                    MOVE.L      D6,D0       
-                    JSR         PRINT_A_POST      
-                    BRA         .END
-.PREDECAN:          
-                    MOVE.L      D6,D0       
-                    JSR         PRINT_A_PRE 
-                    BRA         .END
+					MOVE.L		D6,D0
+					JSR			PRINT_D_REG
+					BRA			.END
+.DIRECTAN:			
+					MOVE.L		D6,D0		
+					JSR			PRINT_A_DIR
+					BRA			.END
+.POSTINCAN:		 
+					MOVE.L		D6,D0		
+					JSR			PRINT_A_POST	  
+					BRA			.END
+.PREDECAN:			
+					MOVE.L		D6,D0		
+					JSR			PRINT_A_PRE 
+					BRA			.END
 .INVALID:
-                    ; TODO: I'm not sure what to do here...
-                    SIMHALT
-.END         
-                    MOVEM.L     (SP)+,D0-D7
-                    RTS
+					; TODO: I'm not sure what to do here...
+					SIMHALT
+.END		 
+					MOVEM.L		(SP)+,D0-D7
+					RTS
 
 
 

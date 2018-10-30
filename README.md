@@ -28,8 +28,12 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 
 ## Op-Codes Supported
 - [X] NOP
-- [ ] MOVE
-- [ ] MOVEA
+- [ ] MOVE.B
+- [ ] MOVE.W
+- [X] MOVE.L
+- [ ] MOVEA.B
+- [ ] MOVEA.W
+- [X] MOVEA.L
 - [ ] MOVEQ
 - [ ] MOVEM
 - [ ] ADD
