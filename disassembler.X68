@@ -8,6 +8,7 @@
                     ORG         $1000                       ; Organize code at 0x1000 (Specification 5)
                 
                     INCLUDE     "readhex.X68"               ; Load ReadHex Function
+                    INCLUDE     "writehex.X68"              ; Load WriteHex Function
                     INCLUDE     "binarytree.X68"            ; Load Binary tree object
                     INCLUDE     "goto.X68"                  ; Load Goto function
                     
@@ -15,7 +16,7 @@
            
 CR                  EQU         $0D                         ; ASCII code for Carriage Return
 LF                  EQU         $0A                         ; ASCII code for Line Feed
-TAB                 EQU         $08                         ; ASCII code for Horizontal Tab                    
+TAB                 EQU         $09                         ; ASCII code for Horizontal Tab                    
                     
 START:              ; Load information for tree
 
@@ -81,7 +82,7 @@ START:              ; Load information for tree
                     ; At startup, prompt the user for the starting location and 
                     ; ending location in hexadecimal format. (Specification 6)
                                                             
-                    LEA         START_ADDR_STR,A1             ; Load question and prompt to user
+                    LEA         START_ADDR_STR,A1           ; Load question and prompt to user
                     MOVE.B      #14,D0                      ; Set task to 14 to display string
                     TRAP        #15                         ; Display the question and prompt to the user
 
@@ -91,7 +92,7 @@ START:              ; Load information for tree
                     
                     MOVE.L      D2,A4                       ; Move start address to A4                    
 
-                    LEA         END_ADDR_STR,A1               ; Load question and prompt to user
+                    LEA         END_ADDR_STR,A1             ; Load question and prompt to user
                     MOVE.B      #14,D0                      ; Set task to 14 to display string
                     TRAP        #15                         ; Display the question and prompt to the user
             
@@ -111,10 +112,16 @@ READ_START:         ; Begin reading at start address
                     CMPA.L      A4,A5
                     BEQ         END                         ; Go to end if reached end address
                     
-                    ; TODO: Write current memory location (Specification 10)                    
-                    ; Can't use Trap 15 task 15 :(
-                    ; MOVE.L    A4,A0
-                    ; JSR       WRITEHEX
+                    ; Write current memory location (Specification 10)                    
+
+                    MOVE.L    A4,A0
+                    JSR       WRITEHEX
+                    
+                    ; Print tab
+                    
+                    LEA         TAB_STR,A1
+                    MOVE.B      #14,D0
+                    TRAP        #15
                     
                     ; Read from binary stream                                         
                     
@@ -130,8 +137,7 @@ READ_START:         ; Begin reading at start address
                     
                     LEA         NEWLINE_STR,A1
                     MOVE.B      #14,D0
-                    TRAP        #15
-                     
+                    TRAP        #15               
                     
                     BRA         READ_START                  ; Go back to start                   
 
@@ -146,6 +152,8 @@ START_ADDR_STR      DC.B        'Please enter in the starting address location i
 END_ADDR_STR        DC.B        'Please enter in the ending address location in hexadecimal format.',CR,LF,'Example: 1A2B3a',CR,LF,'>>',0
 
                     END         START                       ; Last line of source
+
+
 
 
 
