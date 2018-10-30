@@ -22,7 +22,7 @@ LAST_NODE           DC.L        1                       ; Stores value of next a
 * D3 - Holds original value of D1
 *--------------------------------------------------------------------
 GET_MASK:
-                    MOVEM.L     D2-D3,-(SP)                 ; Save D2 and D3
+					MOVEM.L     D2-D3,-(SP)                 ; Save D2 and D3
                     MOVE.L      D0,D2                       ; Move original value of D0 in D2
                     MOVE.L      D1,D3                       ; Move original value of D1 in D3
                     
