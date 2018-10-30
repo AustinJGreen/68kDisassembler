@@ -125,6 +125,7 @@ READ_START:         ; Begin reading at start address
                     
                     ; Read from binary stream                                         
                     
+                    CLR.L       D0                          ; Clear all 32-bits so handler files are looking at a clean 16-bits just to be safe
                     MOVE.W      (A4)+,D0                    ; Read 16-bits at a time       
                     MOVE.L      #16,D1                      ; Set tree to use 16-bits from                    
                     JSR         TREE_LOOKUP                 ; Looks for opcode handler, stores result in A0
