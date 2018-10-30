@@ -15,10 +15,10 @@ LOAD_OR:            MOVE.L      #%1000,D0
                     JSR         TREE_ADD_NODE
                     RTS
 
-HANDLE_OR:          LEA         OR_OUT,A1
-                    MOVE.B      #14,D0
-                    TRAP        #15
+HANDLE_OR:          LEA         OR_OUT,A0
+                    JSR         PRINT_STR
                     RTS
+
 
 
 

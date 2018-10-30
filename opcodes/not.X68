@@ -21,10 +21,10 @@ LOAD_NOT:           MOVE.L      #%01000110,D0
                     RTS
 
 HANDLE_NOT:         MOVEM.L     D0-D7,-(SP)
-                    MOVE        D0,D7
-                    LEA         NOT_OUT,A1
-                    MOVE.B      #14,D0
-                    TRAP        #15
+
+                    MOVE        D0,D7                    
+                    LEA         NOT_OUT,A0
+                    JSR         PRINT_STR                   ; Output "NOT."
                     
                     ; Next, read size code
                     
@@ -92,6 +92,10 @@ HANDLE_NOT:         MOVEM.L     D0-D7,-(SP)
 .END         
                     MOVEM.L     (SP)+,D0-D7
                     RTS
+
+
+
+
 
 
 

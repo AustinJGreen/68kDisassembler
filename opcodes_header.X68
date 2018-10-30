@@ -14,6 +14,7 @@
     INCLUDE		"opcodes\moveq.X68"
     INCLUDE     "opcodes\not.X68"
     INCLUDE		"opcodes\movelmoveal.x68"
+    INCLUDE     "opcodes\jsr.X68"
 
 
 

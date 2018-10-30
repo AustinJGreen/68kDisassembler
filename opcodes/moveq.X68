@@ -15,10 +15,10 @@ LOAD_MOVEQ:         MOVE.L      #%0111,D0
                     JSR         TREE_ADD_NODE
                     RTS
 
-HANDLE_MOVEQ:       LEA         MOVEQ_OUT,A1
-                    MOVE.B      #14,D0
-                    TRAP        #15
+HANDLE_MOVEQ:       LEA         MOVEQ_OUT,A0
+                    JSR         PRINT_STR
                     RTS
+
 
 
 

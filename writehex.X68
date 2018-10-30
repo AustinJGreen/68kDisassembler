@@ -3,12 +3,15 @@
 * Write a full 32-bit hexadecimal string given in A0
 *
 * INPUTS
+* D0 - Amount of letters to print
 * A0 - Register to output
 *
 * REGISTER USE
 * D7 - Store value of output
 * D6 - Tracks which bit we are on
 * D5 - Stores current letter
+* D4 - Stores mask
+* D3 - Temporary Swap Register
 *--------------------------------------------------------------
 
 HEX_ALPHABET:       DC.B        '0',0,'1',0,'2',0,'3',0,'4',0,'5',0,'6',0,'7',0,'8',0,'9',0,'A',0,'B',0,'C',0,'D',0,'E',0,'F',0
@@ -18,16 +21,37 @@ WRITEHEX:           MOVEM.L     D0-D7/A0,-(SP)              ; Save registers
                     MOVE.L      A0,D7
                     MOVE.L      #0,D6
                     
+                    ; Calculate the mask
+                    
+                    MOVE.L      #$F0000000,D4               ; Initialize mask
+                    
+                    MOVE.L      D0,D3                       ; Save original value of D0
+                    
+.SHIFT_MASK:        CMPI.B      #8,D0                       ; Check if done iterating
+                    BEQ         .CHAR_START
+
+                    LSR.L       #4,D4                       ; Shift the F right 4-bits
+                    ADDQ        #1,D0                       ; Subtract amount of iterations left
+                    BRA         .SHIFT_MASK                 ; Go back to start of loop                  
+                    
 .CHAR_START:        ; Start of letter by letter loop
 
-                    CMPI.L      #8,D6
-                    BEQ         .END                        ; If we are at 8th hex char then quit (0 indexed)
+                    MOVE.L      D3,D0                       ; Restore original value of D0
+
+                    CMP.L       D3,D6                       ; D3 holds length to write, check with D6 to see ...
+                    BEQ         .END                        ; ... if we are at nth hex char then quit (0 indexed)
                     
                     MOVE.L      D7,D5                       ; Copy over current buffer 
-                    AND.L       #$F0000000,D5               ; Get current character                 
-                    ROL.L       #4,D5                       ; Rotate the letter left 4 to put in the rightmost 4 bits
+                    AND.L       D4,D5                       ; Get current character 
+
+.ALIGN_RIGHT:       CMPI        #1,D0
+                    BEQ         .ALIGN_END                  ; Letter is aligned at 1st spot, exit loop
                     
-                    ; Print out letter in D5                         
+                    LSR.L       #4,D5                       ; Rotate the letter right 4 bits
+                    SUBQ        #1,D0                       ; Subtract 1 from iteration count
+                    BRA         .ALIGN_RIGHT                ; Go back to start of loop
+                    
+.ALIGN_END:         ; Print out letter in D5                                                                 
                     
                     LEA         HEX_ALPHABET,A1             ; Load hexadecimal alphabet address into A1
                     MULU.W      #2,D5                       ; Multiply D5 by 2 because each letter in the alphabet has itself and 0
@@ -45,6 +69,11 @@ WRITEHEX:           MOVEM.L     D0-D7/A0,-(SP)              ; Save registers
 
                     MOVEM.L     (SP)+,D0-D7/A0              ; Restore registers
                     RTS
+
+
+
+
+
 
 
 

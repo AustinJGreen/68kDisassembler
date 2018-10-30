@@ -1,6 +1,8 @@
 START:  
                 NOP
-                RTS      
+                RTS
+                JSR         START
+                JSR         (A0)      
                 NOT.L       (A3)+
                 NOT.B       -(A0)
                 NOT.B       (A6)
@@ -9,6 +11,7 @@ START:
                 MOVE.B      D0,D1
                 MOVEA.L		A0,A1
                 MOVE.L		D0,D1
+
 
 
 

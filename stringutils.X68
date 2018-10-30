@@ -14,6 +14,62 @@ LEFT_PAREN          DC.B        '(',0
 RIGHT_PAREN         DC.B        ')',0
 DECREMENT           DC.B        '-',0
 INCREMENT           DC.B        '+',0
+ADDRESS_STR         DC.B        '$',0
+HEXDATA_STR         DC.B        '#$',0
+
+*--------------------------------------------------------------------
+* PRINT_STR
+* Prints a string
+*
+* REGISTER USE
+* A0 - address of string to print
+*--------------------------------------------------------------------
+PRINT_STR:          MOVEM.L     D0/A1,-(SP)                    
+                    MOVE.L      A0,A1
+                    MOVE.B      #14,D0
+                    TRAP        #15                    
+                    MOVEM.L     (SP)+,D0/A1
+                    RTS
+                    
+*--------------------------------------------------------------------
+* PRINT_ADDRESS
+* Prints an address. For exmaple, If A0=A000 -> "$A000"
+*
+* REGISTER USE
+* D0 - amount of letters to print. Use 4 for WORD, 8 for LONG
+* A0 - address of string to print
+*--------------------------------------------------------------------
+PRINT_ADDRESS:      MOVEM.L     D0/A0-A1,-(SP)
+                    
+                    MOVEA.L     A0,A1                       ; Save A0 in A1
+                    LEA         ADDRESS_STR,A0
+                    JSR         PRINT_STR
+                    
+                    MOVEA.L     A1,A0                       ; Restore A1 from A0
+                    JSR         WRITEHEX
+                    
+                    MOVEM.L     (SP)+,D0/A0-A1
+                    RTS
+                    
+*--------------------------------------------------------------------
+* PRINT_DATA
+* Prints data. For exmaple, If A0=A000 -> "#$A000"
+*
+* REGISTER USE
+* D0 - amount of letters to print. Use 4 for WORD, 8 for LONG
+* A0 - address of string to print
+*--------------------------------------------------------------------
+PRINT_DATA:         MOVEM.L     D0/A0-A1,-(SP)
+                    
+                    MOVEA.L     A0,A1                       ; Save A0 in A1
+                    LEA         HEXDATA_STR,A0
+                    JSR         PRINT_STR
+                    
+                    MOVEA.L     A1,A0                       ; Restore A1 from A0
+                    JSR         WRITEHEX
+                    
+                    MOVEM.L     (SP)+,D0/A0-A1
+                    RTS
 
 *--------------------------------------------------------------------
 * PRINT_TAB
@@ -145,6 +201,14 @@ PRINT_A_POST:       MOVEM.L     D0-D1/A1,-(SP)              ; Save registers
                     TRAP        #15                         ; Print +
                     MOVEM.L     (SP)+,D0-D1/A1              ; Restore registers
                     RTS                                     ; Return
+
+
+
+
+
+
+
+
 
 
 
