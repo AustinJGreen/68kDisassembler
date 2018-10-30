@@ -7,10 +7,10 @@
 
 					ORG			$1000						; Organize code at 0x1000 (Specification 5)
 				
+					INCLUDE		"binarytree.X68"			; Load Binary tree object
 					INCLUDE		"stringutils.X68"			; Load String Utils
 					INCLUDE		"readhex.X68"				; Load ReadHex Function
-					INCLUDE		"writehex.X68"				; Load WriteHex Function
-					INCLUDE		"binarytree.X68"			; Load Binary tree object
+					INCLUDE		"writehex.X68"				; Load WriteHex Function					
 					INCLUDE		"goto.X68"					; Load Goto function
 					
 					INCLUDE		"opcodes_header.X68"		 ; Load all opcodes, all opcodes should have access to the included files above					
@@ -22,7 +22,6 @@ START:				; Display about
 					
 					; Load information for tree
 					
-					MOVE.L		#$EEEE0000,D0
 					JSR			TREE_INIT					; Initialize binary tree
 					
 					;--------------------------------------------------------------------------
@@ -75,10 +74,12 @@ START:				; Display about
 					
 					MOVE.B		#11,D0
 					MOVE.W		#$FF00,D1					 
-					TRAP		#15							; Clear screen to separate input from disassembled code			 
-					
+					TRAP		#15							; Clear screen to separate input from disassembled code	
+
+					MOVE.L		#0,LINE_NUMBER				; Keep track of line number (ROW) (0-31)		 
+
 READ_START:			; Begin reading at start address
-								   
+
 					CMPA.L		A4,A5
 					BEQ			END							; Go to end if reached end address
 
@@ -104,7 +105,7 @@ READ_START:			; Begin reading at start address
 					; Lookup value in opcode tree
 		
 					MOVE.L		#16,D1						; Set tree to use 16-bits from					  
-					JSR			TREE_LOOKUP					; Looks for opcode handler, stores result in A0
+					JSR			TREE_LOOKUP					; Looks for opcode handler, stores result in A0					
 					
 					; Check if invalid operator (unhandled opcode)
 					
@@ -129,21 +130,29 @@ INVALID_OPCODE:		; Print invalid opcode as DATA $ABCD (Specification 8)
 					
 VALID_OPCODE:		; Print valid opcode
 					
-					JSR			GOTO_ADDR					; Goto A0 found in tree						
-					JSR			PRINT_NEWLINE				; Print newline								  
+					JSR			GOTO_ADDR					; Goto A0 found in tree	
+
+					; TODO: Check if opcode handler was able to complete successfully, if not, set cursor back and goto INVALID_OPCODE					
+					
+					JSR			PRINT_NEWLINE				; Print newline	
+					ADD.L		#1,LINE_NUMBER				; Add 1 to line number
+							  
 					BRA			READ_START					; Go back to start					 
 
 END:				; TODO: prompt the user to disassemble another memory image, or prompt the user to quit (Specification 11)
 
 					SIMHALT									; Halt simulator
+
+LINE_NUMBER			DS.L		1							; 1 long for line number
  
-DATA_STR			DC.B		'DATA',0
 ABOUT_STR			DC.B		'68k Disassembler by Austin Green, Damian Forrester, Jacob Lefeat.',CR,LF,0
 BEGIN_PROMPT		DC.B		'Please enter hexadecimal characters only. (0123456789abcdefABCDEF)',CR,LF,0
 START_ADDR_STR		DC.B		'Starting address : ',0
 END_ADDR_STR		DC.B		'Ending address   : ',0
+DATA_STR			DC.B		'DATA',0
 
 					END			START						; Last line of source
+
 
 
 

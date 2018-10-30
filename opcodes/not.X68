@@ -5,11 +5,12 @@
 * 
 * INPUTS
 * D0 - Opcode data (16-bits)
+* D7 - Console line number
 * A4 - Current machine code pointer
 *
 * REGISTER USE
-* D6 - Holds register value
-* D7 - Register used to hold Opcode data
+* D5 - Holds register value
+* D6 - Register used to hold Opcode data
 *--------------------------------------------------------------------------------------  
 NOT_OUT				DC.B		'NOT.',0
 SIZE_CODES			DC.B		'B',0,'W',0,'L',0
@@ -22,15 +23,15 @@ LOAD_NOT:			MOVE.L		#%01000110,D0
 
 HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 
-					MOVE		D0,D7					 
+					MOVE		D0,D6					 	; D6 holds opcode data
 					LEA			NOT_OUT,A0
 					JSR			PRINT_STR					; Output "NOT."
 					
 					; Next, read size code
 					
-					MOVE.L		D7,D1
+					MOVE.L		D6,D1						; Put opcode data in D1
 					AND.L		#%11000000,D1
-					LSR.L		#6,D1
+					LSR.L		#6,D1						; D1 holds size code
 
 					; Output the size code
 					
@@ -41,19 +42,19 @@ HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 					MOVE.L		#2,D1						; Display 2 bytes (1st byte is letter, 2nd is null terminator)
 					TRAP		#15							; Run Trap 15
 					
-					JSR			PRINT_TAB					; Print a tab
+					JSR			PRINT_OPCODE_TAB			; Print a tab
 					
 					; Read effective address register
 					
-					MOVE.L		D7,D1
+					MOVE.L		D6,D1						; Put opcode data in D1		
 					AND.L		#%111,D1
-					MOVE.L		D1,D6			
+					MOVE.L		D1,D5						; D5 contains ea register
 					
 					; Read effective address mode
 					
-					MOVE.L		D7,D1
+					MOVE.L		D6,D1						; Put opcode data in D1
 					AND.L		#%111000,D1
-					LSR.L		#3,D1
+					LSR.L		#3,D1						; D1 contains ea mode
 					
 					; Go to correct mode
 					
@@ -71,19 +72,19 @@ HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 					
 					BRA			.INVALID
 .DN: 
-					MOVE.L		D6,D0
+					MOVE.L		D5,D0
 					JSR			PRINT_D_REG
 					BRA			.END
 .DIRECTAN:			
-					MOVE.L		D6,D0		
+					MOVE.L		D5,D0		
 					JSR			PRINT_A_DIR
 					BRA			.END
 .POSTINCAN:		 
-					MOVE.L		D6,D0		
+					MOVE.L		D5,D0		
 					JSR			PRINT_A_POST	  
 					BRA			.END
 .PREDECAN:			
-					MOVE.L		D6,D0		
+					MOVE.L		D5,D0		
 					JSR			PRINT_A_PRE 
 					BRA			.END
 .INVALID:
@@ -92,6 +93,9 @@ HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 .END		 
 					MOVEM.L		(SP)+,D0-D7
 					RTS
+
+
+
 
 
 

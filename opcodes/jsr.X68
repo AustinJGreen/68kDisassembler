@@ -24,6 +24,8 @@ HANDLE_JSR:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					LEA			JSR_OUT,A0					; Load "JSR"
 					JSR			PRINT_STR
 					
+					JSR			PRINT_OPCODE_TAB			; Print special opcode tab
+					
 					; Read effective address mode
 					
 					MOVE.L		D0,D7						; Copy over D0 to D7
@@ -49,7 +51,6 @@ HANDLE_JSR:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 
 					MOVE.L		D6,A0
 				 
-					JSR			PRINT_TAB					; Print tab
 					JSR			PRINT_A_DIR					; Print direct address
 					
 					BRA			.END
@@ -68,8 +69,6 @@ HANDLE_JSR:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					
 					MOVE.W		(A4)+,D5
 					
-					JSR			PRINT_TAB					; Print tab
-					
 					MOVE.L		#4,D0
 					MOVE.L		D5,A0
 					JSR			PRINT_ADDRESS				; Print the word part of the address
@@ -79,8 +78,6 @@ HANDLE_JSR:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 .LONG:				; LONG addressing mode, read in long from A4
 				 
 					MOVE.L		(A4)+,D5
-				  
-					JSR			PRINT_TAB					; Print tab
   
 					MOVE.L		#8,D0
 					MOVE.L		D5,A0
@@ -95,6 +92,10 @@ HANDLE_JSR:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 .END:				
 					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
+
+
+
 
 
 

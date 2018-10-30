@@ -83,8 +83,7 @@ PRINT_DATA:			MOVEM.L		D0/A0-A1,-(SP)
 PRINT_TAB:			MOVEM.L		D0/A1,-(SP)					; Save registers			   
 					LEA			TAB_STR,A1					; Load tab string
 					MOVE.B		#14,D0						; Set task 14
-					TRAP		#15							; Run trap 15
-					
+					TRAP		#15							; Run trap 15					
 					TRAP		#15							; print double tab to align better
 					
 					MOVEM.L		(SP)+,D0/A1					; Restore registers
@@ -205,6 +204,7 @@ PRINT_A_POST:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 					TRAP		#15							; Print +
 					MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
 					RTS										; Return
+					
 *--------------------------------------------------------------------
 * PRINT_DIVIDER
 * Prints a comma, used to separate source and destination
@@ -219,6 +219,39 @@ PRINT_DIVIDER:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 					TRAP		#15							; Print ,
 					MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
 					RTS										; Return
+
+*--------------------------------------------------------------------
+* PRINT_OPCODE_TAB
+* Goes to the correct index for a tab after an OPCODE has been printed
+* instead of just printing 4 spaces for a horizontal tab.
+* For example, printing tabs produces the following output:
+* 00000000    MOVE.B    D0,D1
+* 00000002    NOT.B    D1
+* 
+* Which looks unaligned. Using PRINT_OPCODE_TAB puts the cursor at
+* column 24. 8 for the address, 8 for the double tab and 12 for the opcode space.
+*
+* REGISTER USE
+* D0 - Holds task number
+* D1 - Holds row and column position
+* D2 - Holds temporary value of LINE_NUMBER
+*--------------------------------------------------------------------
+PRINT_OPCODE_TAB:	MOVEM.L		D0-D2,-(SP)
+					MOVE.L		#11,D0
+					MOVE.B		#32,D1
+					LSL.W		#8,D1
+					MOVE.L		LINE_NUMBER,D2
+					MOVE.B		D2,D1
+					TRAP		#15
+					MOVEM.L		(SP)+,D0-D2
+					RTS
+					
+
+
+
+
+
+
 
 
 
