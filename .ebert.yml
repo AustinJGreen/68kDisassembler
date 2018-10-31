@@ -54,7 +54,7 @@ engines:
             - "Style"
             - "Bug Risk"
         divorced_label:
-          pattern: ^[A-Z]+:\s+(\r|\n)
+          pattern: (?m)[A-Z\._]+:(\s+(;|\*).+|\s+)(\n|\r)
           annotation: "Make sure all labels have code on the same line. Don't put labels between empty lines."
           path_patterns:
             - "**/*.X68"
