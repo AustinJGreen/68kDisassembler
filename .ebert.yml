@@ -46,7 +46,7 @@ engines:
           categories:
             - "Style"
         label_start:
-          pattern: "\s+(\.|[A-Za-z_\.])+:"
+          pattern: \s+(\.|[A-Za-z_\.])+\:
           annotation: "Make sure all labels start at the beginning of the line."
           path_patterns:
             - "**/*.X68"
@@ -54,14 +54,14 @@ engines:
             - "Style"
             - "Bug Risk"
         divorced_label:
-          pattern: "^[A-Z]+:\s+(\r|\n)"
+          pattern: ^[A-Z]+:\s+(\r|\n)
           annotation: "Make sure all labels have code on the same line. Don't put labels between empty lines."
           path_patterns:
             - "**/*.X68"
           categories:
             - "Bug Risk"
         buggy_move:
-          pattern: "MOVE\.L\s+#(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31),D(0|1|2|3|4|5|6|7)"
+          pattern: MOVE\.L\s+#(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31),D(0|1|2|3|4|5|6|7)
           annotation: "A MOVE.L operation with direct data going into a data register with the direct data being less than 5 bits causes the EASY68k to perform a MOVEQ instead of a MOVE.L"
           path_patterns:
             - "**/testing.X68"
