@@ -3,6 +3,11 @@ engines:
     enabled: true
     config:
       patterns:
+        todo-left:
+          pattern: (TODO|TO-DO)
+          annotation: "TODO left in commit."
+          path_patterns:
+            - "**/*.X68"
         bad-movem:
           pattern: (MOVEM\.(B|W|L)\s+-\(SP\),)|(MOVEM\.(B|W|L)\s+[A-Z0-9\/\-]+,\(SP\)\+)
           annotation: "INVALID MOVEM. Make sure MOVEM has either (SP)+,registers or register,-(SP)"
