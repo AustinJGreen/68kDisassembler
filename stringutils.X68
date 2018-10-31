@@ -311,6 +311,41 @@ PRINT_OPCODE_TAB:	MOVEM.L		D0-D2,-(SP)
 					MOVEM.L		(SP)+,D0-D2
 					RTS
 					
+*--------------------------------------------------------------------
+* WAIT_FOR_ENTER
+* Waits for the enter key to be pressed, then returns
+*
+* REGISTER USE
+* D0 - Holds task number
+* D1 - Holds row and column position
+* D2 - Holds temporary value of LINE_NUMBER
+*--------------------------------------------------------------------					
+WAIT_FOR_ENTER:		MOVEM.L		D0-D2,-(SP)
+					
+					; Turn echo off
+					MOVE.B		#12,D0							; Set task 12
+					MOVE.B		#0,D1							; Set 0 to turn off
+					TRAP		#15								; Run trap 15 task 12
+					
+					; Read key 
+.READ_KEY			MOVE.B		#5,D0
+					TRAP		#15
+					
+					CMPI.B		#$D,D1
+					BEQ			.ENTER_HIT
+					
+					; Enter key was not key, read key again
+					BRA			.READ_KEY
+					
+.ENTER_HIT:			; Turn echo back on
+					MOVE.B		#12,D0							; Set task 12
+					MOVE.B		#1,D1							; Set 1 to turn on				
+					TRAP		#15								; Run trap 15 task 12
+					MOVEM.L		(SP)+,D0-D2
+					RTS
+                    
+					
+
 
 
 
