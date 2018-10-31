@@ -1,3 +1,4 @@
+# Protip: colons break grep, if matching a colon use [:] instead of :
 engines:
   grep:
     enabled: true
@@ -54,7 +55,7 @@ engines:
             - "Style"
             - "Bug Risk"
         divorced_label:
-          pattern: (?m)[A-Z\._]+:(\s+(;|\*).+|\s+)(\n|\r)
+          pattern: [A-Z\._]+:(\s+(;|\*).+|\s+)
           annotation: "Make sure all labels have code on the same line. Don't put labels between empty lines."
           path_patterns:
             - "**/*.X68"
