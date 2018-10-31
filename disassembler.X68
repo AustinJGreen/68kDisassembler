@@ -13,7 +13,7 @@
 					INCLUDE		"writehex.X68"				; Load WriteHex Function					
 					INCLUDE		"goto.X68"					; Load Goto function
 					
-					INCLUDE		"opcodes_header.X68"		 ; Load all opcodes, all opcodes should have access to the included files above					
+					INCLUDE		"opcodes_header.X68"		; Load all opcodes, all opcodes should have access to the included files above					
 					
 START:				; Display about
 					
@@ -38,7 +38,7 @@ START:				; Display about
 					JSR			LOAD_NOP					; Add NOP			  
 					JSR			LOAD_RTS					; Add RTS
 					JSR			LOAD_JSR					; Add JSR
-					JSR			LOAD_ASL_ASR				; Add ASL and ASR
+					JSR			LOAD_ASL_ASR_LSL_LSR		; Add ASL,ASR,LSL,LSR
 					
 					;--------------------------------------------------------------------------
 					; Prompt user for start and end memory address
@@ -135,7 +135,18 @@ VALID_OPCODE:		; Print valid opcode
 					
 					JSR			PRINT_NEWLINE				; Print newline	
 					ADD.L		#1,LINE_NUMBER				; Add 1 to line number
-							  
+					
+					CMPI.L		#30,LINE_NUMBER
+					BEQ			BOTTOM_PAGE
+					BRA			READ_START
+					
+BOTTOM_PAGE:		; We've reached the bottom of the page, display message to press enter
+
+					LEA			ENTER_STR,A0
+					JSR			PRINT_STR
+					
+					SIMHALT ; TEMP TEST
+										  
 					BRA			READ_START					; Go back to start					 
 
 END:				; TODO: prompt the user to disassemble another memory image, or prompt the user to quit (Specification 11)
@@ -149,8 +160,12 @@ BEGIN_PROMPT		DC.B		'Please enter hexadecimal characters only. (0123456789abcdef
 START_ADDR_STR		DC.B		'Starting address : ',0
 END_ADDR_STR		DC.B		'Ending address   : ',0
 DATA_STR			DC.B		'DATA',0
+ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
 
 					END			START						; Last line of source
+
+
+
 
 
 

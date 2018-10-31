@@ -19,11 +19,27 @@ START:
 				ASL.B		#1,D1
 				ASL.B		#2,D1
 				ASR.B		#2,D1
+				ASL.L		#8,D7
 				ASL			(A3)+
 				ASR			-(A6)
 				ASL			(A4)
 				ASL			$7FFF
 				ASR			$A000
+				LSL.W		D5,D3
+				LSL.B		D0,D1
+				LSL.B		D0,D2
+				LSL.B		#1,D1
+				LSL.B		#2,D1
+				LSR.B		#2,D1
+				LSL.L		#8,D7
+				LSL			(A3)+
+				LSR			-(A6)
+				LSL			(A4)
+				LSL			$7FFF
+				LSR			$A000
+
+
+
 
 
 
