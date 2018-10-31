@@ -1,4 +1,12 @@
+styleguide: plataformatec/linters
 engines:
+  fixme:
+    enabled: true
+    config:
+      strings:
+        - TODO
+  remark-lint:
+    enabled: true
   grep:
     enabled: true
     config:
