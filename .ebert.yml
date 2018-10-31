@@ -55,5 +55,6 @@ engines:
           annotation: "Make sure all labels have code on the same line. Don't put labels between empty lines."
           path_patterns:
             - "**/*.X68"
-exclude_paths: []
+exclude_paths:
+- Docs
 
