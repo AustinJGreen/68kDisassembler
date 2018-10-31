@@ -5,7 +5,7 @@ engines:
       patterns:
         todo-left:
           pattern: (TODO|TO-DO)
-          annotation: "TODO left in commit."
+          annotation: "TODO left in code."
           path_patterns:
             - "**/*.X68"
         bad-movem:
@@ -18,6 +18,8 @@ engines:
           annotation: "Use ADDQ for constants 1-8"
           path_patterns:
             - "**/*.X68"
+          categories:
+            - "Performance"
         toobig_sub:
           pattern: SUB\.(B|W|L)\s+#[0-8],
           annotation: "Use SUBQ for constants 1-8"
