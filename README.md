@@ -1,4 +1,5 @@
 # 68k Disassembler
+[![Ebert](https://ebertapp.io/badges/952t17QSexgENbUMPPvdie3m.svg)](https://ebertapp.io/github/ajosg/68kDisassembler)
 Disassembles 68k machine code into readable 68k opcode instructions.
 
 ## Quick Links
