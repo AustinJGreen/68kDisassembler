@@ -23,11 +23,6 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - If writing a function, tell everyone what the function does and what registers you are using.
 - Make sure all your LABELS are UPPERCASE.
 
-## Project Status
-- [X] Setup github
-- [X] Create disassembler and testing files
-- [X] Read memory
-
 ## Op-Codes Supported
 - [X] NOP
 - [ ] MOVE.B
@@ -48,8 +43,8 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - [ ] AND
 - [ ] OR
 - [X] NOT
-- [ ] LSL
-- [ ] LSR
+- [X] LSL
+- [X] LSR
 - [X] ASR
 - [X] ASL
 - [ ] BGT
