@@ -21,37 +21,37 @@ engines:
     config:
       patterns:
         bad-movem:
-          pattern:(MOVEM\.(B|W|L)\s+-\(SP\),)|(MOVEM\.(B|W|L)\s+[A-Z0-9\/\-]+,\(SP\)\+)
+          pattern: (MOVEM\.(B|W|L)\s+-\(SP\),)|(MOVEM\.(B|W|L)\s+[A-Z0-9\/\-]+,\(SP\)\+)
           annotation: "INVALID MOVEM. Make sure MOVEM has either (SP)+,registers or register,-(SP)"
           path_patterns:
             - "**/*.X68"
         toobig_add:
-          pattern:ADD\.(B|W|L)\s+#[0-8],
+          pattern: ADD\.(B|W|L)\s+#[0-8],
           annotation: "Use ADDQ for constants 1-8"
           path_patterns:
             - "**/*.X68"
         toobig_sub:
-          pattern:SUB\.(B|W|L)\s+#[0-8],
+          pattern: SUB\.(B|W|L)\s+#[0-8],
           annotation: "Use SUBQ for constants 1-8"
           path_patterns:
             - "**/*.X68"
         lowercase_label1:
-          pattern:^[A-Z][a-z:]+
+          pattern: ^[A-Z][a-z:]+
           annotation: "Make sure all labels are uppercase."
           path_patterns:
             - "**/*.X68"
         lowercase_label2:
-          pattern:^[a-z:]+
+          pattern: ^[a-z:]+
           annotation: "Make sure all labels are uppercase."
           path_patterns:
             - "**/*.X68"
         label_start:
-          pattern:^[ ]+\w+
+          pattern: ^[ ]+\w+
           annotation: "Make sure all labels start at the beginning of the line."
           path_patterns:
             - "**/*.X68"
         divorced_label:
-          pattern:^[A-Z]+:\s+(\r|\n)
+          pattern: ^[A-Z]+:\s+(\r|\n)
           annotation: "Make sure all labels have code on the same line. Don't put labels between empty lines."
           path_patterns:
             - "**/*.X68"
