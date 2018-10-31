@@ -136,7 +136,7 @@ VALID_OPCODE:		; Print valid opcode
 					JSR			PRINT_NEWLINE				; Print newline	
 					ADD.L		#1,LINE_NUMBER				; Add 1 to line number
 					
-					CMPI.L		#30,LINE_NUMBER
+					CMPI.L		#31,LINE_NUMBER
 					BEQ			BOTTOM_PAGE
 					BRA			READ_START
 					
@@ -144,9 +144,14 @@ BOTTOM_PAGE:		; We've reached the bottom of the page, display message to press e
 
 					LEA			ENTER_STR,A0
 					JSR			PRINT_STR
+					JSR			WAIT_FOR_ENTER				; Wait for enter
 					
-					SIMHALT ; TEMP TEST
-										  
+					MOVE.B		#11,D0
+					MOVE.W		#$FF00,D1					 
+					TRAP		#15							; Clear screen to get rid of old lines of code
+					
+					MOVE.L		#0,LINE_NUMBER				; Reset LINE_NUMBER					
+					  
 					BRA			READ_START					; Go back to start					 
 
 END:				; TODO: prompt the user to disassemble another memory image, or prompt the user to quit (Specification 11)
@@ -163,6 +168,8 @@ DATA_STR			DC.B		'DATA',0
 ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
 
 					END			START						; Last line of source
+
+
 
 
 
