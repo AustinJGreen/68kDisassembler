@@ -46,7 +46,7 @@ engines:
           categories:
             - "Style"
         label_start:
-          pattern: \s+(\.|[A-Za-z_\.])+\:
+          pattern: ^[ ]+\w+
           annotation: "Make sure all labels start at the beginning of the line."
           path_patterns:
             - "**/*.X68"
