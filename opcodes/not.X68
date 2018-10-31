@@ -12,8 +12,8 @@
 * D5 - Holds register value
 * D6 - Register used to hold Opcode data
 *--------------------------------------------------------------------------------------  
-NOT_OUT				DC.B		'NOT.',0
-SIZE_CODES			DC.B		'B',0,'W',0,'L',0
+NOT_OUT				DC.B		'NOT',0
+
 
 LOAD_NOT:			MOVE.L		#%01000110,D0
 					MOVE.L		#8,D1
@@ -35,12 +35,10 @@ HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 
 					; Output the size code
 					
-					LEA			SIZE_CODES,A1				; Load size codes address into A1
-					MULU.W		#2,D1						; Multiply D1 by 3
-					ADD.L		D1,A1						; Add that to the starting address
-					MOVE.L		#1,D0						; Use Task 1
-					MOVE.L		#2,D1						; Display 2 bytes (1st byte is letter, 2nd is null terminator)
-					TRAP		#15							; Run Trap 15
+					MOVE.L		D1,D0						; Put size value in D0
+					MOVE.L		#%010001000,D1				; Put size mask for NOT in D1
+					JSR			PRINT_SIZE
+					MOVE.L		D0,D1						; put D0 back in D1
 					
 					JSR			PRINT_OPCODE_TAB			; Print a tab
 					
@@ -93,6 +91,9 @@ HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 .END		 
 					MOVEM.L		(SP)+,D0-D7
 					RTS
+
+
+
 
 
 

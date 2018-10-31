@@ -16,7 +16,9 @@ DECREMENT			DC.B		'-',0
 INCREMENT			DC.B		'+',0
 DIVIDER			 	DC.B		',',0	
 ADDRESS_STR			DC.B		'$',0
+DECDATA_STR			DC.B		'#',0
 HEXDATA_STR			DC.B		'#$',0
+SIZE_CODES			DC.B		'.B',0,'.W',0,'.L',0,'.$',0
 
 *--------------------------------------------------------------------
 * PRINT_STR
@@ -36,7 +38,7 @@ PRINT_STR:			MOVEM.L		D0/A1,-(SP)
 * PRINT_ADDRESS
 * Prints an address. For exmaple, If A0=A000 -> "$A000"
 *
-* REGISTER USE
+* INPUTS
 * D0 - amount of letters to print. Use 4 for WORD, 8 for LONG
 * A0 - address of string to print
 *--------------------------------------------------------------------
@@ -54,22 +56,37 @@ PRINT_ADDRESS:		MOVEM.L		D0/A0-A1,-(SP)
 					
 *--------------------------------------------------------------------
 * PRINT_DATA
-* Prints data. For exmaple, If A0=A000 -> "#$A000"
+* Prints data. For exmaple, If A0=A000 -> "#$A000". 
+* NOTE: If the data is < 10 then it is printed without the hex symbol.
 *
-* REGISTER USE
+* INPUTS
 * D0 - amount of letters to print. Use 4 for WORD, 8 for LONG
 * A0 - address of string to print
+*
+* REGISTER USE
+* D1 - Used for testing size
 *--------------------------------------------------------------------
-PRINT_DATA:			MOVEM.L		D0/A0-A1,-(SP)
+PRINT_DATA:			MOVEM.L		D0-D1/A0-A1,-(SP)
 					
-					MOVEA.L		A0,A1						; Save A0 in A1
-					LEA			HEXDATA_STR,A0
+					MOVE.L		A0,D1						; Move value to D1 to be tested
+					CMPI.L		#10,D1						; Check if first letter is < 10 (same written in dec as hex)
+					BLT			.PRINT_DEC
+					BRA			.PRINT_HEX
+					
+.PRINT_DEC:			MOVEA.L		A0,A1						; Save A0 in A1
+					LEA			DECDATA_STR,A0				; Write '#'
 					JSR			PRINT_STR
+					BRA			.WRITE_DATA
 					
-					MOVEA.L		A1,A0						; Restore A1 from A0
+.PRINT_HEX:			MOVEA.L		A0,A1						; Save A0 in A1
+					LEA			HEXDATA_STR,A0				' Write '#$'
+					JSR			PRINT_STR
+					BRA			.WRITE_DATA
+					
+.WRITE_DATA:		MOVEA.L		A1,A0						; Restore A1 from A0
 					JSR			WRITEHEX
 					
-					MOVEM.L		(SP)+,D0/A0-A1
+					MOVEM.L		(SP)+,D0-D1/A0-A1
 					RTS
 
 *--------------------------------------------------------------------
@@ -103,6 +120,54 @@ PRINT_NEWLINE:		MOVEM.L		D0/A1,-(SP)					; Save registers
 					TRAP		#15							; Run trap 15
 					MOVEM.L		(SP)+,D0/A1					; Restore registers
 					RTS										; Return
+
+*--------------------------------------------------------------------
+* PRINT_SIZE
+* Prints the size operand. 
+*
+* INPUTS
+* D0 - Size code value
+* D1 - Size mask. Because different opcodes have different meanings for
+* sizes. Put mask for a BYTE in the first 3-bits, mask for WORD in the
+* 3-bits, and mask for LONG in the last 3-bits. For example:
+* If 000 = BYTE, 001 = WORD, 010 = LONG, then put #%010001000 in D1.
+*
+* REGISTER USE
+* D2 - Holds mask data
+* D3 - Holds iteration
+* A1 - Holds output string size
+*--------------------------------------------------------------------
+PRINT_SIZE:			MOVEM.L		D0-D3/A1,-(SP)
+					
+					; Test size code value with mask
+					MOVE.L		#0,D3						; Initialize iteration at 0
+					
+.TEST_START:		CMPI		#3,D3
+					BEQ			.TEST_END					; Exit if on 3th iteration
+
+					MOVE.L		D1,D2
+					AND.L		#%111,D2					
+					
+					CMP.W		D2,D0						; Compare D2 with value
+					BEQ			.TEST_END
+					
+					; Not the right mask, shift mask right and increase iteration
+					LSR.W		#3,D1
+					ADDQ		#1,D3
+					BRA			.TEST_START
+					
+.TEST_END:			; The mask was matched, use iteration to pull correct str from
+					; memory
+
+					LEA			SIZE_CODES,A1				; Load size codes address into A1
+					MULU.W		#3,D3						; Multiply D1 by 3
+					ADD.L		D3,A1						; Add that to the starting address
+					MOVE.L		#1,D0						; Use Task 1
+					MOVE.L		#3,D1						; Display 3 bytes for .,(size),0
+					TRAP		#15							; Run Trap 15						
+						
+					MOVEM.L		(SP)+,D0-D3/A1
+					RTS
 
 *--------------------------------------------------------------------
 * PRINT_D_REG
@@ -246,6 +311,11 @@ PRINT_OPCODE_TAB:	MOVEM.L		D0-D2,-(SP)
 					MOVEM.L		(SP)+,D0-D2
 					RTS
 					
+
+
+
+
+
 
 
 
