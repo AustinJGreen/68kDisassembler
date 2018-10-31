@@ -8,11 +8,15 @@ engines:
           annotation: "TODO left in code."
           path_patterns:
             - "**/*.X68"
+          categories:
+            - "Bug Risk"
         bad-movem:
           pattern: (MOVEM\.(B|W|L)\s+-\(SP\),)|(MOVEM\.(B|W|L)\s+[A-Z0-9\/\-]+,\(SP\)\+)
           annotation: "INVALID MOVEM. Make sure MOVEM has either (SP)+,registers or register,-(SP)"
           path_patterns:
             - "**/*.X68"
+          categories:
+            - "Bug Risk"
         toobig_add:
           pattern: ADD\.(B|W|L)\s+#[0-8],
           annotation: "Use ADDQ for constants 1-8"
@@ -25,23 +29,34 @@ engines:
           annotation: "Use SUBQ for constants 1-8"
           path_patterns:
             - "**/*.X68"
+          categories:
+            - "Performance"
         lowercase_label1:
           pattern: ^[A-Z][a-z:]+
           annotation: "Make sure all labels are uppercase."
           path_patterns:
             - "**/*.X68"
+          categories:
+            - "Style"
         lowercase_label2:
           pattern: ^[a-z:]+
           annotation: "Make sure all labels are uppercase."
           path_patterns:
             - "**/*.X68"
+          categories:
+            - "Style"
         label_start:
           pattern: ^[ ]+\w+
           annotation: "Make sure all labels start at the beginning of the line."
           path_patterns:
             - "**/*.X68"
+          categories:
+            - "Style"
+            - "Bug Risk"
         divorced_label:
           pattern: ^[A-Z]+:\s+(\r|\n)
           annotation: "Make sure all labels have code on the same line. Don't put labels between empty lines."
           path_patterns:
             - "**/*.X68"
+          categories:
+            - "Bug Risk"
