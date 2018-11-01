@@ -6,17 +6,21 @@
 *-----------------------------------------------------------
 
   	INCLUDE		"opcodes\nop.X68"		   
-	INCLUDE		"opcodes\rts.X68"			
-	INCLUDE		"opcodes\moveb.X68"
+	INCLUDE		"opcodes\rts.X68"
 	INCLUDE		"opcodes\addq.X68"
 	INCLUDE		"opcodes\or.X68"
 	INCLUDE		"opcodes\sub.X68"
 	INCLUDE		"opcodes\moveq.X68"
 	INCLUDE		"opcodes\not.X68"
-	INCLUDE		"opcodes\movelmoveal.X68"
+	INCLUDE		"opcodes\movemovea.X68"
 	INCLUDE		"opcodes\jsr.X68"
 	INCLUDE		"opcodes\aslasrlsllsr.X68"
 	INCLUDE		"opcodes\bra.X68"
+	INCLUDE		"opcodes\lea.X68"
+
+
+
+
 
 
 

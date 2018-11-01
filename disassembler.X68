@@ -29,9 +29,8 @@ START:				; Display about
 					;--------------------------------------------------------------------------
 												  
 					JSR		 	LOAD_ADDQ					; Add ADDQ
-					JSR		 	LOAD_MOVE_B				 	; Add MOVE.B
 					JSR		 	LOAD_MOVEQ					; Add MOVEQ
-					JSR			LOAD_MOVE_MOVEA_L			; Load MOVE.L and MOVEA.L
+					JSR			LOAD_MOVE_MOVEA				; Add MOVE and MOVEA
 					JSR		 	LOAD_OR					 	; Add OR
 					JSR			LOAD_SUB					; Add SUB
 					JSR			LOAD_NOT					; Add NOT
@@ -39,7 +38,8 @@ START:				; Display about
 					JSR			LOAD_RTS					; Add RTS
 					JSR			LOAD_JSR					; Add JSR
 					JSR			LOAD_ASL_ASR_LSL_LSR		; Add ASL,ASR,LSL,LSR
-					JSR			LOAD_BRA
+					JSR			LOAD_BRA					; Add BRA
+					JSR			LOAD_LEA					; Add LEA
 					
 					;--------------------------------------------------------------------------
 					; Prompt user for start and end memory address
@@ -169,6 +169,8 @@ DATA_STR			DC.B		'DATA',0
 ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
 
 					END			START						; Last line of source
+
+
 
 
 
