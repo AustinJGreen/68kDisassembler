@@ -121,7 +121,7 @@ engines:
             - "Performance"
         moveq_danger:
           pattern: ^\s+MOVEQ
-          annotation: "Use MOVE and EXT for readability. MOVEQ automatically sign-extends bytes, so it can be confusing."
+          annotation: "MOVEQ sign extends bytes and is dangerous. If you intended to sign-extend, use MOVE and EXT instead for readability."
           path_patterns:
             - "**/*.X68"
           categories:
