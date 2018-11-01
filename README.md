@@ -53,4 +53,4 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - [ ] BEQ
 - [X] JSR
 - [X] RTS
-- [ ] BRA
+- [X] BRA

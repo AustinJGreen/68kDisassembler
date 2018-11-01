@@ -17,7 +17,11 @@ LOAD_OR:			MOVE.L		#%1000,D0
 
 HANDLE_OR:			LEA			OR_OUT,A0
 					JSR			PRINT_STR
+					
+					
+					
 					RTS
+
 
 
 

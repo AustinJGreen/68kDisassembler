@@ -39,6 +39,7 @@ START:				; Display about
 					JSR			LOAD_RTS					; Add RTS
 					JSR			LOAD_JSR					; Add JSR
 					JSR			LOAD_ASL_ASR_LSL_LSR		; Add ASL,ASR,LSL,LSR
+					JSR			LOAD_BRA
 					
 					;--------------------------------------------------------------------------
 					; Prompt user for start and end memory address
@@ -168,6 +169,7 @@ DATA_STR			DC.B		'DATA',0
 ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
 
 					END			START						; Last line of source
+
 
 
 
