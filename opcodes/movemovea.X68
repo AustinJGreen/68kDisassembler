@@ -49,13 +49,13 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 						MOVE.L 	D0,D7
 						
 						* read size
-						AND.L	#$3000,D0
+						ANDI.L	#$3000,D0
 						ROL.W	#4,D0
 						MOVE.L	D0,SIZE_CODE
 						
 						* read source register
 						MOVE.L	D7,D0
-   						AND.L	#%111,D0
+   						ANDI.L	#%111,D0
    						MOVE.L	D0,SRC_REG
    						
    						* shift opcode right
@@ -63,7 +63,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
    						
    						* read source address mode
    						MOVE.L	D7,D0
-   						AND.L	#%111,D0
+   						ANDI.L	#%111,D0
 						MOVE.L	D0,SRC_MODE
 						
 						* shift opcode right
@@ -71,7 +71,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 						
 						* read destination address mode
 						MOVE.L	D7,D0
-   						AND.L	#%111,D0
+   						ANDI.L	#%111,D0
    						MOVE.L	D0,DST_MODE
    						
 						* shift opcode right
@@ -79,7 +79,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 												
 						* read destination register
 						MOVE.L	D7,D0
-						AND.L	#%111,D0
+						ANDI.L	#%111,D0
 						MOVE.L	D0,DST_REG			
 
 *-----------------------------------------------------------
@@ -137,22 +137,22 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 						MOVE.L	DST_MODE,D1
 						MOVE.L	DST_REG,D0
 						
-						CMP.W	#%000,D1			* Dn
+						CMPI.W	#%000,D1			* Dn
 						BEQ		.D_D_ADDR
 						
-						CMP.W	#%001,D1			* An
+						CMPI.W	#%001,D1			* An
 						BEQ		.D_A_ADDR
 						
-						CMP.W	#%010,D1			* (An)
+						CMPI.W	#%010,D1			* (An)
 						BEQ		.D_A_DIR_ADDR
 						
-						CMP.W	#%011,D1			* (An)+
+						CMPI.W	#%011,D1			* (An)+
 						BEQ		.D_A_INC_ADDR
 
-						CMP.W	#%100,D1			* -(An)
+						CMPI.W	#%100,D1			* -(An)
 						BEQ		.D_A_DEC_ADDR
 						
-						CMP.W	#%111,D1			* (XXX).W/(XXX).L/#<data>
+						CMPI.W	#%111,D1			* (XXX).W/(XXX).L/#<data>
 						BEQ		.D_DATA_ADDR							
 *-----------------------------------------------------------	
 					
@@ -219,6 +219,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 					JSR		PRINT_ADDRESS					
 					BRA		.END_SOURCE			* (XXX).W/(XXX).L/#<data>	
 *-----------------------------------------------------------
+
 
 
 

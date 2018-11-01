@@ -83,7 +83,7 @@ engines:
           categories:
             - "Compatibility"
         missing_size:
-          pattern: (EXG|MOVE|MOVEM|CLR|SUB|ADD|CMP|CMPI|MULU|DIVU|MULS|DIVS|AND|OR|EOR)\s
+          pattern: ^\s+(EXG|MOVE|MOVEM|CLR|SUB|ADD|CMP|CMPI|MULU|DIVU|MULS|DIVS|AND|OR|EOR)\s
           annotation: "Op-Code is missing a size operator."
           path_patterns:
             - "**/*.X68"

@@ -56,7 +56,7 @@ GET_MASK:
 					
 .START:				; Now start shifting the bits over using the mask
 
-					CMPI		#1,D0						; Loop until D0 is <= 1
+					CMPI.L		#1,D0						; Loop until D0 is <= 1
 					BLE			.END						; Goto end when D0 is <= 1
 
 					LSR.W		#1,D1						; Shift mask right 1
@@ -79,7 +79,7 @@ GET_MASK:
 *
 *--------------------------------------------------------------------
 ALIGN_RIGHT:
-					CMPI		#0,D0
+					CMPI.L		#0,D0
 					BEQ			.END					; Test if 0, we don't need to align and to avoid the infinite loop
 .START:
 					BTST		#0,D0					; Test the 0th bit
@@ -126,14 +126,14 @@ TREE_LOOKUP:
 					MOVE.L		D3,D0						; Set D3 as input to GET_MASK				
 					JSR			GET_MASK
 					
-					EXG			D1,D4						; Swap MASK from D1 into D4 and old D1 from D4 back into D1
+					EXG.L		D1,D4						; Swap MASK from D1 into D4 and old D1 from D4 back into D1
 					MOVE.L		D2,D0						; Restore D0 from D2 (our placeholder)
 					
 					AND.L		D4,D7						; Get current bit and store in D7
 					
-					EXG			D7,D0						; Swap D7 with D0					
+					EXG.L		D7,D0						; Swap D7 with D0					
 					JSR			ALIGN_RIGHT					; Align D0 to right				
-					EXG			D7,D0						; Swap D7 with D0
+					EXG.L		D7,D0						; Swap D7 with D0
 
 					ADDQ		#1,D3						; Add 1 to bit iterator
 					
@@ -147,7 +147,7 @@ TREE_LOOKUP:
 					
 					; We still have more bits to iterate, continue processing
 					
-					ADD.L		#$4,A6						; Skip over value
+					ADDI.L		#$4,A6						; Skip over value
 					MOVE.L		(A6),D6						; Store node pointer in D6
 					
 					; Top 32-bits in D6 are for the value, lower 32-bits are for pointer
@@ -168,7 +168,7 @@ TREE_LOOKUP:
 					
 .END_TREE:			; We've reached the end of the tree, go back to last value and read that value
 
-					SUB.L		#$4,A6						; We are currently pointing to ptr, subtract 0x4 to get last value
+					SUBI.L		#$4,A6						; We are currently pointing to ptr, subtract 0x4 to get last value
 					MOVE.L		(A6),A0
 					BRA			.END
 					
@@ -214,14 +214,14 @@ TREE_ADD_NODE:
 					MOVE.L		D3,D0						; Set D3 as input to GET_MASK					
 					JSR			GET_MASK
 					
-					EXG			D1,D4						; Swap MASK from D1 into D4 and old D1 from D4 back into D1
+					EXG.L		D1,D4						; Swap MASK from D1 into D4 and old D1 from D4 back into D1
 					MOVE.L		D2,D0						; Restore D0 from D2 (our placeholder)
 					
 					AND.L		D4,D7						; Get current bit and store in D7
 					
-					EXG			D7,D0						; Swap D7 with D0					
+					EXG.L		D7,D0						; Swap D7 with D0					
 					JSR			ALIGN_RIGHT					; Align D0 to right				
-					EXG			D7,D0						; Swap D7 with D0
+					EXG.L		D7,D0						; Swap D7 with D0
 
 					ADDQ		#1,D3						; Add 1 to bit iterator
 					
@@ -265,6 +265,7 @@ TREE_ADD_NODE:
 					MOVEM.L		(SP)+,A5-A6/D2-D7			; Restore registers
 					RTS
 					
+
 
 
 
