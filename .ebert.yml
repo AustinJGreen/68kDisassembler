@@ -61,14 +61,6 @@ engines:
             - "**/*.X68"
           categories:
             - "Bug Risk"
-        buggy_move:
-          pattern: MOVE\.L\s+#(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31),D(0|1|2|3|4|5|6|7)
-          annotation: "A MOVE.L operation with direct data going into a data register with the direct data being less than 5 bits causes the EASY68k to perform a MOVEQ instead of a MOVE.L"
-          path_patterns:
-            - "**/*.X68"
-          categories:
-            - "Compatibility"
-            - "Performance"
         incorrect_move:
           pattern: MOVE\.(W|L)\s+A(0|1|2|3|4|5|6),A(0|1|2|3|4|5|6)
           annotation: "If you're moving an address register to another address register, use MOVEA"
@@ -120,3 +112,18 @@ engines:
           categories:
             - "Style"
             - "Compatibility"
+        clr_optimization:
+          pattern: CLR\.L\s+D(0|1|2|3|4|5|6|7)(\s)+
+          annotation: "Use MOVE.L #0,Dn to clear a data register instead of CLR.L"
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Performance"
+        moveq_danger:
+          pattern: ^\s+MOVEQ
+          annotation: "MOVEQ sign extends bytes and is dangerous. If you intended to sign-extend, use MOVE and EXT instead for readability."
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Bug Risk"
+            - "Style"

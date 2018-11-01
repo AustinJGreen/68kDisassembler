@@ -87,7 +87,7 @@ READ_START:			; Begin reading at start address
 
 					; Read from binary stream										  
 					
-					CLR.L		D0							; Clear all 32-bits so handler files are looking at a clean 16-bits just to be safe
+					MOVE.L		#0,D0						; Clear all 32-bits so handler files are looking at a clean 16-bits just to be safe
 					MOVE.W		(A4)+,D0					; Read 16-bits at a time
 
 					CMPI.W		#$FFFF,D0					; Check if data is 0xFFFF (at the end of loaded program memory)
@@ -97,8 +97,8 @@ READ_START:			; Begin reading at start address
 				   
 					EXG.L		D1,D0						; Swap D1 with D0 temporarily for writehex
 					
-					MOVE.L		A4,A0
-					MOVEQ.L		#8,D0
+					MOVEA.L		A4,A0
+					MOVE.L		#8,D0
 					JSR			WRITEHEX		
 					JSR			PRINT_TAB					; Print tab
 					
@@ -124,7 +124,7 @@ INVALID_OPCODE:		; Print invalid opcode as DATA $ABCD (Specification 8)
 					; Print unreadable data in D0
 					
 					MOVE.L		D0,A0
-					MOVEQ.L		#4,D0
+					MOVE.L		#4,D0
 					JSR			PRINT_ADDRESS					 
 					JSR			PRINT_NEWLINE
 					
@@ -137,7 +137,7 @@ VALID_OPCODE:		; Print valid opcode
 					; TODO: Check if opcode handler was able to complete successfully, if not, set cursor back and goto INVALID_OPCODE					
 					
 					JSR			PRINT_NEWLINE				; Print newline	
-					ADD.L		#1,LINE_NUMBER				; Add 1 to line number
+					ADDI.L		#1,LINE_NUMBER				; Add 1 to line number
 					
 					CMPI.L		#31,LINE_NUMBER
 					BEQ			BOTTOM_PAGE
@@ -171,6 +171,8 @@ DATA_STR			DC.B		'DATA',0
 ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
 
 					END			START						; Last line of source
+
+
 
 
 

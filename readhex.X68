@@ -15,8 +15,8 @@
 READHEX:
 					MOVEM.L		D0-D1/A1,-(SP)				; Save all registers
 					
-					CLR.L		D1							; Clear D1 so length is put into cleared register
-					CLR.L		D2							; Clear D2 for output
+					MOVE.L		#0,D1						; Clear D1 so length is put into cleared register
+					MOVE.L		#0,D2						; Clear D2 for output
 					
 					MOVE.W		#$F000,A1					; Set A1 to 0xF000, far away from ORG at 0x1000
 					MOVE.L		#2,D0						; Task 2 for TRAP 15: Read a string
@@ -71,6 +71,9 @@ READHEX:
 .READHEX_END:
 					MOVEM.L		(SP)+,D0-D1/A1				; Restore all registers
 					RTS										; Return
+
+
+
 
 
 

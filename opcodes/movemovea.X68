@@ -14,26 +14,26 @@
 MOVE_OUT			DC.B	'MOVE',0
 MOVEA_OUT			DC.B	'MOVEA',0
 
-SIZE_CODE			DS.L	1
-SRC_REG				DS.L	1
-SRC_MODE			DS.L	1
-DST_REG				DS.L	1
-DST_MODE			DS.L	1
+MOVE_SIZE_CODE		DS.L	1
+MOVE_SRC_REG		DS.L	1
+MOVE_SRC_MODE		DS.L	1
+MOVE_DST_REG		DS.L	1
+MOVE_DST_MODE		DS.L	1
 
 *-----------------------------------------------------------
 *	Load MOVE/MOVEA OpCode into Tree
 *-----------------------------------------------------------
 LOAD_MOVE_MOVEA:	MOVEQ	#4,D1							; All nodes below have 4-bits
 
-					MOVEQ.L	#%0001,D0						; Add MOVE.B
+					MOVE.L	#%0001,D0						; Add MOVE.B
 					LEA		HANDLE_MOVE_MOVEA,A0
 					JSR		TREE_ADD_NODE
 					
-					MOVEQ.L	#%0011,D0						; Add MOVE.W
+					MOVE.L	#%0011,D0						; Add MOVE.W
 					LEA		HANDLE_MOVE_MOVEA,A0
 					JSR		TREE_ADD_NODE
 					
-					MOVEQ.L	#%0010,D0						; Add MOVE.L
+					MOVE.L	#%0010,D0						; Add MOVE.L
 					LEA		HANDLE_MOVE_MOVEA,A0
 					JSR		TREE_ADD_NODE
 					
@@ -50,12 +50,12 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 						* read size
 						ANDI.L	#$3000,D0
 						ROL.W	#4,D0
-						MOVE.L	D0,SIZE_CODE
+						MOVE.L	D0,MOVE_SIZE_CODE
 						
 						* read source register
 						MOVE.L	D7,D0
    						ANDI.L	#%111,D0
-   						MOVE.L	D0,SRC_REG
+   						MOVE.L	D0,MOVE_SRC_REG
    						
    						* shift opcode right
 						LSR.L	#3,D7
@@ -63,7 +63,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
    						* read source address mode
    						MOVE.L	D7,D0
    						ANDI.L	#%111,D0
-						MOVE.L	D0,SRC_MODE
+						MOVE.L	D0,MOVE_SRC_MODE
 						
 						* shift opcode right
 						LSR.L	#3,D7
@@ -71,7 +71,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 						* read destination address mode
 						MOVE.L	D7,D0
    						ANDI.L	#%111,D0
-   						MOVE.L	D0,DST_MODE
+   						MOVE.L	D0,MOVE_DST_MODE
    						
 						* shift opcode right
 						LSR.L	#3,D7
@@ -79,13 +79,13 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 						* read destination register
 						MOVE.L	D7,D0
 						ANDI.L	#%111,D0
-						MOVE.L	D0,DST_REG			
+						MOVE.L	D0,MOVE_DST_REG			
 
 *-----------------------------------------------------------
 *	DISPLAY OpCode
 *-----------------------------------------------------------
 						* if destination is An then this is MOVEA
-						MOVE.L	DST_MODE,D0
+						MOVE.L	MOVE_DST_MODE,D0
 						CMPI.W	#%001,D0	
 						BEQ		.DISP_MOVEA
 
@@ -98,7 +98,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 						TRAP	#15
 						
 						; Output the size code					
-						MOVE.L		SIZE_CODE,D0				; Put size value in D0
+						MOVE.L		MOVE_SIZE_CODE,D0				; Put size value in D0
 						MOVE.L		#%010011001,D1				; Put size mask for MOVE in D1
 						JSR			PRINT_SIZE
 						
@@ -107,8 +107,8 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 *-----------------------------------------------------------
 *	DISPLAY Source
 *-----------------------------------------------------------
-						MOVE.L	SRC_MODE,D1
-						MOVE.L	SRC_REG,D0
+						MOVE.L	MOVE_SRC_MODE,D1
+						MOVE.L	MOVE_SRC_REG,D0
 						
 						CMPI.W	#%000,D1			* Dn
 						BEQ		.S_D_ADDR
@@ -133,8 +133,8 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 *	DISPLAY Destination
 *-----------------------------------------------------------
 						* display destination
-						MOVE.L	DST_MODE,D1
-						MOVE.L	DST_REG,D0
+						MOVE.L	MOVE_DST_MODE,D1
+						MOVE.L	MOVE_DST_REG,D0
 						
 						CMPI.W	#%000,D1			* Dn
 						BEQ		.D_D_ADDR
@@ -176,7 +176,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 .D_A_DEC_ADDR:		JSR		PRINT_A_PRE		* -(An)			
 					BRA		.END_DEST
 *-----------------------------------------------------------
-.D_DATA_ADDR:		CMPI	#%000,D0
+.D_DATA_ADDR:		CMPI.B	#%000,D0
 					BEQ		.D_DATA_WORD
 					BRA		.D_DATA_LONG
 .D_DATA_WORD:		MOVE.W	(A4)+,A0
@@ -206,7 +206,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 .S_A_DEC_ADDR:		JSR		PRINT_A_PRE		* -(An)			
 					BRA		.END_SOURCE
 *-----------------------------------------------------------
-.S_DATA_ADDR:		CMPI	#%000,D0
+.S_DATA_ADDR:		CMPI.B	#%000,D0
 					BEQ		.S_DATA_WORD
 					BRA		.S_DATA_LONG
 .S_DATA_WORD:		MOVE.W	(A4)+,A0
@@ -218,6 +218,10 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 					JSR		PRINT_ADDRESS					
 					BRA		.END_SOURCE			* (XXX).W/(XXX).L/#<data>	
 *-----------------------------------------------------------
+
+
+
+
 
 
 

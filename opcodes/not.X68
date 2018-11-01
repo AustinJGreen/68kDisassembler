@@ -15,8 +15,8 @@
 NOT_OUT				DC.B		'NOT',0
 
 
-LOAD_NOT:			MOVEQ.L		#%01000110,D0
-					MOVEQ.L		#8,D1
+LOAD_NOT:			MOVE.L		#%01000110,D0
+					MOVE.L		#8,D1
 					LEA			HANDLE_NOT,A0
 					JSR			TREE_ADD_NODE
 					RTS
@@ -36,7 +36,7 @@ HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 					; Output the size code
 					
 					MOVE.L		D1,D0						; Put size value in D0
-					MOVEQ.L		#%010001000,D1				; Put size mask for NOT in D1
+					MOVE.L		#%010001000,D1				; Put size mask for NOT in D1
 					JSR			PRINT_SIZE
 					MOVE.L		D0,D1						; put D0 back in D1
 					
@@ -56,16 +56,16 @@ HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 					
 					; Go to correct mode
 					
-					CMPI		#%000,D1
+					CMPI.B		#%000,D1
 					BEQ			.DN
 					
-					CMPI		#%010,D1
+					CMPI.B		#%010,D1
 					BEQ			.DIRECTAN
 					
-					CMPI		#%011,D1
+					CMPI.B		#%011,D1
 					BEQ			.POSTINCAN
 					
-					CMPI		#%100,D1
+					CMPI.B		#%100,D1
 					BEQ			.PREDECAN
 					
 					BRA			.INVALID
@@ -91,6 +91,7 @@ HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 .END		 
 					MOVEM.L		(SP)+,D0-D7
 					RTS
+
 
 
 

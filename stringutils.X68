@@ -146,9 +146,9 @@ PRINT_SIZE:			MOVEM.L		D0-D3/A1,-(SP)
 					BEQ			.TEST_END					; Exit if on 3th iteration
 
 					MOVE.L		D1,D2
-					AND.L		#%111,D2					
+					ANDI.B		#%111,D2					
 					
-					CMP.W		D2,D0						; Compare D2 with value
+					CMP.B		D2,D0						; Compare D2 with value
 					BEQ			.TEST_END
 					
 					; Not the right mask, shift mask right and increase iteration
@@ -162,7 +162,7 @@ PRINT_SIZE:			MOVEM.L		D0-D3/A1,-(SP)
 					LEA			SIZE_CODES,A1				; Load size codes address into A1
 					MULU.W		#3,D3						; Multiply D1 by 3
 					ADD.L		D3,A1						; Add that to the starting address
-					MOVE.L		#1,D0						; Use Task 1
+					MOVE.B		#1,D0						; Use Task 1
 					MOVE.L		#3,D1						; Display 3 bytes for .,(size),0
 					TRAP		#15							; Run Trap 15						
 						
@@ -345,6 +345,11 @@ WAIT_FOR_ENTER:		MOVEM.L		D0-D2,-(SP)
 					RTS
                     
 					
+
+
+
+
+
 
 
 

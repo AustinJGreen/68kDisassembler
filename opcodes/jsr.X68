@@ -14,7 +14,7 @@
 JSR_OUT				DC.B		'JSR',0
 
 LOAD_JSR:			MOVE.L		#%0100111010,D0
-					MOVEQ.L		#10,D1
+					MOVE.L		#10,D1
 					LEA			HANDLE_JSR,A0
 					JSR			TREE_ADD_NODE
 					RTS
@@ -39,10 +39,10 @@ HANDLE_JSR:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					
 					; Go to correct address mode handler
 					
-					CMPI		#%010,D0
+					CMPI.B		#%010,D0
 					BEQ			.DIRECTAN					; Goto direct addressing mode
 					
-					CMPI		#%111,D0
+					CMPI.B		#%111,D0
 					BEQ			.DATA						; Goto data to figure out if WORD or LONG addressing mode
 					
 					BRA			.INVALID
@@ -69,7 +69,7 @@ HANDLE_JSR:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					
 					MOVE.W		(A4)+,D5
 					
-					MOVEQ.L		#4,D0
+					MOVE.L		#4,D0
 					MOVE.L		D5,A0
 					JSR			PRINT_ADDRESS				; Print the word part of the address
 					
@@ -79,7 +79,7 @@ HANDLE_JSR:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 				 
 					MOVE.L		(A4)+,D5
   
-					MOVEQ.L		#8,D0
+					MOVE.L		#8,D0
 					MOVE.L		D5,A0
 					JSR			PRINT_ADDRESS				; Print the full address
 					
@@ -92,6 +92,7 @@ HANDLE_JSR:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 .END:				
 					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
 
 
 
