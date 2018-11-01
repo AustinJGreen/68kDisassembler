@@ -140,13 +140,13 @@ PRINT_NEWLINE:		MOVEM.L		D0/A1,-(SP)					; Save registers
 PRINT_SIZE:			MOVEM.L		D0-D3/A1,-(SP)
 					
 					; Test size code value with mask
-					MOVE.L		#0,D3						; Initialize iteration at 0
+					MOVEQ.L		#0,D3						; Initialize iteration at 0
 					
 .TEST_START:		CMPI		#3,D3
 					BEQ			.TEST_END					; Exit if on 3th iteration
 
 					MOVE.L		D1,D2
-					AND.L		#%111,D2					
+					ANDI.B		#%111,D2					
 					
 					CMP.W		D2,D0						; Compare D2 with value
 					BEQ			.TEST_END
@@ -302,7 +302,7 @@ PRINT_DIVIDER:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 * D2 - Holds temporary value of LINE_NUMBER
 *--------------------------------------------------------------------
 PRINT_OPCODE_TAB:	MOVEM.L		D0-D2,-(SP)
-					MOVE.L		#11,D0
+					MOVEQ.L		#11,D0
 					MOVE.B		#32,D1
 					LSL.W		#8,D1
 					MOVE.L		LINE_NUMBER,D2
@@ -345,6 +345,7 @@ WAIT_FOR_ENTER:		MOVEM.L		D0-D2,-(SP)
 					RTS
                     
 					
+
 
 
 

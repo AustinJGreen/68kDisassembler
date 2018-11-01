@@ -120,3 +120,10 @@ engines:
           categories:
             - "Style"
             - "Compatibility"
+        clr_optimization:
+          pattern: CLR\.L\s+D(0|1|2|3|4|5|6|7)(\s)+
+          annotation: "Use MOVEQ.L #0,Dn to clear a data register instead of CLR.L"
+          path_patterns:
+            - "opcodes/*.X68"
+          categories:
+            - "Performance"

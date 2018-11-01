@@ -106,7 +106,7 @@ READ_START:			; Begin reading at start address
 					
 					; Lookup value in opcode tree
 		
-					MOVE.L		#16,D1						; Set tree to use 16-bits from					  
+					MOVEQ.L		#16,D1						; Set tree to use 16-bits from					  
 					JSR			TREE_LOOKUP					; Looks for opcode handler, stores result in A0					
 					
 					; Check if invalid operator (unhandled opcode)

@@ -19,7 +19,7 @@ HEX_ALPHABET:		DC.B		'0',0,'1',0,'2',0,'3',0,'4',0,'5',0,'6',0,'7',0,'8',0,'9',0
 WRITEHEX:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					
 					MOVE.L		A0,D7
-					MOVE.L		#0,D6
+					MOVEQ.L		#0,D6
 					
 					; Calculate the mask
 					
@@ -56,8 +56,8 @@ WRITEHEX:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					LEA			HEX_ALPHABET,A1				; Load hexadecimal alphabet address into A1
 					MULU.W		#2,D5						; Multiply D5 by 2 because each letter in the alphabet has itself and 0
 					ADD.L		D5,A1						; Add that to the starting address
-					MOVE.L		#1,D0						; Use Task 1
-					MOVE.L		#2,D1						; Display 2 bytes (1st byte is letter, 2nd is null terminator)
+					MOVEQ.L		#1,D0						; Use Task 1
+					MOVEQ.L		#2,D1						; Display 2 bytes (1st byte is letter, 2nd is null terminator)
 					TRAP		#15							; Run Trap 15
 					
 					LSL.L		#4,D7						; Shift buffer left 4-bits (hexadecimal char)
@@ -69,6 +69,7 @@ WRITEHEX:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 
 					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
 
 
 

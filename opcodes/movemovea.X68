@@ -176,15 +176,15 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 .D_A_DEC_ADDR:		JSR		PRINT_A_PRE		* -(An)			
 					BRA		.END_DEST
 *-----------------------------------------------------------
-.D_DATA_ADDR:		CMPI	#%000,D0
+.D_DATA_ADDR:		CMPI.B	#%000,D0
 					BEQ		.D_DATA_WORD
 					BRA		.D_DATA_LONG
 .D_DATA_WORD:		MOVE.W	(A4)+,A0
-					MOVE.L	#4,D0
+					MOVEQ.L	#4,D0
 					JSR		PRINT_ADDRESS
 					BRA		.END_DEST			* (XXX).W/(XXX).L/#<data>
 .D_DATA_LONG:		MOVE.L	(A4)+,A0
-					MOVE.L	#8,D0
+					MOVEQ.L	#8,D0
 					JSR		PRINT_ADDRESS					
 					BRA		.END_DEST			* (XXX).W/(XXX).L/#<data>	
 *-----------------------------------------------------------	
@@ -206,18 +206,19 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 .S_A_DEC_ADDR:		JSR		PRINT_A_PRE		* -(An)			
 					BRA		.END_SOURCE
 *-----------------------------------------------------------
-.S_DATA_ADDR:		CMPI	#%000,D0
+.S_DATA_ADDR:		CMPI.B	#%000,D0
 					BEQ		.S_DATA_WORD
 					BRA		.S_DATA_LONG
 .S_DATA_WORD:		MOVE.W	(A4)+,A0
-					MOVE.L	#4,D0
+					MOVEQ.L	#4,D0
 					JSR		PRINT_ADDRESS
 					BRA		.END_SOURCE			* (XXX).W/(XXX).L/#<data>
 .S_DATA_LONG:		MOVE.L	(A4)+,A0
-					MOVE.L	#8,D0
+					MOVEQ.L	#8,D0
 					JSR		PRINT_ADDRESS					
 					BRA		.END_SOURCE			* (XXX).W/(XXX).L/#<data>	
 *-----------------------------------------------------------
+
 
 
 
