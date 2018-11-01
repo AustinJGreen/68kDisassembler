@@ -9,8 +9,8 @@
 *-------------------------------------------------------------------------------------- 
 OR_OUT				DC.B		'OR',0
 
-LOAD_OR:			MOVE.L		#%1000,D0
-					MOVE.L		#4,D1					 
+LOAD_OR:			MOVEQ.L		#%1000,D0
+					MOVEQ.L		#4,D1					 
 					LEA			HANDLE_OR,A0							  
 					JSR			TREE_ADD_NODE
 					RTS
@@ -21,6 +21,7 @@ HANDLE_OR:			LEA			OR_OUT,A0
 					
 					
 					RTS
+
 
 
 

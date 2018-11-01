@@ -9,8 +9,8 @@
 *-------------------------------------------------------------------------------------- 
 SUB_OUT				DC.B		'SUB',0
 
-LOAD_SUB:			MOVE.L		#%1001,D0
-					MOVE.L		#4,D1					 
+LOAD_SUB:			MOVEQ.L		#%1001,D0
+					MOVEQ.L		#4,D1					 
 					LEA			HANDLE_SUB,A0							   
 					JSR			TREE_ADD_NODE
 					RTS
@@ -18,6 +18,7 @@ LOAD_SUB:			MOVE.L		#%1001,D0
 HANDLE_SUB:			LEA			SUB_OUT,A0
 					JSR			PRINT_STR
 					RTS
+
 
 
 

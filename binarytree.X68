@@ -41,7 +41,7 @@ GET_MASK:
 					MOVE.L		D0,D2						; Move original value of D0 in D2
 					MOVE.L		D1,D3						; Move original value of D1 in D3
 					
-					MOVE.L		#1,D1						; Initialize mask with 1
+					MOVEQ.L		#1,D1						; Initialize mask with 1
 					SUBQ		#1,D3						; Subtract 1 from the amount of bits needed to be shifted, since we intialized with 1
 					
 .MASK_START:		; Shift until 1 is at nth bit for the n-bit system
@@ -114,7 +114,7 @@ TREE_LOOKUP:
 												
 					MOVE.L		TREE_ADDRESS,A6				; Move tree head address to A6
 					
-					MOVE.L		#1,D3
+					MOVEQ.L		#1,D3
 					
 .READ_START:		; Start reading bits from node (16-bits)		
 					
@@ -202,7 +202,7 @@ TREE_ADD_NODE:
 												
 					MOVE.L		TREE_ADDRESS,A6				; Move tree head address to A6
 					
-					MOVE.L		#1,D3
+					MOVEQ.L		#1,D3
 					
 .READ_START:		; Start reading bits from node (16-bits)		
 					
@@ -265,6 +265,7 @@ TREE_ADD_NODE:
 					MOVEM.L		(SP)+,A5-A6/D2-D7			; Restore registers
 					RTS
 					
+
 
 
 

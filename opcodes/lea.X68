@@ -13,38 +13,33 @@
 *--------------------------------------------------------------------------------------  
 LEA_OUT				DC.B		'LEA',0
 
-LOAD_LEA:			MOVE.L		#%0100000111,D0				; Add for A0 / (xxx).W
-					MOVE.L		#10,D1
+LOAD_LEA:			MOVEQ.L		#10,D1						; All nodes below have 10 bits
+					
+					MOVE.L		#%0100000111,D0				; Add for A0 / (xxx).W
 					LEA			HANDLE_LEA,A0
 					JSR			TREE_ADD_NODE
 					
 					MOVE.L		#%0100001111,D0				; Add for A1 / (xxx).L
-					MOVE.L		#10,D1
 					LEA			HANDLE_LEA,A0
 					JSR			TREE_ADD_NODE
 					
 					MOVE.L		#%0100010111,D0				; Add for A2
-					MOVE.L		#10,D1
 					LEA			HANDLE_LEA,A0
 					JSR			TREE_ADD_NODE
 					
 					MOVE.L		#%0100011111,D0				; Add for A3
-					MOVE.L		#10,D1
 					LEA			HANDLE_LEA,A0
 					JSR			TREE_ADD_NODE
 					
 					MOVE.L		#%0100100111,D0				; Add for A4
-					MOVE.L		#10,D1
 					LEA			HANDLE_LEA,A0
 					JSR			TREE_ADD_NODE
 					
 					MOVE.L		#%0100101111,D0				; Add for A5
-					MOVE.L		#10,D1
 					LEA			HANDLE_LEA,A0
 					JSR			TREE_ADD_NODE
 					
 					MOVE.L		#%0100110111,D0				; Add for A6
-					MOVE.L		#10,D1
 					LEA			HANDLE_LEA,A0
 					JSR			TREE_ADD_NODE
 					
@@ -57,6 +52,7 @@ HANDLE_LEA:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 .END:				
 					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
 
 
 

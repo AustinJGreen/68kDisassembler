@@ -10,7 +10,7 @@
 MOVEQ_OUT			DC.B		'MOVEQ',0
 
 LOAD_MOVEQ:			MOVE.L		#%0111,D0
-					MOVE.L		#4,D1					 
+					MOVEQ.L		#4,D1					 
 					LEA			HANDLE_MOVEQ,A0								 
 					JSR			TREE_ADD_NODE
 					RTS
@@ -18,6 +18,7 @@ LOAD_MOVEQ:			MOVE.L		#%0111,D0
 HANDLE_MOVEQ:		LEA			MOVEQ_OUT,A0
 					JSR			PRINT_STR
 					RTS
+
 
 
 
