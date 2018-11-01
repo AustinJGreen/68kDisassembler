@@ -44,9 +44,9 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - [X] LSR
 - [X] ASR
 - [X] ASL
-- [ ] BGT
-- [ ] BLE
-- [ ] BEQ
+- [X] BGT
+- [X] BLE
+- [X] BEQ
 - [X] JSR
 - [X] RTS
 - [X] BRA

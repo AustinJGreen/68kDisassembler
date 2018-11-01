@@ -15,11 +15,11 @@
 	INCLUDE		"opcodes\movemovea.X68"
 	INCLUDE		"opcodes\jsr.X68"
 	INCLUDE		"opcodes\aslasrlsllsr.X68"
-	INCLUDE		"opcodes\bra.X68"
 	INCLUDE		"opcodes\lea.X68"
-
-
-
+	INCLUDE		"opcodes\bra.X68"
+	INCLUDE		"opcodes\beq.X68"
+	INCLUDE		"opcodes\ble.X68"
+	INCLUDE		"opcodes\bgt.X68"
 
 
 
