@@ -15,11 +15,11 @@
 READHEX:
 					MOVEM.L		D0-D1/A1,-(SP)				; Save all registers
 					
-					CLR.L		D1							; Clear D1 so length is put into cleared register
-					CLR.L		D2							; Clear D2 for output
+					MOVE.L		#0,D1						; Clear D1 so length is put into cleared register
+					MOVE.L		#0,D2						; Clear D2 for output
 					
 					MOVE.W		#$F000,A1					; Set A1 to 0xF000, far away from ORG at 0x1000
-					MOVEQ.L		#2,D0						; Task 2 for TRAP 15: Read a string
+					MOVE.L		#2,D0						; Task 2 for TRAP 15: Read a string
 					TRAP		#15							; Read the string and put it at A1, length is in D1
 					MOVE.L		D1,D0						; Move string length stored in D1 to D0
 .LOOP_S:	 
@@ -71,6 +71,8 @@ READHEX:
 .READHEX_END:
 					MOVEM.L		(SP)+,D0-D1/A1				; Restore all registers
 					RTS										; Return
+
+
 
 
 

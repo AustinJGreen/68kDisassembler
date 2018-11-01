@@ -13,7 +13,7 @@
 *--------------------------------------------------------------------------------------  
 LEA_OUT				DC.B		'LEA',0
 
-LOAD_LEA:			MOVEQ.L		#10,D1						; All nodes below have 10 bits
+LOAD_LEA:			MOVE.L		#10,D1						; All nodes below have 10 bits
 					
 					MOVE.L		#%0100000111,D0				; Add for A0 / (xxx).W
 					LEA			HANDLE_LEA,A0
@@ -52,6 +52,7 @@ HANDLE_LEA:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 .END:				
 					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
 
 
 

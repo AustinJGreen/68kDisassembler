@@ -9,8 +9,8 @@
 *--------------------------------------------------------------------------------------
 ADDQ_OUT		DC.B		'ADDQ',0
 
-LOAD_ADDQ:		MOVEQ.L		#%0101,D0
-				MOVEQ.L		#4,D1					 
+LOAD_ADDQ:		MOVE.L		#%0101,D0
+				MOVE.L		#4,D1					 
 				LEA			HANDLE_ADDQ,A0								
 				JSR			TREE_ADD_NODE
 				RTS
@@ -18,6 +18,7 @@ LOAD_ADDQ:		MOVEQ.L		#%0101,D0
 HANDLE_ADDQ:	LEA			ADDQ_OUT,A0
 				JSR			PRINT_STR
 				RTS
+
 
 
 

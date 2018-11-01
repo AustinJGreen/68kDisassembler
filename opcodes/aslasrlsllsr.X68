@@ -16,9 +16,11 @@ ASL_OUT						DC.B		'ASL',0
 ASR_OUT						DC.B		'ASR',0
 LSL_OUT						DC.B		'LSL',0
 LSR_OUT						DC.B		'LSR',0
+
+ASL_SIZE_CODE				DS.L	1
   
-LOAD_ASL_ASR_LSL_LSR:		MOVEQ.L		#%1110,D0
-							MOVEQ.L		#4,D1
+LOAD_ASL_ASR_LSL_LSR:		MOVE.L		#%1110,D0
+							MOVE.L		#4,D1
 							LEA			HANDLE_ASL_ASR_LSL_LSR,A0
 							JSR			TREE_ADD_NODE
 							RTS
@@ -54,10 +56,10 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 							MOVE.L		D0,D7				; Transfer D0 to D7 so D0 can be used as a parameter
 					
 							; Read size field
-
 							MOVE.L		D7,D6
 							AND.L		#%11000000,D6
 							LSR.L		#6,D6
+							MOVE.L		D6,ASL_SIZE_CODE
 					
 							; Check for a size of 11, which means ASL,ASR,LSL,LSR is shifting just an <ea>
 							CMPI.B		#%11,D6
@@ -84,8 +86,8 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 							BRA			.READ_SIZE
 					
 .READ_SIZE					; Print size field				
-							MOVE.L		D6,D0
-							MOVEQ.L		#%010001000,D1
+							MOVE.L		ASL_SIZE_CODE,D0
+							MOVE.L		#%010001000,D1
 							JSR			PRINT_SIZE			; Print size field					
 							JSR			PRINT_OPCODE_TAB	; Print tab
 
@@ -106,7 +108,7 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 							ADDQ		#8,D5				; D5 is 0, meaning shift count is 8
 .CONTINUE:					
 							MOVE.L		D5,A0
-							MOVEQ.L		#1,D0
+							MOVE.L		#1,D0
 							JSR			PRINT_DATA
 							BRA			.DEST				; Continue with destination
 					
@@ -171,12 +173,12 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 							BRA			.LONG
 					
 .WORD:						MOVE.W		(A4)+,A0
-							MOVEQ.L		#4,D0
+							MOVE.L		#4,D0
 							JSR			PRINT_ADDRESS
 							BRA			.END
 					
 .LONG:						MOVE.L		(A4)+,A0
-							MOVEQ.L		#8,D0
+							MOVE.L		#8,D0
 							JSR			PRINT_ADDRESS
 							BRA			.END
 
@@ -195,6 +197,9 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 	
 .END						MOVEM.L		(SP)+,D0-D7
 							RTS
+
+
+
 
 
 
