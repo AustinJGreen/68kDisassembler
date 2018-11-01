@@ -16,7 +16,6 @@
 					INCLUDE		"opcodes_header.X68"		; Load all opcodes, all opcodes should have access to the included files above					
 					
 START:				; Display about
-					
 					LEA			ABOUT_STR,A0				; Load about string
 					JSR			PRINT_STR					; Print about information
 					
@@ -28,18 +27,21 @@ START:				; Display about
 					; Add OpCodes to tree
 					;--------------------------------------------------------------------------
 												  
-					JSR		 	LOAD_ADDQ					; Add ADDQ
-					JSR		 	LOAD_MOVEQ					; Add MOVEQ
-					JSR			LOAD_MOVE_MOVEA				; Add MOVE and MOVEA
-					JSR		 	LOAD_OR					 	; Add OR
-					JSR			LOAD_SUB					; Add SUB
-					JSR			LOAD_NOT					; Add NOT
-					JSR			LOAD_NOP					; Add NOP			  
-					JSR			LOAD_RTS					; Add RTS
-					JSR			LOAD_JSR					; Add JSR
-					JSR			LOAD_ASL_ASR_LSL_LSR		; Add ASL,ASR,LSL,LSR
-					JSR			LOAD_BRA					; Add BRA
-					JSR			LOAD_LEA					; Add LEA
+					JSR		 	LOAD_ADDQ
+					JSR		 	LOAD_MOVEQ
+					JSR			LOAD_MOVE_MOVEA
+					JSR		 	LOAD_OR
+					JSR			LOAD_SUB
+					JSR			LOAD_NOT
+					JSR			LOAD_NOP		  
+					JSR			LOAD_RTS
+					JSR			LOAD_JSR
+					JSR			LOAD_ASL_ASR_LSL_LSR
+					JSR			LOAD_LEA
+					JSR			LOAD_BRA				
+					JSR			LOAD_BEQ
+					JSR			LOAD_BLE
+					JSR			LOAD_BGT
 					
 					;--------------------------------------------------------------------------
 					; Prompt user for start and end memory address
@@ -93,14 +95,14 @@ READ_START:			; Begin reading at start address
 					
 					; Write current memory location (Specification 10) 
 				   
-					EXG			D1,D0						; Swap D1 with D0 temporarily for writehex
+					EXG.L		D1,D0						; Swap D1 with D0 temporarily for writehex
 					
 					MOVE.L		A4,A0
-					MOVE.L		#8,D0
+					MOVEQ.L		#8,D0
 					JSR			WRITEHEX		
 					JSR			PRINT_TAB					; Print tab
 					
-					EXG			D1,D0						; Swap back D1 and D0 so D0 can be used in tree lookup
+					EXG.L		D1,D0						; Swap back D1 and D0 so D0 can be used in tree lookup
 					
 					; Lookup value in opcode tree
 		
@@ -122,7 +124,7 @@ INVALID_OPCODE:		; Print invalid opcode as DATA $ABCD (Specification 8)
 					; Print unreadable data in D0
 					
 					MOVE.L		D0,A0
-					MOVE.L		#4,D0
+					MOVEQ.L		#4,D0
 					JSR			PRINT_ADDRESS					 
 					JSR			PRINT_NEWLINE
 					
@@ -169,6 +171,7 @@ DATA_STR			DC.B		'DATA',0
 ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
 
 					END			START						; Last line of source
+
 
 
 

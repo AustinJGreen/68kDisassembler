@@ -1,7 +1,7 @@
 *--------------------------------------------------------------------------------------
-* Title			: BRA Handler function
-* Description	: Handles the BRA opcode, outputs the full disassembled instruction
-* Manual Page # : 159
+* Title			: BGT Handler function
+* Description	: Handles the BGT opcode, outputs the full disassembled instruction
+* Manual Page # : 129
 * 
 * INPUTS
 * D0 - Opcode data (16-bits)
@@ -11,16 +11,16 @@
 * D6 - Holds register value
 * D7 - Register used to hold Opcode data
 *--------------------------------------------------------------------------------------  
-BRA_OUT				DC.B		'BRA',0
+BGT_OUT				DC.B		'BGT',0
 
-LOAD_BRA:			MOVEQ.L		#%01100000,D0
+LOAD_BGT:			MOVE.L		#%01101110,D0
 					MOVEQ.L		#8,D1
-					LEA			HANDLE_BRA,A0
+					LEA			HANDLE_BGT,A0
 					JSR			TREE_ADD_NODE
 					RTS
 
-HANDLE_BRA:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
-					LEA			BRA_OUT,A0
+HANDLE_BGT:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
+					LEA			BGT_OUT,A0
 					JSR			PRINT_STR
 
 					JSR			PRINT_OPCODE_TAB
@@ -33,6 +33,8 @@ HANDLE_BRA:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 .END:				
 					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
+
 
 
 

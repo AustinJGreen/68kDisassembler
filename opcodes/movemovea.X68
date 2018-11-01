@@ -23,18 +23,17 @@ DST_MODE			DS.L	1
 *-----------------------------------------------------------
 *	Load MOVE/MOVEA OpCode into Tree
 *-----------------------------------------------------------
-LOAD_MOVE_MOVEA:	MOVE.L	#%0001,D0						; Add MOVE.B
-					MOVE.L	#4,D1
+LOAD_MOVE_MOVEA:	MOVEQ	#4,D1							; All nodes below have 4-bits
+
+					MOVEQ.L	#%0001,D0						; Add MOVE.B
 					LEA		HANDLE_MOVE_MOVEA,A0
 					JSR		TREE_ADD_NODE
 					
-					MOVE.L	#%0011,D0						; Add MOVE.W
-					MOVE.L	#4,D1
+					MOVEQ.L	#%0011,D0						; Add MOVE.W
 					LEA		HANDLE_MOVE_MOVEA,A0
 					JSR		TREE_ADD_NODE
 					
-					MOVE.L	#%0010,D0						; Add MOVE.L
-					MOVE.L	#4,D1
+					MOVEQ.L	#%0010,D0						; Add MOVE.L
 					LEA		HANDLE_MOVE_MOVEA,A0
 					JSR		TREE_ADD_NODE
 					
@@ -219,6 +218,8 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 					JSR		PRINT_ADDRESS					
 					BRA		.END_SOURCE			* (XXX).W/(XXX).L/#<data>	
 *-----------------------------------------------------------
+
+
 
 
 

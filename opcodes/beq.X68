@@ -1,7 +1,7 @@
 *--------------------------------------------------------------------------------------
-* Title			: BRA Handler function
-* Description	: Handles the BRA opcode, outputs the full disassembled instruction
-* Manual Page # : 159
+* Title			: BEQ Handler function
+* Description	: Handles the BEQ opcode, outputs the full disassembled instruction
+* Manual Page # : 129
 * 
 * INPUTS
 * D0 - Opcode data (16-bits)
@@ -11,16 +11,16 @@
 * D6 - Holds register value
 * D7 - Register used to hold Opcode data
 *--------------------------------------------------------------------------------------  
-BRA_OUT				DC.B		'BRA',0
+BEQ_OUT				DC.B		'BEQ',0
 
-LOAD_BRA:			MOVEQ.L		#%01100000,D0
+LOAD_BEQ:			MOVE.L		#%01100111,D0
 					MOVEQ.L		#8,D1
-					LEA			HANDLE_BRA,A0
+					LEA			HANDLE_BEQ,A0
 					JSR			TREE_ADD_NODE
 					RTS
 
-HANDLE_BRA:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
-					LEA			BRA_OUT,A0
+HANDLE_BEQ:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
+					LEA			BEQ_OUT,A0
 					JSR			PRINT_STR
 
 					JSR			PRINT_OPCODE_TAB

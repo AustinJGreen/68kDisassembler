@@ -10,7 +10,7 @@
 NOP_OUT				DC.B		'NOP',0
 
 LOAD_NOP:			MOVE.L		#%0100111001110001,D0
-					MOVE.L		#16,D1					  
+					MOVEQ.L		#16,D1					  
 					LEA			HANDLE_NOP,A0							   
 					JSR			TREE_ADD_NODE
 					RTS
@@ -18,6 +18,10 @@ LOAD_NOP:			MOVE.L		#%0100111001110001,D0
 HANDLE_NOP:			LEA			NOP_OUT,A0
 					JSR			PRINT_STR
 					RTS
+
+
+
+
 
 
 
