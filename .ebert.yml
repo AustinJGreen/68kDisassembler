@@ -96,3 +96,26 @@ engines:
             - "**/*.X68"
           categories:
             - "Security"
+        invalid_adest:
+          pattern: A7
+          annotation: "A7 is the stack pointer. Use another address register."
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Bug Risk"
+        wrong_extension:
+          pattern: INCLUDE.+\.x68
+          annotation: "68k Files use the X68 file extension not x68"
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Style"
+            - "Compatibility"
+        end_directive:
+          pattern: \s+END\s+[A-Za-z]+
+          annotation: "Don't use the END directive in included files."
+          path_patterns:
+            - "opcodes/*.X68"
+          categories:
+            - "Style"
+            - "Compatibility"
