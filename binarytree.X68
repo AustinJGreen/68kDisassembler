@@ -147,7 +147,7 @@ TREE_LOOKUP:
 					
 					; We still have more bits to iterate, continue processing
 					
-					ADDI.L		#$4,A6						; Skip over value
+					ADD.L		#$4,A6						; Skip over value
 					MOVE.L		(A6),D6						; Store node pointer in D6
 					
 					; Top 32-bits in D6 are for the value, lower 32-bits are for pointer
@@ -168,7 +168,7 @@ TREE_LOOKUP:
 					
 .END_TREE:			; We've reached the end of the tree, go back to last value and read that value
 
-					SUBI.L		#$4,A6						; We are currently pointing to ptr, subtract 0x4 to get last value
+					SUB.L		#$4,A6						; We are currently pointing to ptr, subtract 0x4 to get last value
 					MOVE.L		(A6),A0
 					BRA			.END
 					
@@ -265,6 +265,7 @@ TREE_ADD_NODE:
 					MOVEM.L		(SP)+,A5-A6/D2-D7			; Restore registers
 					RTS
 					
+
 
 
 

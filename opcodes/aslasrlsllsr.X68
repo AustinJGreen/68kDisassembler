@@ -60,7 +60,7 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 							LSR.L		#6,D6
 					
 							; Check for a size of 11, which means ASL,ASR,LSL,LSR is shifting just an <ea>
-							CMPI.L		#%11,D6
+							CMPI.B		#%11,D6
 							BEQ			.EA_MODE
 							
 							; We have a size code, but first read opcode bit							
@@ -68,10 +68,10 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 							AND.L		#%11000,D6
 							LSR.L		#3,D6
 							
-							CMPI		#%00,D6				; Check if arithmetic shift
+							CMPI.B		#%00,D6				; Check if arithmetic shift
 							BEQ			.A_SIZE
 							
-							CMPI		#%01,D6				; Check if logical shift
+							CMPI.B		#%01,D6				; Check if logical shift
 							BEQ			.L_SIZE
 							
 							; Opcode bit is invalid or supported
@@ -153,20 +153,20 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 							AND.L		#%111000,D6
 							LSR.L		#3,D6
 					
-							CMPI		#%111,D6
+							CMPI.B		#%111,D6
 							BEQ			.ABSOLUTE
 					
-							CMPI		#%010,D6
+							CMPI.B		#%010,D6
 							BEQ			.DIRECT
 					
-							CMPI		#%011,D6
+							CMPI.B		#%011,D6
 							BEQ			.POST
 					
-							CMPI		#%100,D6
+							CMPI.B		#%100,D6
 							BEQ			.PRE
 					
 					
-.ABSOLUTE:					CMPI		#%000,D0
+.ABSOLUTE:					CMPI.B		#%000,D0
 							BEQ			.WORD
 							BRA			.LONG
 					
@@ -195,6 +195,7 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 	
 .END						MOVEM.L		(SP)+,D0-D7
 							RTS
+
 
 
 

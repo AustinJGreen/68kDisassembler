@@ -76,7 +76,7 @@ engines:
           categories:
             - "Compatibility"
         incorrect_version:
-          pattern: (AND|CMP|SUB|ADD)\.(B|W|L)\s+#($|%)?[0-9]+,
+          pattern: (AND|CMP|SUB|ADD|EOR|OR)\.(B|W|L)\s+#($|%)?[0-9]+,
           annotation: "If the source is data, use the immediate opcode instead of the regular version."
           path_patterns:
             - "**/*.X68"
