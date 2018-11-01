@@ -13,8 +13,8 @@
 *--------------------------------------------------------------------------------------  
 BRA_OUT				DC.B		'BRA',0
 
-LOAD_BRA:			MOVE.L		#%01100000,D0
-					MOVE.L		#8,D1
+LOAD_BRA:			MOVEQ.L		#%01100000,D0
+					MOVEQ.L		#8,D1
 					LEA			HANDLE_BRA,A0
 					JSR			TREE_ADD_NODE
 					RTS
@@ -28,11 +28,13 @@ HANDLE_BRA:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					; Read word of displacement
 
 					MOVEA.W		(A4)+,A0
-					MOVE.L		#4,D0
+					MOVEQ.L		#4,D0
 					JSR			PRINT_ADDRESS					
 .END:				
 					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
+
 
 
 

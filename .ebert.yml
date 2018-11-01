@@ -68,6 +68,7 @@ engines:
             - "**/*.X68"
           categories:
             - "Compatibility"
+            - "Performance"
         incorrect_move:
           pattern: MOVE\.(W|L)\s+A(0|1|2|3|4|5|6),A(0|1|2|3|4|5|6)
           annotation: "If you're moving an address register to another address register, use MOVEA"

@@ -98,7 +98,7 @@ READ_START:			; Begin reading at start address
 					EXG.L		D1,D0						; Swap D1 with D0 temporarily for writehex
 					
 					MOVE.L		A4,A0
-					MOVE.L		#8,D0
+					MOVEQ.L		#8,D0
 					JSR			WRITEHEX		
 					JSR			PRINT_TAB					; Print tab
 					
@@ -124,7 +124,7 @@ INVALID_OPCODE:		; Print invalid opcode as DATA $ABCD (Specification 8)
 					; Print unreadable data in D0
 					
 					MOVE.L		D0,A0
-					MOVE.L		#4,D0
+					MOVEQ.L		#4,D0
 					JSR			PRINT_ADDRESS					 
 					JSR			PRINT_NEWLINE
 					
@@ -171,6 +171,7 @@ DATA_STR			DC.B		'DATA',0
 ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
 
 					END			START						; Last line of source
+
 
 
 

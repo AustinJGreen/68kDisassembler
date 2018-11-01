@@ -14,7 +14,7 @@
 BLE_OUT				DC.B		'BLE',0
 
 LOAD_BLE:			MOVE.L		#%01101111,D0
-					MOVE.L		#8,D1
+					MOVEQ.L		#8,D1
 					LEA			HANDLE_BLE,A0
 					JSR			TREE_ADD_NODE
 					RTS
@@ -28,11 +28,12 @@ HANDLE_BLE:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					; Read word of displacement
 
 					MOVEA.W		(A4)+,A0
-					MOVE.L		#4,D0
+					MOVEQ.L		#4,D0
 					JSR			PRINT_ADDRESS					
 .END:				
 					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
 
 
 
