@@ -87,7 +87,7 @@ READ_START:			; Begin reading at start address
 
 					; Read from binary stream										  
 					
-					MOVEQ.L		#0,D0						; Clear all 32-bits so handler files are looking at a clean 16-bits just to be safe
+					MOVE.L		#0,D0						; Clear all 32-bits so handler files are looking at a clean 16-bits just to be safe
 					MOVE.W		(A4)+,D0					; Read 16-bits at a time
 
 					CMPI.W		#$FFFF,D0					; Check if data is 0xFFFF (at the end of loaded program memory)
@@ -98,7 +98,7 @@ READ_START:			; Begin reading at start address
 					EXG.L		D1,D0						; Swap D1 with D0 temporarily for writehex
 					
 					MOVEA.L		A4,A0
-					MOVEQ.L		#8,D0
+					MOVE.L		#8,D0
 					JSR			WRITEHEX		
 					JSR			PRINT_TAB					; Print tab
 					
@@ -106,7 +106,7 @@ READ_START:			; Begin reading at start address
 					
 					; Lookup value in opcode tree
 		
-					MOVEQ.L		#16,D1						; Set tree to use 16-bits from					  
+					MOVE.L		#16,D1						; Set tree to use 16-bits from					  
 					JSR			TREE_LOOKUP					; Looks for opcode handler, stores result in A0					
 					
 					; Check if invalid operator (unhandled opcode)
@@ -124,7 +124,7 @@ INVALID_OPCODE:		; Print invalid opcode as DATA $ABCD (Specification 8)
 					; Print unreadable data in D0
 					
 					MOVE.L		D0,A0
-					MOVEQ.L		#4,D0
+					MOVE.L		#4,D0
 					JSR			PRINT_ADDRESS					 
 					JSR			PRINT_NEWLINE
 					

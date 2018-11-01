@@ -120,7 +120,7 @@ engines:
           categories:
             - "Performance"
         moveq_danger:
-          pattern: MOVEQ
+          pattern: ^\s+MOVEQ
           annotation: "Use MOVE and EXT for readability. MOVEQ automatically sign-extends bytes, so it can be confusing."
           path_patterns:
             - "**/*.X68"
