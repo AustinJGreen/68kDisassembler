@@ -16,7 +16,6 @@
 					INCLUDE		"opcodes_header.X68"		; Load all opcodes, all opcodes should have access to the included files above					
 					
 START:				; Display about
-					ADDI		#78,D0
 					LEA			ABOUT_STR,A0				; Load about string
 					JSR			PRINT_STR					; Print about information
 					

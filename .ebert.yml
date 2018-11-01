@@ -19,14 +19,14 @@ engines:
           categories:
             - "Bug Risk"
         toobig_add:
-          pattern: ADD\.(B|W|L)\s+#[0-8],
+          pattern: ADD\.(B|W|L)\s+#[1-8],(\(|\-|\+){0,2}(D|A)(0|1|2|3|4|5|6|7)(\)|\-|\+){0,2}
           annotation: "Use ADDQ for constants 1-8"
           path_patterns:
             - "**/*.X68"
           categories:
             - "Performance"
         toobig_sub:
-          pattern: SUB\.(B|W|L)\s+#[0-8],
+          pattern: SUB\.(B|W|L)\s+#[1-8],(\(|\-|\+){0,2}(D|A)(0|1|2|3|4|5|6|7)(\)|\-|\+){0,2}
           annotation: "Use SUBQ for constants 1-8"
           path_patterns:
             - "**/*.X68"
