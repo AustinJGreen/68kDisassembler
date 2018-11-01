@@ -75,10 +75,24 @@ engines:
             - "**/*.X68"
           categories:
             - "Compatibility"
-        incorrect_cmp:
-          pattern: CMP\.(B|W|L)\s+#($|%)?[0-9]+,
-          annotation: "If you're comparing with literal number, use CMPI"
+        incorrect_version:
+          pattern: (AND|CMP|SUB|ADD)\.(B|W|L)\s+#($|%)?[0-9]+,
+          annotation: "If the source is data, use the immediate opcode instead of the regular version."
           path_patterns:
             - "**/*.X68"
           categories:
             - "Compatibility"
+        missing_size:
+          pattern: (EXG|MOVE|MOVEM|CLR|SUB|ADD|CMP|CMPI|MULU|DIVU|MULS|DIVS|AND|OR|EOR)\s
+          annotation: "Op-Code is missing a size operator."
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Bug Risk"
+        invalid_trap:
+          pattern: TRAP\s+#(?!15)
+          annotation: "Not allowed to use any trap function other than #15"
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Security"
