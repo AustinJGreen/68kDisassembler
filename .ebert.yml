@@ -65,6 +65,57 @@ engines:
           pattern: MOVE\.L\s+#(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31),D(0|1|2|3|4|5|6|7)
           annotation: "A MOVE.L operation with direct data going into a data register with the direct data being less than 5 bits causes the EASY68k to perform a MOVEQ instead of a MOVE.L"
           path_patterns:
-            - "**/testing.X68"
+            - "**/*.X68"
           categories:
+            - "Compatibility"
+        incorrect_move:
+          pattern: MOVE\.(W|L)\s+A(0|1|2|3|4|5|6),A(0|1|2|3|4|5|6)
+          annotation: "If you're moving an address register to another address register, use MOVEA"
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Compatibility"
+        incorrect_version:
+          pattern: (AND|CMP|SUB|ADD)\.(B|W|L)\s+#($|%)?[0-9]+,
+          annotation: "If the source is data, use the immediate opcode instead of the regular version."
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Compatibility"
+        missing_size:
+          pattern: (EXG|MOVE|MOVEM|CLR|SUB|ADD|CMP|CMPI|MULU|DIVU|MULS|DIVS|AND|OR|EOR)\s
+          annotation: "Op-Code is missing a size operator."
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Bug Risk"
+        invalid_trap:
+          pattern: TRAP\s+#(?!15)
+          annotation: "Not allowed to use any trap function other than #15"
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Security"
+        invalid_adest:
+          pattern: A7
+          annotation: "A7 is the stack pointer. Use another address register."
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Bug Risk"
+        wrong_extension:
+          pattern: INCLUDE.+\.x68
+          annotation: "68k Files use the X68 file extension not x68"
+          path_patterns:
+            - "**/*.X68"
+          categories:
+            - "Style"
+            - "Compatibility"
+        end_directive:
+          pattern: \s+END\s+[A-Za-z]+
+          annotation: "Don't use the END directive in included files."
+          path_patterns:
+            - "opcodes/*.X68"
+          categories:
+            - "Style"
             - "Compatibility"
