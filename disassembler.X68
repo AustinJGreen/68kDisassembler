@@ -42,6 +42,7 @@ START:				; Display about
 					JSR			LOAD_BEQ
 					JSR			LOAD_BLE
 					JSR			LOAD_BGT
+					JSR			LOAD_DIVU
 					
 					;--------------------------------------------------------------------------
 					; Prompt user for start and end memory address
@@ -171,6 +172,7 @@ DATA_STR			DC.B		'DATA',0
 ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
 
 					END			START						; Last line of source
+
 
 
 

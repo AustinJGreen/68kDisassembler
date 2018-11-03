@@ -43,6 +43,15 @@ START:			LSL.W		D5,D3
 				LSL			(A4)
 				LSL			$7FFF
 				LSR			$A000
+				DIVU.W		#$5A23,D0
+				DIVU.W		$55FF,D1
+				DIVU.W		D2,D3
+				DIVU.W		(A1),D5
+				DIVU.W		(A0)+,D6
+				DIVU.W		-(A0),D7
+
+
+
 
 
 *~Font name~Courier New~
