@@ -20,6 +20,8 @@
 	INCLUDE		"opcodes\beq.X68"
 	INCLUDE		"opcodes\ble.X68"
 	INCLUDE		"opcodes\bgt.X68"
+	INCLUDE		"opcodes\divu.X68"
+
 
 
 

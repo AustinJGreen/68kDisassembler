@@ -1,6 +1,5 @@
 *-----------------------------------------------------------
 * Title		 :	MOVE and MOVEA Longword Handler function
-* Written by :	Damian
 * Date		 :	10/29/2018
 * Description:	Handles the MOVE and MOVEA OpCode for
 *				longword length.
@@ -218,6 +217,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 					JSR		PRINT_ADDRESS					
 					BRA		.END_SOURCE			* (XXX).W/(XXX).L/#<data>	
 *-----------------------------------------------------------
+
 
 
 
