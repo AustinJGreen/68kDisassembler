@@ -64,29 +64,18 @@ PRINT_ADDRESS:		MOVEM.L		D0/A0-A1,-(SP)
 * A0 - address of string to print
 *
 * REGISTER USE
-* D1 - Used for testing size
+* A1 - Temporary swap register for A0
 *--------------------------------------------------------------------
-PRINT_DATA:			MOVEM.L		D0-D1/A0-A1,-(SP)
+PRINT_DATA:			MOVEM.L		A1,-(SP)
 					
-					MOVE.L		A0,D1						; Move value to D1 to be tested
-					CMPI.L		#10,D1						; Check if first letter is < 10 (same written in dec as hex)
-					BLT			.PRINT_DEC
-					BRA			.PRINT_HEX
-					
-.PRINT_DEC:			MOVEA.L		A0,A1						; Save A0 in A1
-					LEA			DECDATA_STR,A0				; Write '#'
-					JSR			PRINT_STR
-					BRA			.WRITE_DATA
-					
-.PRINT_HEX:			MOVEA.L		A0,A1						; Save A0 in A1
+					MOVEA.L		A0,A1						; Save A0 in A1
 					LEA			HEXDATA_STR,A0				' Write '#$'
 					JSR			PRINT_STR
-					BRA			.WRITE_DATA
 					
-.WRITE_DATA:		MOVEA.L		A1,A0						; Restore A1 from A0
+					MOVEA.L		A1,A0						; Restore A1 from A0
 					JSR			WRITEHEX
 					
-					MOVEM.L		(SP)+,D0-D1/A0-A1
+					MOVEM.L		(SP)+,A1
 					RTS
 
 *--------------------------------------------------------------------
@@ -120,6 +109,47 @@ PRINT_NEWLINE:		MOVEM.L		D0/A1,-(SP)					; Save registers
 					TRAP		#15							; Run trap 15
 					MOVEM.L		(SP)+,D0/A1					; Restore registers
 					RTS										; Return
+*--------------------------------------------------------------------
+* Get_SIZE
+* Gets the size operand. 
+*
+* INPUTS
+* D0 - Size code value
+* D1 - Size mask. Because different opcodes have different meanings for
+* sizes. Put mask for a BYTE in the first 2-bits, mask for WORD in the
+* next 2-bits, and mask for LONG in the last 2-bits. For example:
+* If 00 = BYTE, 01 = WORD, 10 = LONG, then put #%100100 in D1.
+*
+* OUTPUTS
+* D1 - Size code. 0 = BYTE, 1 = WORD, 2 = LONG, 3 = INVALID
+*
+* REGISTER USE
+* D2 - Holds mask data
+* D3 - Holds iteration
+*--------------------------------------------------------------------
+GET_SIZE:			MOVEM.L		D0/D2-D3/A1,-(SP)
+					
+					; Test size code value with mask
+					MOVE.B		#0,D3						; Initialize iteration at 1
+					
+.TEST_START:		CMPI.B		#3,D3
+					BEQ			.TEST_END					; Exit if larger than LONG, 3rd iteration
+
+					MOVE.W		D1,D2
+					ANDI.B		#%11,D2					
+					
+					CMP.B		D2,D0						; Compare D2 with value
+					BEQ			.TEST_END
+					
+					; Not the right mask, shift mask right and increase iteration
+					LSR.W		#2,D1
+					ADDQ		#1,D3
+					BRA			.TEST_START
+					
+.TEST_END:			MOVE.L		D3,D1						; Set output in D1			
+					MOVEM.L		(SP)+,D0/D2-D3/A1
+					RTS
+
 
 *--------------------------------------------------------------------
 * PRINT_SIZE
@@ -128,45 +158,25 @@ PRINT_NEWLINE:		MOVEM.L		D0/A1,-(SP)					; Save registers
 * INPUTS
 * D0 - Size code value
 * D1 - Size mask. Because different opcodes have different meanings for
-* sizes. Put mask for a BYTE in the first 3-bits, mask for WORD in the
-* 3-bits, and mask for LONG in the last 3-bits. For example:
-* If 000 = BYTE, 001 = WORD, 010 = LONG, then put #%010001000 in D1.
+* sizes. Put mask for a BYTE in the first 2-bits, mask for WORD in the
+* next 2-bits, and mask for LONG in the last 2-bits. For example:
+* If 00 = BYTE, 01 = WORD, 10 = LONG, then put #%100100 in D1.
 *
 * REGISTER USE
-* D2 - Holds mask data
-* D3 - Holds iteration
 * A1 - Holds output string size
 *--------------------------------------------------------------------
-PRINT_SIZE:			MOVEM.L		D0-D3/A1,-(SP)
+PRINT_SIZE:			MOVEM.L		D0-D1/A1,-(SP)
 					
-					; Test size code value with mask
-					MOVE.L		#0,D3						; Initialize iteration at 0
-					
-.TEST_START:		CMPI		#3,D3
-					BEQ			.TEST_END					; Exit if on 3th iteration
-
-					MOVE.L		D1,D2
-					ANDI.B		#%111,D2					
-					
-					CMP.B		D2,D0						; Compare D2 with value
-					BEQ			.TEST_END
-					
-					; Not the right mask, shift mask right and increase iteration
-					LSR.W		#3,D1
-					ADDQ		#1,D3
-					BRA			.TEST_START
-					
-.TEST_END:			; The mask was matched, use iteration to pull correct str from
-					; memory
+					JSR			GET_SIZE					; Calculate size
 
 					LEA			SIZE_CODES,A1				; Load size codes address into A1
-					MULU.W		#3,D3						; Multiply D1 by 3
-					ADD.L		D3,A1						; Add that to the starting address
+					MULU.W		#3,D1						; Multiply D3 by 3
+					ADD.L		D1,A1						; Add that to the starting address
 					MOVE.B		#1,D0						; Use Task 1
 					MOVE.L		#3,D1						; Display 3 bytes for .,(size),0
 					TRAP		#15							; Run Trap 15						
 						
-					MOVEM.L		(SP)+,D0-D3/A1
+.END					MOVEM.L		(SP)+,D0-D1/A1
 					RTS
 
 *--------------------------------------------------------------------
@@ -180,7 +190,7 @@ PRINT_SIZE:			MOVEM.L		D0-D3/A1,-(SP)
 * A1 - Holds register string
 *--------------------------------------------------------------------
 PRINT_D_REG:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
-					MOVE.L		D0,D1						; Save D0 in D1
+					MOVE.B		D0,D1						; Save 1st byte of D0 in D1
 					LEA			D_REG_STR,A1				; Load D string
 					MOVE.B		#14,D0						; Set task 14
 					TRAP		#15							; Run trap 15
@@ -310,15 +320,109 @@ PRINT_OPCODE_TAB:	MOVEM.L		D0-D2,-(SP)
 					TRAP		#15
 					MOVEM.L		(SP)+,D0-D2
 					RTS
+
+*--------------------------------------------------------------------
+* PRINT_PARAM
+* Uses the default table in the 68k manual to write the parameter 
+* from machine code format using the mode and register. 
+* Mode 000 = Dn
+* Mode 001 = An
+* Mode 010 = (An)
+* Mode 011 = (An)+
+* Mode 100 = -(An)
+* Mode 111, Register 000 = (xxx).W
+* Mode 111, Register 001 = (xxx).L
+* Mode 111, Register 100 = #data
+*
+* INPUTS
+* D0 - Register
+* D1 - Mode
+* D2 - Size value
+* D3 - Size mask
+* A4 - Machine code pointer
+*
+* A0 - Holds value of address being printed
+*--------------------------------------------------------------------						
+PRINT_PARAM:		MOVEM.L		D0-D1/A0,-(SP)
+					CMPI.B		#%000,D1
+					BEQ			.PRINT_DN
+					CMPI.B		#%001,D1
+					BEQ			.PRINT_AN
+					CMPI.B		#%010,D1
+					BEQ			.PRINT_A_DIR
+					CMPI.B		#%011,D1
+					BEQ			.PRINT_A_POST
+					CMPI.B		#%100,D1
+					BEQ			.PRINT_A_PRE
+					CMPI.B		#%111,D1
+					BNE			.END
 					
+					CMPI.B		#%000,D0
+					BEQ			.PRINT_WORD
+					CMPI.B		#%001,D0
+					BEQ			.PRINT_LONG
+					CMPI.B		#%100,D0
+					BEQ			.PRINT_DATA
+					
+					BRA			.END
+					
+.PRINT_DN:			JSR			PRINT_D_REG
+					BRA			.END
+					
+.PRINT_AN:			JSR			PRINT_A_REG
+					BRA			.END
+					
+.PRINT_A_DIR:		JSR			PRINT_A_DIR
+					BRA			.END
+
+.PRINT_A_POST:		JSR			PRINT_A_POST
+					BRA			.END
+					
+.PRINT_A_PRE:		JSR			PRINT_A_PRE
+					BRA			.END
+					
+.PRINT_WORD:		MOVE.W		(A4)+,A0
+					MOVE.B		#4,D0
+					JSR			PRINT_ADDRESS
+					BRA			.END
+					
+.PRINT_LONG:		MOVE.L		(A4)+,A0
+					MOVE.B		#8,D0
+					JSR			PRINT_ADDRESS
+					BRA			.END
+					
+.PRINT_DATA:		MOVE.L		D2,D0
+					MOVE.L		D3,D1
+					JSR			GET_SIZE
+					
+					CMPI.B		#0,D1
+					BEQ			.PRINT_DATA_W
+					CMPI.B		#1,D1
+					BEQ			.PRINT_DATA_W
+					CMPI.B		#2,D1
+					BEQ			.PRINT_DATA_L
+					BRA			.END
+					
+.PRINT_DATA_W:		MOVE.W		(A4)+,A0
+					MOVE.L		#4,D0
+					JSR			PRINT_DATA
+					BRA			.END
+
+.PRINT_DATA_L:		MOVE.L		(A4)+,A0
+					MOVE.L		#8,D0
+					JSR			PRINT_DATA	
+					BRA			.END				
+					
+.END:				MOVEM.L		(SP)+,D0-D1/A0
+					RTS					
+				
 *--------------------------------------------------------------------
 * WAIT_FOR_ENTER
 * Waits for the enter key to be pressed, then returns
 *
 * REGISTER USE
 * D0 - Holds task number
-* D1 - Holds row and column position
-* D2 - Holds temporary value of LINE_NUMBER
+* D1 - Holds value for tasks
 *--------------------------------------------------------------------					
 WAIT_FOR_ENTER:		MOVEM.L		D0-D2,-(SP)
 					
@@ -337,14 +441,53 @@ WAIT_FOR_ENTER:		MOVEM.L		D0-D2,-(SP)
 					; Enter key was not key, read key again
 					BRA			.READ_KEY
 					
-.ENTER_HIT:			; Turn echo back on
-					MOVE.B		#12,D0							; Set task 12
+					; Turn echo back on
+.ENTER_HIT:			MOVE.B		#12,D0							; Set task 12
 					MOVE.B		#1,D1							; Set 1 to turn on				
 					TRAP		#15								; Run trap 15 task 12
 					MOVEM.L		(SP)+,D0-D2
 					RTS
                     
+*--------------------------------------------------------------------
+* GET_INPUT_KEY
+* Waits for a key to be pressed
+*
+* OUTPUTS
+* D1 - Holds key press data
+*
+* REGISTER USE
+* D0 - Holds task number
+* D7 - Holds temporary output
+*--------------------------------------------------------------------					
+GET_INPUT_KEY:		MOVEM.L		D0/D7,-(SP)
 					
+					; Turn echo off
+					MOVE.B		#12,D0							; Set task 12
+					MOVE.B		#0,D1							; Set 0 to turn off
+					TRAP		#15								; Run trap 15 task 12
+					
+					; Read key 
+					MOVE.B		#5,D0
+					TRAP		#15
+					
+					MOVE.L		D1,D7							; Save key
+
+					MOVE.B		#12,D0							; Set task 12
+					MOVE.B		#1,D1							; Set 1 to turn on				
+					TRAP		#15								; Run trap 15 task 12
+					
+					MOVE.L		D7,D1							; Restore key
+					
+					MOVEM.L		(SP)+,D0/D7
+					RTS					
+
+
+
+
+
+
+
+
 
 
 

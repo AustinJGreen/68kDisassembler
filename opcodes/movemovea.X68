@@ -84,24 +84,24 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 *	DISPLAY OpCode
 *-----------------------------------------------------------
 						* if destination is An then this is MOVEA
-						MOVE.L	MOVE_DST_MODE,D0
-						CMPI.W	#%001,D0	
-						BEQ		.DISP_MOVEA
+						MOVE.L		MOVE_DST_MODE,D0
+						CMPI.W		#%001,D0	
+						BEQ			.DISP_MOVEA
 
-						LEA		MOVE_OUT,A1	* display move
-						BRA		.PRINT
+						LEA			MOVE_OUT,A1	* display move
+						BRA			.PRINT
 
-.DISP_MOVEA:			LEA		MOVEA_OUT,A1 * load MOVEA string
+.DISP_MOVEA:			LEA			MOVEA_OUT,A1 * load MOVEA string
 
-.PRINT:					MOVE.B	#14,D0
-						TRAP	#15
+.PRINT:					MOVE.B		#14,D0
+						TRAP		#15
 						
 						; Output the size code					
 						MOVE.L		MOVE_SIZE_CODE,D0				; Put size value in D0
-						MOVE.L		#%010011001,D1				; Put size mask for MOVE in D1
+						MOVE.L		#%101101,D1						; Put size mask for MOVE in D1
 						JSR			PRINT_SIZE
 						
-						JSR		PRINT_OPCODE_TAB	   * Print a tab
+						JSR		PRINT_OPCODE_TAB	   				* Print a tab
 						
 *-----------------------------------------------------------
 *	DISPLAY Source
