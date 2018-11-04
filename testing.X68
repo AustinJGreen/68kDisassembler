@@ -1,10 +1,6 @@
-START:			LSL.W		D5,D3
-				LSL.B		D0,D1
-				LSL.B		D0,D2
-				LSL.B		#1,D1
-				LSL.B		#2,D1
-				LSR.B		#2,D1
-				LSL.L		#8,D7
+START:			OR.L		#57,D0
+				MOVE.L		#57,A5
+				MOVE.L		#9,D2
 				MOVEA.L		A0,A3
 				MOVE.B		D0,D1
 				MOVE.W		(A3)+,D7
@@ -12,6 +8,13 @@ START:			LSL.W		D5,D3
 				MOVE.B		$55FF,D4
 				MOVE.B		D4,$8000
 				MOVE.L		D0,D1	
+				LSL.W		D5,D3
+				LSL.B		D0,D1
+				LSL.B		D0,D2
+				LSL.B		#1,D1
+				LSL.B		#2,D1
+				LSR.B		#2,D1
+				LSL.L		#8,D7
 				NOP
 				RTS
 				JSR			START
@@ -21,8 +24,7 @@ START:			LSL.W		D5,D3
 				NOT.L		(A3)+
 				NOT.B		-(A0)
 .TEST			NOT.B		(A6)
-				NOT.W		D5
-				OR.B		D0,D1		 
+				NOT.W		D5					 
 				MOVE.B		D0,D1
 				MOVEA.L		A0,A3
 				MOVE.L		D0,D1
@@ -43,6 +45,13 @@ START:			LSL.W		D5,D3
 				LSL			(A4)
 				LSL			$7FFF
 				LSR			$A000
+				OR.B		D0,D1
+				OR.W		#$FFFF,D6
+				OR.L		D6,(A4)+
+				OR.L		-(A3),D7
+
+
+
 
 
 *~Font name~Courier New~

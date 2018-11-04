@@ -57,7 +57,7 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 					
 							; Read size field
 							MOVE.L		D7,D6
-							AND.L		#%11000000,D6
+							ANDI.L		#%11000000,D6
 							LSR.L		#6,D6
 							MOVE.L		D6,ASL_SIZE_CODE
 					
@@ -67,7 +67,7 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 							
 							; We have a size code, but first read opcode bit							
 							MOVE.L		D7,D6
-							AND.L		#%11000,D6
+							ANDI.L		#%11000,D6
 							LSR.L		#3,D6
 							
 							CMPI.B		#%00,D6				; Check if arithmetic shift
@@ -87,13 +87,13 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 					
 .READ_SIZE					; Print size field				
 							MOVE.L		ASL_SIZE_CODE,D0
-							MOVE.L		#%010001000,D1
+							MOVE.L		#%100100,D1
 							JSR			PRINT_SIZE			; Print size field					
 							JSR			PRINT_OPCODE_TAB	; Print tab
 
 							; Read count/register field
 							MOVE.L		D7,D5
-							AND.L		#%111000000000,D5
+							ANDI.L		#%111000000000,D5
 							LSR.L		#8,D5
 							LSR.L		#1,D5				; Shift 9(8+1) to the right
 					
@@ -125,7 +125,7 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 							; Read destination register (can just use D5 since we are done with source)
 					
 							MOVE		D7,D5
-							AND.L		#%111,D5
+							ANDI.L		#%111,D5
 					
 							MOVE.L		D5,D0
 							JSR			PRINT_D_REG			; Print destination register	
@@ -148,11 +148,11 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 							JSR			PRINT_OPCODE_TAB	; Print tab
 
 							MOVE.L		D7,D0
-							AND.L		#%111,D0
+							ANDI.L		#%111,D0
 
 							; Read the mode
 							MOVE.L		D7,D6
-							AND.L		#%111000,D6
+							ANDI.L		#%111000,D6
 							LSR.L		#3,D6
 					
 							CMPI.B		#%111,D6
@@ -197,6 +197,8 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 	
 .END						MOVEM.L		(SP)+,D0-D7
 							RTS
+
+
 
 
 

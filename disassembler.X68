@@ -15,13 +15,9 @@
 					
 					INCLUDE		"opcodes_header.X68"		; Load all opcodes, all opcodes should have access to the included files above					
 					
-START:				; Display about
-					LEA			ABOUT_STR,A0				; Load about string
-					JSR			PRINT_STR					; Print about information
-					
 					; Load information for tree
 					
-					JSR			TREE_INIT					; Initialize binary tree
+START:				JSR			TREE_INIT					; Initialize binary tree
 					
 					;--------------------------------------------------------------------------
 					; Add OpCodes to tree
@@ -46,6 +42,11 @@ START:				; Display about
 					;--------------------------------------------------------------------------
 					; Prompt user for start and end memory address
 					;--------------------------------------------------------------------------
+					
+					; Display about
+					
+BEGIN:				LEA			ABOUT_STR,A0				; Load about string
+					JSR			PRINT_STR					; Print about information
 					
 					LEA			BEGIN_PROMPT,A0				; Load information about input
 					JSR			PRINT_STR
@@ -80,10 +81,10 @@ START:				; Display about
 
 					MOVE.L		#0,LINE_NUMBER				; Keep track of line number (ROW) (0-31)		 
 
-READ_START:			; Begin reading at start address
+					; Begin reading at start address
 
-					CMPA.L		A4,A5
-					BEQ			END							; Go to end if reached end address
+READ_START:			CMPA.L		A4,A5
+					BEQ			END_PROMPT					; Go to end if reached end address
 
 					; Read from binary stream										  
 					
@@ -91,7 +92,7 @@ READ_START:			; Begin reading at start address
 					MOVE.W		(A4)+,D0					; Read 16-bits at a time
 
 					CMPI.W		#$FFFF,D0					; Check if data is 0xFFFF (at the end of loaded program memory)
-					BEQ			END							; Go to end if data is 0xFFFF
+					BEQ			END_PROMPT					; Go to end if data is 0xFFFF
 					
 					; Write current memory location (Specification 10) 
 				   
@@ -115,11 +116,11 @@ READ_START:			; Begin reading at start address
 					BEQ			INVALID_OPCODE
 					BRA			VALID_OPCODE
 					
-INVALID_OPCODE:		; Print invalid opcode as DATA $ABCD (Specification 8)
+					; Print invalid opcode as DATA $ABCD (Specification 8)
 
-					LEA			DATA_STR,A0
+INVALID_OPCODE:		LEA			DATA_STR,A0
 					JSR			PRINT_STR
-					JSR			PRINT_TAB
+					JSR			PRINT_OPCODE_TAB
 					
 					; Print unreadable data in D0
 					
@@ -130,9 +131,9 @@ INVALID_OPCODE:		; Print invalid opcode as DATA $ABCD (Specification 8)
 					
 					BRA			READ_START
 					
-VALID_OPCODE:		; Print valid opcode
+					; Print valid opcode
 					
-					JSR			GOTO_ADDR					; Goto A0 found in tree	
+VALID_OPCODE:		JSR			GOTO_ADDR					; Goto A0 found in tree	
 
 					; TODO: Check if opcode handler was able to complete successfully, if not, set cursor back and goto INVALID_OPCODE					
 					
@@ -143,9 +144,9 @@ VALID_OPCODE:		; Print valid opcode
 					BEQ			BOTTOM_PAGE
 					BRA			READ_START
 					
-BOTTOM_PAGE:		; We've reached the bottom of the page, display message to press enter
+					; We've reached the bottom of the page, display message to press enter
 
-					LEA			ENTER_STR,A0
+BOTTOM_PAGE:		LEA			ENTER_STR,A0
 					JSR			PRINT_STR
 					JSR			WAIT_FOR_ENTER				; Wait for enter
 					
@@ -157,7 +158,27 @@ BOTTOM_PAGE:		; We've reached the bottom of the page, display message to press e
 					  
 					BRA			READ_START					; Go back to start					 
 
-END:				; TODO: prompt the user to disassemble another memory image, or prompt the user to quit (Specification 11)
+					; TODO: prompt the user to disassemble another memory range, or prompt the user to quit (Specification 11)
+					
+END_PROMPT:			LEA			DONE_STR,A0
+					JSR			PRINT_STR
+					JSR			GET_INPUT_KEY							
+					
+					CMPI.B		#$D,D1
+					BEQ			.RESET
+					BRA			.END
+					
+.RESET:				MOVE.B		#11,D0
+					MOVE.W		#$FF00,D1					 
+					TRAP		#15							; Clear screen for prompt
+
+					MOVE.L		#0,LINE_NUMBER				; Reset LINE_NUMBER	
+					
+					BRA			BEGIN
+					
+.END:				MOVE.B		#11,D0
+					MOVE.W		#$FF00,D1					 
+					TRAP		#15							; Clear screen on end
 
 					SIMHALT									; Halt simulator
 
@@ -169,8 +190,12 @@ START_ADDR_STR		DC.B		'Starting address : ',0
 END_ADDR_STR		DC.B		'Ending address   : ',0
 DATA_STR			DC.B		'DATA',0
 ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
+DONE_STR			DC.B		'Done. Press <ENTER> to disassemble another range, or press the any key to exit.',0
 
 					END			START						; Last line of source
+
+
+
 
 
 

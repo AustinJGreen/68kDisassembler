@@ -20,21 +20,6 @@
 	INCLUDE		"opcodes\beq.X68"
 	INCLUDE		"opcodes\ble.X68"
 	INCLUDE		"opcodes\bgt.X68"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
