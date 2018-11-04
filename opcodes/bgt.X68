@@ -35,32 +35,6 @@ HANDLE_BGT:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					RTS
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~

@@ -23,7 +23,7 @@ LOAD_NOT:			MOVE.L		#%01000110,D0
 
 HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 
-					MOVE		D0,D6					 	; D6 holds opcode data
+					MOVE.L		D0,D6					 	; D6 holds opcode data
 					LEA			NOT_OUT,A0
 					JSR			PRINT_STR					; Output "NOT."
 					
@@ -36,7 +36,7 @@ HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 					; Output the size code
 					
 					MOVE.L		D1,D0						; Put size value in D0
-					MOVE.L		#%010001000,D1				; Put size mask for NOT in D1
+					MOVE.L		#%100100,D1				; Put size mask for NOT in D1
 					JSR			PRINT_SIZE
 					MOVE.L		D0,D1						; put D0 back in D1
 					
@@ -69,28 +69,30 @@ HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 					BEQ			.PREDECAN
 					
 					BRA			.INVALID
-.DN: 
-					MOVE.L		D5,D0
+					
+.DN: 				MOVE.L		D5,D0
 					JSR			PRINT_D_REG
 					BRA			.END
-.DIRECTAN:			
-					MOVE.L		D5,D0		
+					
+.DIRECTAN:			MOVE.L		D5,D0		
 					JSR			PRINT_A_DIR
 					BRA			.END
-.POSTINCAN:		 
-					MOVE.L		D5,D0		
+					
+.POSTINCAN:		 	MOVE.L		D5,D0		
 					JSR			PRINT_A_POST	  
 					BRA			.END
-.PREDECAN:			
-					MOVE.L		D5,D0		
+					
+.PREDECAN:			MOVE.L		D5,D0		
 					JSR			PRINT_A_PRE 
 					BRA			.END
-.INVALID:
-					; TODO: I'm not sure what to do here...
+					
+.INVALID:			; TODO: I'm not sure what to do here...
 					SIMHALT
 .END		 
 					MOVEM.L		(SP)+,D0-D7
 					RTS
+
+
 
 
 
