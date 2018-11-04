@@ -35,10 +35,10 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - [ ] ADDQ
 - [ ] SUB
 - [ ] MULS
-- [ ] DIVU
-- [ ] LEA
+- [X] DIVU
+- [X] LEA
 - [ ] AND
-- [ ] OR
+- [X] OR
 - [X] NOT
 - [X] LSL
 - [X] LSR
