@@ -5,8 +5,7 @@
 *-----------------------------------------------------------
 * Constants
 *-----------------------------------------------------------
-DIVU_W_OUT		DC.B	'DIVU.W',0
-DIVU_L_OUT		DC.B	'DIVU.L',0
+DIVU_OUT		DC.B	'DIVU.W',0
 *-----------------------------------------------------------
 * Variables
 *-----------------------------------------------------------
@@ -16,37 +15,20 @@ DIVU_SRC_REG	DC.L	1
 *-----------------------------------------------------------
 *	Load MOVE/MOVEA OpCode into Tree
 *-----------------------------------------------------------
-LOAD_DIVU		MOVE.L		#%0100110001,D0		* DIVU.L
-				MOVE.L		#10,D1
-				LEA			HANDLE_DIVU_L,A0
-				JSR			TREE_ADD_NODE
-				
-				MOVE.L		#%1000,D0			* DIVU.W
+LOAD_DIVU		MOVE.L		#%1000,D0			* DIVU.W
 				MOVE.L		#4,D1
-				LEA			HANDLE_DIVU_W,A0
+				LEA			HANDLE_DIVU,A0
 				JSR			TREE_ADD_NODE
 				
 				RTS
 *-----------------------------------------------------------
 *	Handle OpCode
 *-----------------------------------------------------------				
-HANDLE_DIVU_L	MOVEM.L		D0-D7,-(SP)
-				MOVE.L		D0,D7
-				
-				* display OpCode and size
-				LEA		DIVU_L_OUT,A1
-				MOVE.B	#14,D0
-				TRAP	#15
-				
-				
-.FIN:			MOVEM.L		(SP)+,D0-D7
-				RTS
-
-HANDLE_DIVU_W	MOVEM.L		D0-D7,-(SP)
+HANDLE_DIVU	MOVEM.L		D0-D7,-(SP)
 				MOVE.L		D0,D7	
 		
 				* display OpCode and size
-				LEA		DIVU_W_OUT,A1	
+				LEA		DIVU_OUT,A1	
 				MOVE.B	#14,D0
 				TRAP	#15
 				
@@ -73,9 +55,7 @@ HANDLE_DIVU_W	MOVEM.L		D0-D7,-(SP)
 				MOVE.B	D0,DIVU_DST_REG
 				ANDI.B	#%0111,DIVU_DST_REG
 				
-*-----------------------------------------------------------
-*	DISPLAY Source
-*-----------------------------------------------------------
+		*	DISPLAY Source
 				MOVE.B	DIVU_SRC_MODE,D1
 				MOVE.B	DIVU_SRC_REG,D0
 					
@@ -95,14 +75,11 @@ HANDLE_DIVU_W	MOVEM.L		D0-D7,-(SP)
 				BEQ		.S_DATA_ADDR
 
 .END_SOURCE		JSR		PRINT_DIVIDER
-*-----------------------------------------------------------
-*	DISPLAY Destination
-*-----------------------------------------------------------
-						* display destination
+
+		* DISPLAY Destination
 				MOVE.B	DIVU_DST_REG,D0
-						
 				JSR		PRINT_D_REG	
-*-----------------------------------------------------------	
+	
 .FIN:			MOVEM.L		(SP)+,D0-D7
 				RTS				
 *-----------------------------------------------------------
@@ -127,20 +104,22 @@ HANDLE_DIVU_W	MOVEM.L		D0-D7,-(SP)
 					BEQ		.S_ADDR_LONG
 					BRA		.S_DATA
 					
-.S_ADDR_WORD:		MOVE.L	#4,D0		* (XXX).W
+.S_ADDR_WORD:		MOVE.L	#4,D0			* (XXX).W
 					JSR		PRINT_ADDRESS
 					BRA		.END_SOURCE		
 					
-.S_ADDR_LONG:		MOVE.L	#8,D0		* (XXX).W
+.S_ADDR_LONG:		MOVE.L	#8,D0			* (XXX).L
 					JSR		PRINT_ADDRESS					
-					BRA		.END_SOURCE		* (XXX).W/(XXX).L/#<data>	
+					BRA		.END_SOURCE		* #<data>	
 
 .S_DATA				MOVE.L	#4,D0
 					JSR		PRINT_DATA
 					BRA		.END_SOURCE
 *-----------------------------------------------------------
 
-*-----------------------------------------------------------
+
+
+
 
 
 
