@@ -195,35 +195,6 @@ DONE_STR			DC.B		'Done. Press <ENTER> to disassemble another range, or press the
 
 					END			START						; Last line of source
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-
->>>>>>> Finish OR, OO code a bit and fix some bugs.
-=======
-
-
->>>>>>> c4f12ef71500a999a595e847ce02235781c863be
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
