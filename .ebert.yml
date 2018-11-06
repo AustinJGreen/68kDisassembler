@@ -61,6 +61,7 @@ engines:
             - "**/*.X68"
           categories:
             - "Bug Risk"
+            - "Style"
         incorrect_move:
           pattern: MOVE\.(W|L)\s+A(0|1|2|3|4|5|6),A(0|1|2|3|4|5|6)
           annotation: "If you're moving an address register to another address register, use MOVEA"
@@ -121,7 +122,7 @@ engines:
             - "Performance"
         moveq_danger:
           pattern: ^\s+MOVEQ
-          annotation: "MOVEQ sign extends bytes and is dangerous. If you intended to sign-extend, use MOVE and EXT instead for readability."
+          annotation: "MOVEQ sign extends bytes and is misleading. If you intended to sign-extend, use MOVE and EXT instead for readability."
           path_patterns:
             - "**/*.X68"
           categories:
