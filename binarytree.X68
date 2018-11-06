@@ -107,11 +107,13 @@ ALIGN_RIGHT:
 * D4 - used for storing mask
 * D6 - used for storing node pointer
 * D7 - used for iterating through node
+* A5 - used for holding tree value
 * A6 - used for iterating through tree
 *--------------------------------------------------------------------
 TREE_LOOKUP:
 					MOVEM.L		A5-A6/D2-D7,-(SP)			; Save registers
-												
+								
+					MOVE.L		#$FFFFFFFF,A0				; Initialize return value with 0xFFFFFFFF (nullptr)				
 					MOVE.L		TREE_ADDRESS,A6				; Move tree head address to A6
 					
 					MOVE.L		#1,D3
@@ -146,18 +148,28 @@ TREE_LOOKUP:
 					BGT			.END_BITS					; If D3 (Bit placeholder) is > bits to use then go to end
 					
 					; We still have more bits to iterate, continue processing
+						
+					MOVE.L		(A6)+,A5					; Store value of node in A5
+					CMP.L		#$FFFFFFFF,A5				; Check if value of node is null
+					BNE			.UPDATE_VALUE				; If value is set, update last good node value		
+					BRA			.SKIP_VALUE	
 					
-					ADDA.L		#$4,A6						; Skip over value
-					MOVE.L		(A6),D6						; Store node pointer in D6
+					; We have a value in our tree in the current path, store this node value, which is
+					; our handler address in the return value so if we don't find another value tree node
+					; this will be our return value
+					
+.UPDATE_VALUE:		MOVEA.L		A5,A0						; Set return value							
+
+.SKIP_VALUE:		MOVE.L		(A6),D6						; Store node pointer in D6
 					
 					; Top 32-bits in D6 are for the value, lower 32-bits are for pointer
 					
 					CMPI.L		#$FFFFFFFF,D6				; Check the pointer bits for NULLPTR (0xFFFFFFFF)
-					BEQ			.END_TREE					; Node ptr is empty, exit	
+					BEQ			.END						; Node ptr is empty, exit	
 					BRA			.FILLED_NODE				; Node ptr is not empty				
 					
 .FILLED_NODE:		; Filled node case	
-					
+
 					MOVE.L		D6,A6						; Set pointer to next node
 					BRA			.READ_START
 
@@ -165,13 +177,7 @@ TREE_LOOKUP:
 					
 					MOVE.L		(A6),A0						; Read current value
 					BRA			.END
-					
-.END_TREE:			; We've reached the end of the tree, go back to last value and read that value
-
-					SUBA.L		#$4,A6						; We are currently pointing to ptr, subtract 0x4 to get last value
-					MOVE.L		(A6),A0
-					BRA			.END
-					
+	
 .END				; End of the function, restore registers and return
 
 					MOVEM.L		(SP)+,A5-A6/D2-D7			; Restore registers
@@ -265,6 +271,8 @@ TREE_ADD_NODE:
 					MOVEM.L		(SP)+,A5-A6/D2-D7			; Restore registers
 					RTS
 					
+
+
 
 
 
