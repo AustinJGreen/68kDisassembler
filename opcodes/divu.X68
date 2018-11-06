@@ -15,8 +15,43 @@ DIVU_SRC_REG	DC.L	1
 *-----------------------------------------------------------
 *	Load MOVE/MOVEA OpCode into Tree
 *-----------------------------------------------------------
-LOAD_DIVU		MOVE.L		#%1000,D0			* DIVU.W
-				MOVE.L		#4,D1
+LOAD_DIVU		MOVE.L		#%1000000011,D0			* DIVU.W, for D0
+				MOVE.L		#10,D1
+				LEA			HANDLE_DIVU,A0
+				JSR			TREE_ADD_NODE
+				
+				MOVE.L		#%1000001011,D0			* DIVU.W, for D1
+				MOVE.L		#10,D1
+				LEA			HANDLE_DIVU,A0
+				JSR			TREE_ADD_NODE
+				
+				MOVE.L		#%1000010011,D0			* DIVU.W, for D2
+				MOVE.L		#10,D1
+				LEA			HANDLE_DIVU,A0
+				JSR			TREE_ADD_NODE
+				
+				MOVE.L		#%1000011011,D0			* DIVU.W, for D3
+				MOVE.L		#10,D1
+				LEA			HANDLE_DIVU,A0
+				JSR			TREE_ADD_NODE
+				
+				MOVE.L		#%1000100011,D0			* DIVU.W, for D4
+				MOVE.L		#10,D1
+				LEA			HANDLE_DIVU,A0
+				JSR			TREE_ADD_NODE
+				
+				MOVE.L		#%1000101011,D0			* DIVU.W, for D5
+				MOVE.L		#10,D1
+				LEA			HANDLE_DIVU,A0
+				JSR			TREE_ADD_NODE
+				
+				MOVE.L		#%1000110011,D0			* DIVU.W, for D6
+				MOVE.L		#10,D1
+				LEA			HANDLE_DIVU,A0
+				JSR			TREE_ADD_NODE
+				
+				MOVE.L		#%1000111011,D0			* DIVU.W, for D7
+				MOVE.L		#10,D1
 				LEA			HANDLE_DIVU,A0
 				JSR			TREE_ADD_NODE
 				
@@ -116,6 +151,7 @@ HANDLE_DIVU	MOVEM.L		D0-D7,-(SP)
 					JSR		PRINT_DATA
 					BRA		.END_SOURCE
 *-----------------------------------------------------------
+
 
 
 
