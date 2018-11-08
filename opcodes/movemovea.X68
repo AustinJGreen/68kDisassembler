@@ -208,7 +208,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 .S_DATA_ADDR:		CMPI.B	#%000,D0
 					BEQ		.S_DATA_WORD
 					BRA		.S_DATA_LONG
-.S_DATA_WORD:		MOVE.W	(A4)+,A0
+.S_DATA_WORD:		MOVE.L	(A4)+,A0
 					MOVE.L	#4,D0
 					JSR		PRINT_ADDRESS
 					BRA		.END_SOURCE			* (XXX).W/(XXX).L/#<data>
@@ -217,6 +217,7 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 					JSR		PRINT_ADDRESS					
 					BRA		.END_SOURCE			* (XXX).W/(XXX).L/#<data>	
 *-----------------------------------------------------------
+
 
 
 

@@ -22,6 +22,7 @@
 	INCLUDE		"opcodes\bgt.X68"
 	INCLUDE		"opcodes\divu.X68"
 	INCLUDE		"opcodes\muls.X68"
+	INCLUDE		"opcodes\and.X68"
 
 
 *~Font name~Courier New~
