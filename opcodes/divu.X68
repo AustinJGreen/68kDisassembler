@@ -132,7 +132,7 @@ HANDLE_DIVU	MOVEM.L		D0-D7,-(SP)
 .S_A_DEC_ADDR:		JSR		PRINT_A_PRE		* -(An)			
 					BRA		.END_SOURCE
 *-----------------------------------------------------------
-.S_DATA_ADDR:		MOVE.W	(A4)+,A0
+.S_DATA_ADDR:		MOVE.L	(A4)+,A0
 					CMPI.B	#%000,D0
 					BEQ		.S_ADDR_WORD
 					CMPI.B	#$001,D0
@@ -151,6 +151,7 @@ HANDLE_DIVU	MOVEM.L		D0-D7,-(SP)
 					JSR		PRINT_DATA
 					BRA		.END_SOURCE
 *-----------------------------------------------------------
+
 
 
 
