@@ -51,11 +51,21 @@ START:			OR.L		#57,D0
 				DIVU.W		(A1),D5
 				DIVU.W		(A0)+,D6
 				DIVU.W		-(A0),D7
+				MULS.W		D4,D1
+				MULS.W		#$BEEF,D0
+				MULS.W		(A1),D5
+				MULS.W		(A0)+,D6
+				MULS.W		-(A0),D7
+				MULS.W		$546A,D1
 				OR.B		D0,D1
 				OR.W		#$FFFF,D6
 				OR.L		D6,(A4)+
 				OR.L		-(A3),D7
 				
+
+
+
+
 
 
 
