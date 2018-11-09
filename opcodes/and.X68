@@ -5,18 +5,16 @@
 *-----------------------------------------------------------
 * Constants
 *-----------------------------------------------------------
-AND_OUT			DC.B	'AND.',0
-B_OUT			DC.B	'B',0
-W_OUT			DC.B	'W',0
-L_OUT			DC.B	'L',0
+AND_OUT			DC.B	'AND',0
+
 *-----------------------------------------------------------
 * Variables
 *-----------------------------------------------------------
-ENTIRE_OP		DC.L	1
-AND_SIZE		DC.L	1
-AND_DN_REG		DC.L	1
-AND_EA_MODE		DC.L	1
-AND_EA_REG		DC.L	1
+AND_EA_REG      DS.B    1
+AND_EA_MODE     DS.B    1
+AND_SIZE        DS.B    1
+AND_OPMODE      DS.B    1
+AND_REG         DS.B    1
 *-----------------------------------------------------------
 *	Load AND OpCode into Tree
 *-----------------------------------------------------------
@@ -275,215 +273,86 @@ LOAD_AND		MOVE.L	#%1100000000,D0				*AND.B for D0
 *	Handle OpCode
 *----------------------------------------------------------
 HANDLE_AND MOVEM.L	D0-D7,-(SP)
-				MOVE.L	D0,ENTIRE_OP              *Stores the entire entry for reuse
-				
-				* display OpCode
-				LEA		AND_OUT,A1
-				MOVE.B	#14,D0
-				TRAP	#15
-								
-				MOVE.L	ENTIRE_OP,D0				
-				*shifts out 6bits to determine size
-				LSR.L	#6,D0					 
-				MOVE.B	D0,AND_SIZE
-				ANDI.B	#%0111,AND_SIZE
-				
-				*Read/Print Size
-				CMPI.B	#%000,AND_SIZE
-				BEQ		.P_B
-				CMPI.B	#%100,AND_SIZE
-				BEQ		.P_B
-				CMPI.B	#%001,AND_SIZE
-				BEQ		.P_W
-				CMPI.B	#%101,AND_SIZE
-				BEQ		.P_W
-				CMPI.B	#%010,AND_SIZE
-				BEQ		.P_L
-				CMPI.B	#%110,AND_SIZE
-				BEQ		.P_L
-		
-				*Seperates and saves the key fields into constants		
-.HANDLE_AND_CONT JSR	PRINT_OPCODE_TAB
-				
-				MOVE.L	ENTIRE_OP,D0	
-				*Read source Register
-				MOVE.B	D0,AND_EA_REG
-				ANDI.B	#%0111,AND_EA_REG
-				LSR.L	#3,D0						*shift 3 bits out
-				*Read source address mode
-				MOVE.B	D0,AND_EA_MODE
-				ANDI.B	#%0111,AND_EA_MODE
-				LSR.L	#6,D0                       *shift 6 bits out, size already determined
-				*Read destination register
-				MOVE.B	D0,AND_DN_REG
-				ANDI.B	#%0111,AND_DN_REG
-				
-				*Load Key codes
-				CLR		D0
-				CLR     D1
-				CLR		D2
-				CLR		D3
-				MOVE.B	AND_EA_REG,D0				
-				MOVE.B	AND_EA_MODE,D1
-				MOVE.B	AND_DN_REG,D2
-				MOVE.B	AND_SIZE,D3
-				
-				*Use OpMode(size) to determine print
-				CMPI.B #%000,D3						*<ea>,Dn - > Dn Mode (Byte)
-				BEQ		.DN_PRINT
-				CMPI.B #%001,D3						*<ea>,Dn - > Dn Mode (Word)
-				BEQ		.DN_PRINT
-				CMPI.B #%010,D3						*<ea>,Dn - > Dn Mode (Long)	
-				BEQ		.DN_PRINT
-				CMPI.B #%100,D3						*Dn,<ea> - > <ea> Mode (Byte)
-				BEQ		.EA_PRINT
-				CMPI.B #%101,D3						*Dn,<ea> - > <ea> Mode (Word)
-				BEQ		.EA_PRINT
-				CMPI.B #%110,D3						*Dn,<ea> - > <ea> Mode (Long)
-				BEQ		.EA_PRINT
-					
-					
-
-.FIN:			MOVEM.L	(SP)+,D0-D7
-				RTS		
-*----------------------------------------------------------
-*	Print size Subroutines
-*----------------------------------------------------------
-.P_B LEA	B_OUT,A1
-				MOVE.L	#14,D0
-				TRAP	#15
-				BRA		.HANDLE_AND_CONT
-*----------------------------------------------------------
-.P_W LEA	W_OUT,A1
-
-				MOVE.L	#14,D0
-				TRAP	#15
-				BRA		.HANDLE_AND_CONT
-*----------------------------------------------------------
-.P_L LEA	L_OUT,A1
-				MOVE.L	#14,D0
-				TRAP	#15
-				BRA		.HANDLE_AND_CONT				
-*----------------------------------------------------------
-*	<ea>,DN - > DN  Print subroutine
-*----------------------------------------------------------
-.DN_PRINT CMPI.B	#$000,D1						* Dn   (Dn - > Dn)
-				BEQ		.DN_D_ADDR
-				
-				CMPI.B	#%010,D1					* (An)
-				BEQ		.DN_A_DIR_ADDR
-				
-				CMPI.B	#%011,D1
-				BEQ		.DN_A_INC_ADDR				* (An)+
-				
-				CMPI.B	#%100,D1
-				BEQ		.DN_A_DEC_ADDR				* -(An)
-				
-				CMPI.B	#%111,D1
-				BEQ		.DN_DATA_ADDR				* (XXX).W / (XXX.L)
-				
-.DN_END_SOURCE	JSR		PRINT_DIVIDER
-
-				*Display destination
-				MOVE.B	AND_DN_REG,D0
-				JSR		PRINT_D_REG
-				BRA		.FIN
-				
-
-*----------------------------------------------------------
-*	DN,<ea> - > <ea>  Print subroutine
-*----------------------------------------------------------
-.EA_PRINT	MOVE.B		D2,D0
-				JSR		PRINT_D_REG
-				JSR		PRINT_DIVIDER
-				MOVE	AND_EA_REG,D0
-			
-				CMPI.B	#%010,D1					* (An)
-				BEQ		.EA_A_DIR_ADDR
-			
-				CMPI.B	#%011,D1					* (An)+
-				BEQ		.EA_A_INC_ADDR
-				
-				CMPI.B	#%100,D1
-				BEQ		.EA_A_DEC_ADDR				* -(An)
-				
-				CMPI.B	#%111,D1					* (XXX).W / (XXX.L) / #<data>
-				BEQ		.EA_DATA_ADDR
-				
-.EA_END_SOURCE	BRA		.FIN
-
-*----------------------------------------------------------
-
-*-----------------------------------------------------------
-*	<ea>,DN-> DN Address Mode Subroutines
-*-----------------------------------------------------------
-.DN_D_ADDR:	JSR		PRINT_D_REG			*Dn
-				BRA		.DN_END_SOURCE
-*-----------------------------------------------------------				
-.DN_A_DIR_ADDR:	JSR		PRINT_A_DIR		* (An)
-					BRA		.DN_END_SOURCE
-*-----------------------------------------------------------
-.DN_A_INC_ADDR:	JSR		PRINT_A_POST	* (An)+		
-					BRA		.DN_END_SOURCE
-*-----------------------------------------------------------
-.DN_A_DEC_ADDR:	JSR		PRINT_A_PRE		* -(An)			
-					BRA		.DN_END_SOURCE
-*-----------------------------------------------------------
-.DN_DATA_ADDR:	MOVE.L	(A4)+,A0
-					CMPI.B	#%000,D0
-					BEQ		.DN_ADDR_WORD
-					CMPI.B	#$001,D0
-					BEQ		.DN_ADDR_LONG
-					BRA		.DN_DATA         * SHOULD NEVER TRIGGER
-					
-.DN_ADDR_WORD:		MOVE.L	#4,D0			* (XXX).W
-					JSR		PRINT_ADDRESS
-					BRA		.DN_END_SOURCE		
-					
-.DN_ADDR_LONG:		MOVE.L	#8,D0			* (XXX).L
-					JSR		PRINT_ADDRESS					
-					BRA		.DN_END_SOURCE		* #<data>	
-
-.DN_DATA				MOVE.L	#4,D0
-					JSR		PRINT_DATA
-					BRA		.DN_END_SOURCE
-*-----------------------------------------------------------
-
-*-----------------------------------------------------------
-*	DN,<ea>-> <ea> Address Mode Subroutines
-*-----------------------------------------------------------
-.EA_D_ADDR:	JSR		PRINT_D_REG			*Dn
-				BRA		.EA_END_SOURCE
-*-----------------------------------------------------------				
-.EA_A_DIR_ADDR:	JSR		PRINT_A_DIR		* (An)
-					BRA		.EA_END_SOURCE
-*-----------------------------------------------------------
-.EA_A_INC_ADDR:	JSR		PRINT_A_POST	* (An)+		
-					BRA		.EA_END_SOURCE
-*-----------------------------------------------------------
-.EA_A_DEC_ADDR:	JSR		PRINT_A_PRE		* -(An)			
-					BRA		.EA_END_SOURCE
-*-----------------------------------------------------------
-.EA_DATA_ADDR:	MOVE.L	(A4)+,A0
-					CMPI.B	#%000,D0
-					BEQ		.EA_ADDR_WORD
-					CMPI.B	#$001,D0
-					BEQ		.EA_ADDR_LONG
-					BRA		.EA_DATA
-					
-.EA_ADDR_WORD:		MOVE.L	#4,D0			* (XXX).W
-					JSR		PRINT_ADDRESS
-					BRA		.EA_END_SOURCE		
-					
-.EA_ADDR_LONG:		MOVE.L	#8,D0			* (XXX).L
-					JSR		PRINT_ADDRESS					
-					BRA		.EA_END_SOURCE		* #<data>	
-
-.EA_DATA				MOVE.L	#4,D0
-					JSR		PRINT_DATA
-					BRA		.EA_END_SOURCE
-*-----------------------------------------------------------
-
+						
+                *Save D0 in D7
+                MOVE.L  D0,D7
+                
+                *Read ea Register
+                ANDI.B  #%111,D0
+                MOVE.B  D0,AND_EA_REG
+                LSR.L   #3,D7
+                
+                *Read ea mode
+                MOVE.L  D7,D0
+                ANDI.B  #%111,D0
+                MOVE.B  D0,AND_EA_MODE
+                LSR.L   #3,D7
+                
+                *Read size
+                MOVE.L  D7,D0
+                ANDI.B  #%11,D0
+                MOVE.B  D0,AND_SIZE
+                LSR.L   #2,D7
+                
+                *Read opmode
+                MOVE.L  D7,D0
+                ANDI.B  #%1,D0
+                MOVE.B  D0,AND_OPMODE
+                LSR.L   #1,D7
+                
+                *read register
+                MOVE.L  D7,D0
+                ANDI.B  #%111,D0
+                MOVE.B  D0,AND_REG
+                
+                *print opcode
+                LEA     AND_OUT,A0
+                JSR     PRINT_STR
+                
+                *print size field
+                MOVE.B  AND_SIZE,D0
+                MOVE.L  #%100100,D1
+                JSR     PRINT_SIZE
+                
+                *print tab
+                JSR     PRINT_OPCODE_TAB
+                
+                *check opmode
+                CMPI.B  #0,AND_OPMODE
+                BEQ     .SRC_EA
+                BRA     .SRC_DN
+                
+.SRC_EA:        MOVE.B  AND_EA_REG,D0
+                MOVE.B  AND_EA_MODE,D1
+                MOVE.B  AND_SIZE,D2
+                MOVE.L  #%100100,D3
+                JSR     PRINT_PARAM
+                BRA     .DEST
+                
+.SRC_DN:        MOVE.B  AND_REG,D0
+                JSR     PRINT_D_REG
+                BRA     .DEST
+                
+                *check opmode
+.DEST:          JSR     PRINT_DIVIDER
+                CMPI.B  #0,AND_OPMODE
+                BEQ     .DEST_DN
+                BRA     .DEST_EA
+                
+.DEST_EA:       MOVE.B  AND_EA_REG,D0
+                MOVE.B  AND_EA_MODE,D1
+                MOVE.B  AND_SIZE,D2
+                MOVE.L  #%100100,D3
+                JSR     PRINT_PARAM
+                BRA     .END
+                
+.DEST_DN:       MOVE.B  AND_REG,D0
+                JSR     PRINT_D_REG
+                BRA     .END
+                
+.END:           MOVEM.L  (SP)+,D0-D7
+                RTS
+                
 
 
 
