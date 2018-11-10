@@ -10,38 +10,38 @@
 *-----------------------------------------------------------
 *	Constants
 *-----------------------------------------------------------
-MOVE_OUT			DC.B	'MOVE',0
-MOVEA_OUT			DC.B	'MOVEA',0
+MOVE_OUT				DC.B	'MOVE',0
+MOVEA_OUT				DC.B	'MOVEA',0
 
-MOVE_SIZE_CODE		DS.L	1
-MOVE_SRC_REG		DS.L	1
-MOVE_SRC_MODE		DS.L	1
-MOVE_DST_REG		DS.L	1
-MOVE_DST_MODE		DS.L	1
+MOVE_SIZE_CODE			DS.L	1
+MOVE_SRC_REG			DS.L	1
+MOVE_SRC_MODE			DS.L	1
+MOVE_DST_REG			DS.L	1
+MOVE_DST_MODE			DS.L	1
 
 *-----------------------------------------------------------
 *	Load MOVE/MOVEA OpCode into Tree
 *-----------------------------------------------------------
-LOAD_MOVE_MOVEA:	MOVEQ	#4,D1							; All nodes below have 4-bits
+LOAD_MOVE_MOVEA:		MOVEQ	#4,D1							; All nodes below have 4-bits
 
-					MOVE.L	#%0001,D0						; Add MOVE.B
-					LEA		HANDLE_MOVE_MOVEA,A0
-					JSR		TREE_ADD_NODE
+						MOVE.L	#%0001,D0						; Add MOVE.B
+						LEA		HANDLE_MOVE_MOVEA,A0
+						JSR		TREE_ADD_NODE
 					
-					MOVE.L	#%0011,D0						; Add MOVE.W
-					LEA		HANDLE_MOVE_MOVEA,A0
-					JSR		TREE_ADD_NODE
+						MOVE.L	#%0011,D0						; Add MOVE.W
+						LEA		HANDLE_MOVE_MOVEA,A0
+						JSR		TREE_ADD_NODE
 					
-					MOVE.L	#%0010,D0						; Add MOVE.L
-					LEA		HANDLE_MOVE_MOVEA,A0
-					JSR		TREE_ADD_NODE
+						MOVE.L	#%0010,D0						; Add MOVE.L
+						LEA		HANDLE_MOVE_MOVEA,A0
+						JSR		TREE_ADD_NODE
 					
-					RTS
+						RTS
 *-----------------------------------------------------------
 *	Handle OpCode
 *-----------------------------------------------------------
 
-HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)	
+HANDLE_MOVE_MOVEA:		MOVEM.L	D0-D7,-(SP)	
 						
 						* copy opcode in D7
 						MOVE.L 	D0,D7
@@ -88,135 +88,51 @@ HANDLE_MOVE_MOVEA:	MOVEM.L	D0-D7,-(SP)
 						CMPI.W		#%001,D0	
 						BEQ			.DISP_MOVEA
 
-						LEA			MOVE_OUT,A1	* display move
+						LEA			MOVE_OUT,A0	* display move
 						BRA			.PRINT
 
-.DISP_MOVEA:			LEA			MOVEA_OUT,A1 * load MOVEA string
+.DISP_MOVEA:			LEA			MOVEA_OUT,A0 * load MOVEA string
 
-.PRINT:					MOVE.B		#14,D0
-						TRAP		#15
+.PRINT:					JSR			PRINT_STR
 						
 						; Output the size code					
 						MOVE.L		MOVE_SIZE_CODE,D0				; Put size value in D0
 						MOVE.L		#%101101,D1						; Put size mask for MOVE in D1
 						JSR			PRINT_SIZE
 						
-						JSR		PRINT_OPCODE_TAB	   				* Print a tab
+						JSR			PRINT_OPCODE_TAB	   				* Print a tab
 						
 *-----------------------------------------------------------
 *	DISPLAY Source
 *-----------------------------------------------------------
-						MOVE.L	MOVE_SRC_MODE,D1
 						MOVE.L	MOVE_SRC_REG,D0
+						MOVE.L	MOVE_SRC_MODE,D1
+						MOVE.L	MOVE_SIZE_CODE,D2
+						MOVE.L	#%101101,D3
 						
-						CMPI.W	#%000,D1			* Dn
-						BEQ		.S_D_ADDR
+						JSR		PRINT_PARAM
 						
-						CMPI.W	#%001,D1			* An
-						BEQ		.S_A_ADDR
+*-----------------------------------------------------------
+*	DISPLAY Divider
+*-----------------------------------------------------------
 						
-						CMPI.W	#%010,D1			* (An)
-						BEQ		.S_A_DIR_ADDR
-						
-						CMPI.W	#%011,D1			* (An)+
-						BEQ		.S_A_INC_ADDR
+						JSR		PRINT_DIVIDER
 
-						CMPI.W	#%100,D1			* -(An)
-						BEQ		.S_A_DEC_ADDR
-						
-						CMPI.W	#%111,D1			* (XXX).W/(XXX).L/#<data>
-						BEQ		.S_DATA_ADDR
-
-.END_SOURCE				JSR		PRINT_DIVIDER
 *-----------------------------------------------------------
 *	DISPLAY Destination
 *-----------------------------------------------------------
-						* display destination
-						MOVE.L	MOVE_DST_MODE,D1
+
 						MOVE.L	MOVE_DST_REG,D0
+						MOVE.L	MOVE_DST_MODE,D1
 						
-						CMPI.W	#%000,D1			* Dn
-						BEQ		.D_D_ADDR
+						JSR		PRINT_PARAM
 						
-						CMPI.W	#%001,D1			* An
-						BEQ		.D_A_ADDR
+						; Return
 						
-						CMPI.W	#%010,D1			* (An)
-						BEQ		.D_A_DIR_ADDR
-						
-						CMPI.W	#%011,D1			* (An)+
-						BEQ		.D_A_INC_ADDR
+						MOVEM.L	(SP)+,D0-D7
+						RTS
 
-						CMPI.W	#%100,D1			* -(An)
-						BEQ		.D_A_DEC_ADDR
-						
-						CMPI.W	#%111,D1			* (XXX).W/(XXX).L/#<data>
-						BEQ		.D_DATA_ADDR							
-*-----------------------------------------------------------	
-					
-.END_DEST				MOVEM.L	 (SP)+,D0-D7
-.FIN:					RTS
 
-*-----------------------------------------------------------
-*	Destination Address Mode methods
-*-----------------------------------------------------------
-.D_D_ADDR:			JSR		PRINT_D_REG		* Dn
-					BRA		.END_DEST
-*-----------------------------------------------------------						
-.D_A_ADDR:			JSR		PRINT_A_REG		* An	
-					BRA		.END_DEST
-*-----------------------------------------------------------				
-.D_A_DIR_ADDR:		JSR		PRINT_A_DIR		* (An)
-					BRA		.END_DEST
-*-----------------------------------------------------------
-.D_A_INC_ADDR:		JSR		PRINT_A_POST	* (An)+		
-					BRA		.END_DEST
-*-----------------------------------------------------------
-.D_A_DEC_ADDR:		JSR		PRINT_A_PRE		* -(An)			
-					BRA		.END_DEST
-*-----------------------------------------------------------
-.D_DATA_ADDR:		CMPI.B	#%000,D0
-					BEQ		.D_DATA_WORD
-					BRA		.D_DATA_LONG
-.D_DATA_WORD:		MOVE.W	(A4)+,A0
-					MOVE.L	#4,D0
-					JSR		PRINT_ADDRESS
-					BRA		.END_DEST			* (XXX).W/(XXX).L/#<data>
-.D_DATA_LONG:		MOVE.L	(A4)+,A0
-					MOVE.L	#8,D0
-					JSR		PRINT_ADDRESS					
-					BRA		.END_DEST			* (XXX).W/(XXX).L/#<data>	
-*-----------------------------------------------------------	
-*-----------------------------------------------------------
-*	Source Address Mode Subroutines
-*-----------------------------------------------------------
-.S_D_ADDR:			JSR		PRINT_D_REG		* Dn
-					BRA		.END_SOURCE
-*-----------------------------------------------------------						
-.S_A_ADDR:			JSR		PRINT_A_REG		* An	
-					BRA		.END_SOURCE
-*-----------------------------------------------------------				
-.S_A_DIR_ADDR:		JSR		PRINT_A_DIR		* (An)
-					BRA		.END_SOURCE
-*-----------------------------------------------------------
-.S_A_INC_ADDR:		JSR		PRINT_A_POST	* (An)+		
-					BRA		.END_SOURCE
-*-----------------------------------------------------------
-.S_A_DEC_ADDR:		JSR		PRINT_A_PRE		* -(An)			
-					BRA		.END_SOURCE
-*-----------------------------------------------------------
-.S_DATA_ADDR:		CMPI.B	#%000,D0
-					BEQ		.S_DATA_WORD
-					BRA		.S_DATA_LONG
-.S_DATA_WORD:		MOVE.L	(A4)+,A0
-					MOVE.L	#4,D0
-					JSR		PRINT_ADDRESS
-					BRA		.END_SOURCE			* (XXX).W/(XXX).L/#<data>
-.S_DATA_LONG:		MOVE.L	(A4)+,A0
-					MOVE.L	#8,D0
-					JSR		PRINT_ADDRESS					
-					BRA		.END_SOURCE			* (XXX).W/(XXX).L/#<data>	
-*-----------------------------------------------------------
 
 
 
