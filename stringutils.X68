@@ -49,7 +49,7 @@ PRINT_ADDRESS:		MOVEM.L		D0/A0-A1,-(SP)
 					JSR			PRINT_STR
 					
 					MOVEA.L		A1,A0						; Restore A1 from A0
-					JSR			WRITEHEX
+					JSR			WRITEHEX_TRIM
 					
 					MOVEM.L		(SP)+,D0/A0-A1
 					RTS
@@ -73,7 +73,7 @@ PRINT_DATA:			MOVEM.L		A1,-(SP)
 					JSR			PRINT_STR
 					
 					MOVEA.L		A1,A0						; Restore A1 from A0
-					JSR			WRITEHEX
+					JSR			WRITEHEX_TRIM
 					
 					MOVEM.L		(SP)+,A1
 					RTS
@@ -480,6 +480,8 @@ GET_INPUT_KEY:		MOVEM.L		D0/D7,-(SP)
 					
 					MOVEM.L		(SP)+,D0/D7
 					RTS					
+
+
 
 
 
