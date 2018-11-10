@@ -59,13 +59,12 @@ LOAD_DIVU		MOVE.L		#%1000000011,D0			* DIVU.W, for D0
 *-----------------------------------------------------------
 *	Handle OpCode
 *-----------------------------------------------------------				
-HANDLE_DIVU	MOVEM.L		D0-D7,-(SP)
+HANDLE_DIVU:	MOVEM.L		D0-D7,-(SP)
 				MOVE.L		D0,D7	
 		
 				* display OpCode and size
-				LEA		DIVU_OUT,A1	
-				MOVE.B	#14,D0
-				TRAP	#15
+				LEA		DIVU_OUT,A0
+				JSR		PRINT_STR
 				
 				JSR		PRINT_OPCODE_TAB	   * Print a tab
 				
@@ -90,68 +89,22 @@ HANDLE_DIVU	MOVEM.L		D0-D7,-(SP)
 				MOVE.B	D0,DIVU_DST_REG
 				ANDI.B	#%0111,DIVU_DST_REG
 				
-		*	DISPLAY Source
-				MOVE.B	DIVU_SRC_MODE,D1
+				* DISPLAY Source
 				MOVE.B	DIVU_SRC_REG,D0
-					
-				CMPI.B	#%000,D1			* Dn
-				BEQ		.S_D_ADDR
-										
-				CMPI.B	#%010,D1			* (An)
-				BEQ		.S_A_DIR_ADDR
-						
-				CMPI.B	#%011,D1			* (An)+
-				BEQ		.S_A_INC_ADDR
+				MOVE.B	DIVU_SRC_MODE,D1
+				MOVE.B	#%11,D2
+				MOVE.B	#%001100,D3				
+				JSR		PRINT_PARAM
+				
+				* DISPLAY Divider
+				JSR		PRINT_DIVIDER		
 
-				CMPI.B	#%100,D1			* -(An)
-				BEQ		.S_A_DEC_ADDR
-					
-				CMPI.B	#%111,D1			* (XXX).W/(XXX).L/#<data>
-				BEQ		.S_DATA_ADDR
-
-.END_SOURCE		JSR		PRINT_DIVIDER
-
-		* DISPLAY Destination
+				* DISPLAY Destination
 				MOVE.B	DIVU_DST_REG,D0
 				JSR		PRINT_D_REG	
 	
-.FIN:			MOVEM.L		(SP)+,D0-D7
+				MOVEM.L		(SP)+,D0-D7
 				RTS				
-*-----------------------------------------------------------
-*	Source Address Mode Subroutines
-*-----------------------------------------------------------
-.S_D_ADDR:			JSR		PRINT_D_REG		* Dn
-					BRA		.END_SOURCE
-*-----------------------------------------------------------				
-.S_A_DIR_ADDR:		JSR		PRINT_A_DIR		* (An)
-					BRA		.END_SOURCE
-*-----------------------------------------------------------
-.S_A_INC_ADDR:		JSR		PRINT_A_POST	* (An)+		
-					BRA		.END_SOURCE
-*-----------------------------------------------------------
-.S_A_DEC_ADDR:		JSR		PRINT_A_PRE		* -(An)			
-					BRA		.END_SOURCE
-*-----------------------------------------------------------
-.S_DATA_ADDR:		MOVE.L	(A4)+,A0
-					CMPI.B	#%000,D0
-					BEQ		.S_ADDR_WORD
-					CMPI.B	#$001,D0
-					BEQ		.S_ADDR_LONG
-					BRA		.S_DATA
-					
-.S_ADDR_WORD:		MOVE.L	#4,D0			* (XXX).W
-					JSR		PRINT_ADDRESS
-					BRA		.END_SOURCE		
-					
-.S_ADDR_LONG:		MOVE.L	#8,D0			* (XXX).L
-					JSR		PRINT_ADDRESS					
-					BRA		.END_SOURCE		* #<data>	
-
-.S_DATA				MOVE.L	#4,D0
-					JSR		PRINT_DATA
-					BRA		.END_SOURCE
-*-----------------------------------------------------------
-
 
 
 

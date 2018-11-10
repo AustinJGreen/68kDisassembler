@@ -9,7 +9,7 @@
 	; INCLUDE		"testfiles\lsl_test.X68"
 	; INCLUDE		"testfiles\lsr_test.X68"
 	INCLUDE		"testfiles\move_test.X68"
-	;INCLUDE		"testfiles\divu_test.X68"
+	INCLUDE		"testfiles\divu_test.X68"
 	;INCLUDE		"testfiles\asl_test.X68"
 	;INCLUDE		"testfiles\asr_test.X68"
 	;INCLUDE		"testfiles\jsr_test.X68"
@@ -17,6 +17,7 @@
 	;INCLUDE		"testfiles\movea_test.X68"
 	;INCLUDE		"testfiles\not_test.X68"
 	;INCLUDE		"testfiles\or_test.X68"
+
 
 
 
