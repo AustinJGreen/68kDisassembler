@@ -17,6 +17,9 @@
 	INCLUDE		"testfiles\movea_test.X68"
 	INCLUDE		"testfiles\not_test.X68"
 	INCLUDE		"testfiles\or_test.X68"
+	INCLUDE		"testfiles\add_test.X68"
+	INCLUDE		"testfiles\adda_test.X68"
+
 
 
 *~Font name~Courier New~
