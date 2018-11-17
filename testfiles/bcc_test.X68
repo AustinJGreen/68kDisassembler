@@ -1,14 +1,7 @@
-				NOP
-				RTS
-				LEA	$4000,A0
-				
-
-
-
-
-
-
-
+		BGT	.END
+		BLE	.END
+		BEQ	.END
+.END	NOP
 
 
 *~Font name~Courier New~

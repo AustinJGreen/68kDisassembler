@@ -1,7 +1,11 @@
-.TEST:			JSR			(A0)
-				JSR			.TEST
+.TEST_JSR		JSR			(A0)
+				JSR			TEST_JSR
 				JSR			$5670FFAA	 
 				
+
+
+
+
 
 
 

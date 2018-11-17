@@ -1,15 +1,6 @@
-				NOP
-				RTS
-				LEA	$4000,A0
-				
-
-
-
-
-
-
-
-
+.START		BRA	.END
+			BRA .END
+.END		BRA .START
 
 *~Font name~Courier New~
 *~Font size~10~
