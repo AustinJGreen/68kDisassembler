@@ -1,4 +1,4 @@
-START:			AND.B		#$91,D6
+				AND.B		#$91,D6
                 AND.B		$5134,D1
 				AND.B		$B314,D4
                 AND.B		(A1),D5
@@ -33,6 +33,7 @@ START:			AND.B		#$91,D6
 				AND.L		D1,-(A1)
 				AND.L		D1,$5134
 				AND.L		D1,$F134
+
 
 
 *~Font name~Courier New~
