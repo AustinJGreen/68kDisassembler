@@ -14,11 +14,17 @@
 	;INCLUDE		"testfiles\muls_test.X68"
 	;INCLUDE		"testfiles\asl_test.X68"
 	;INCLUDE		"testfiles\asr_test.X68"
-	INCLUDE		"testfiles\jsr_test.X68"
+	;INCLUDE		"testfiles\jsr_test.X68"
 	;INCLUDE		"testfiles\misc_test.X68"
 	;INCLUDE		"testfiles\movea_test.X68"
 	;INCLUDE		"testfiles\not_test.X68"
 	;INCLUDE		"testfiles\or_test.X68"
+	INCLUDE			"testfiles\moveq_test.X68"
+
+
+
+
+
 
 
 
