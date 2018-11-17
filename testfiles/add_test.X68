@@ -1,4 +1,3 @@
-				ADD.B		#$91,D6
                 ADD.B		$5134,D1
 				ADD.B		$B314,D4
                 ADD.B		(A1),D5
@@ -16,7 +15,6 @@
 				ADD.W		D1,D3
 				ADD.W		$5134,D1
 				ADD.W		$B314,D4
-				ADD.W		#$1791,D6
 				ADD.W		D1,(A1)
 				ADD.W		D1,(A1)+
 				ADD.W		D1,-(A1)
@@ -27,12 +25,13 @@
 				ADD.L		D1,D3
 				ADD.L		$5134,D1
 				ADD.L		$B314,D4
-				ADD.L		#$1791,D6
 				ADD.L		D1,(A1)
 				ADD.L		D1,(A1)+
 				ADD.L		D1,-(A1)
 				ADD.L		D1,$5134
 				ADD.L		D1,$F134
+
+
 
 
 
