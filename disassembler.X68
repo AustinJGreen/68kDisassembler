@@ -26,6 +26,7 @@ START:				JSR			TREE_INIT					; Initialize binary tree
 					JSR		 	LOAD_ADDQ
 					JSR		 	LOAD_MOVEQ
 					JSR			LOAD_MOVE_MOVEA
+					JSR			LOAD_MOVEM
 					JSR		 	LOAD_OR
 					JSR			LOAD_SUB
 					JSR			LOAD_NOT
@@ -197,6 +198,7 @@ ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
 DONE_STR			DC.B		'Done. Press <ENTER> to disassemble another range, or press the any key to exit.',0
 
 					END			START						; Last line of source
+
 
 
 

@@ -50,14 +50,14 @@ HANDLE_MOVEQ:		MOVEM.L		D0-D7,-(SP)
 *-------------------------------------------------------------------------------------- 
 *	Print Operands
 *--------------------------------------------------------------------------------------					
-					MOVEA.L		A0,A1						; Save A0 in A1
-					LEA			DECDATA_STR,A0				' Write '#$'
+					MOVEA.L		A0,A1						* print percent sign
+					LEA			DECDATA_STR,A0				
 					JSR			PRINT_STR
 					
 
-					MOVEA.W		MOVEQ_DATA,A0
-					MOVE.W		#2,D0
-					JSR			PRINT_ADDRESS
+					MOVEA.W		MOVEQ_DATA,A0				* use Print Address because
+					MOVE.W		#2,D0						* moveq saves the 8 bit source
+					JSR			PRINT_ADDRESS				* as part of the opcode
 					
 					JSR			PRINT_DIVIDER
 					
@@ -66,6 +66,7 @@ HANDLE_MOVEQ:		MOVEM.L		D0-D7,-(SP)
 *--------------------------------------------------------------------------------------					
 .END_DEST			MOVEM.L	 	(SP)+,D0-D7
 .FIN:				RTS
+
 
 
 
