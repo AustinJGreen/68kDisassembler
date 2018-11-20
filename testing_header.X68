@@ -21,6 +21,8 @@
 	INCLUDE		"testfiles\add_test.X68"
 	INCLUDE		"testfiles\adda_test.X68"
 	INCLUDE		"testfiles\addq_test.X68"
+	INCLUDE		"testfiles\sub_test.X68"
+
 
 *~Font name~Courier New~
 *~Font size~10~
