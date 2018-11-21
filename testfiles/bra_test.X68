@@ -1,6 +1,7 @@
-.START		BRA	.END
-			BRA .END
-.END		BRA .START
+.START_TEST		BRA	.END_TEST
+.END_TEST		BRA .START_TEST
+
+
 
 *~Font name~Courier New~
 *~Font size~10~
