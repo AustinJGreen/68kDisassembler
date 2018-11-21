@@ -1,15 +1,15 @@
 1. NOP -DONE
 2. MOVE -DONE
 3. MOVEA -DONE
-4. MOVEQ
+4. MOVEQ -DONE
 5. MOVEM
-6. ADD
-7. ADDA
-8. ADDQ
+6. ADD  -DONE
+7. ADDA  -DONE
+8. ADDQ  -DONE
 9. SUB
 10. MULS -DONE
 11. DIVU -DONE
-12. LEA -DONE(needs review)
+12. LEA -DONE
 13. AND -DONE
 14. OR  -DONE
 15. NOT  -DONE
@@ -17,7 +17,7 @@
 17. LSR  -DONE
 18. ASR  -DONE
 19. ASL  -DONE
-20. Bcc (BGT, BLE, BEQ) -DONE (needs review)
-21. JSR -DONE (needs review, address printed a single hex)
+20. Bcc (BGT, BLE, BEQ) -DONE
+21. JSR -DONE
 22. RTS -DONE
 23. BRA -DONE

@@ -24,6 +24,8 @@
 	INCLUDE		"opcodes\muls.X68"
 	INCLUDE		"opcodes\and.X68"
 	INCLUDE		"opcodes\addadda.X68"
+	INCLUDE		"opcodes\movem.X68"
+
 
 
 

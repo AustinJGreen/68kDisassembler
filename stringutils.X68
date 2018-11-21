@@ -15,6 +15,7 @@ RIGHT_PAREN			DC.B		')',0
 DECREMENT			DC.B		'-',0
 INCREMENT			DC.B		'+',0
 DIVIDER			 	DC.B		',',0	
+BACK_SLASH			DC.B		'/',0
 ADDRESS_STR			DC.B		'$',0
 DECDATA_STR			DC.B		'#',0
 HEXDATA_STR			DC.B		'#$',0
@@ -294,6 +295,36 @@ PRINT_DIVIDER:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 					TRAP		#15							; Print ,
 					MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
 					RTS										; Return
+*--------------------------------------------------------------------
+* PRINT_DASH
+* Prints a -, used to separate registers in a range
+*
+*
+* REGISTER USE
+* A1 - Holds register string
+*--------------------------------------------------------------------					 
+PRINT_DASH:			MOVEM.L		D0-D1/A1,-(SP)				; Save registers	
+					LEA			DECREMENT,A1				   	; Load ,
+					MOVE.B		#14,D0
+					TRAP		#15							; Print ,
+					MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
+					RTS										; Return
+
+*--------------------------------------------------------------------
+* PRINT_BACK_SLASH
+* Prints a /, used to separate An and Dn registers in a list
+*
+*
+* REGISTER USE
+* A1 - Holds register string
+*--------------------------------------------------------------------					 
+PRINT_BACK_SLASH:	MOVEM.L		D0-D1/A1,-(SP)				; Save registers	
+					LEA			BACK_SLASH,A1				   	; Load ,
+					MOVE.B		#14,D0
+					TRAP		#15							; Print ,
+					MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
+					RTS										; Return
+
 
 *--------------------------------------------------------------------
 * PRINT_OPCODE_TAB
@@ -480,6 +511,9 @@ GET_INPUT_KEY:		MOVEM.L		D0/D7,-(SP)
 					
 					MOVEM.L		(SP)+,D0/D7
 					RTS					
+
+
+
 
 
 

@@ -1,6 +1,6 @@
 *-----------------------------------------------------------
-* Title      :  AND Handler Function
-* Description:	Handles the AND opcode, outputs the full
+* Title      :  ADD Handler Function
+* Description:	Handles the ADD opcode, outputs the full
 *				disassembled instruction
 *-----------------------------------------------------------
 * Constants
@@ -143,6 +143,7 @@ HANDLE_ADD	MOVEM.L	D0-D7,-(SP)
 				
 				
 				
+
 
 
 
