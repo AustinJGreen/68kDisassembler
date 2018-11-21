@@ -1,7 +1,34 @@
-		MOVEM.W		D2-D3,(A0)
-		MOVEM.W		D2/A3,(A0)
-		MOVEM.W		D3/A0-A2,-(A0)
-		MOVEM.W		(A0)+,D3/A0-A2
+		MOVEM.W		D4/A2-A3,-(A3)
+		MOVEM.W		D0,-(A3)
+		MOVEM.W		D1-D5/A1-A6,-(A3)
+		MOVEM.W		D4-D6/A2,-(A3)
+		MOVEM.W		A3,-(A3)
+		MOVEM.W		D4/A2,-(A3)		
+
+		MOVEM.W		(A1)+,D4/A2-A3
+		MOVEM.W		(A1)+,D0
+		MOVEM.W		(A1)+,D1-D5/A1-A6
+		MOVEM.W		(A1)+,D4-D6/A2
+		MOVEM.W		(A1)+,A3
+		MOVEM.W		(A1)+,D4/A2
+		
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
