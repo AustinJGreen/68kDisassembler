@@ -13,6 +13,13 @@
 *--------------------------------------------------------------------------------------  
 LEA_OUT				DC.B		'LEA',0
 
+*-----------------------------------------------------------
+* Variables
+*-----------------------------------------------------------
+LEA_REG      		DS.B    	1
+LEA_EA_MODE			DS.B		1
+LEA_EA_REG			DS.B		1
+
 LOAD_LEA:			MOVE.L		#10,D1						; All nodes below have 10 bits
 					
 					MOVE.L		#%0100000111,D0				; Add for A0 / (xxx).W
@@ -49,9 +56,46 @@ HANDLE_LEA:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					LEA			LEA_OUT,A0
 					JSR			PRINT_STR
 				
-.END:				
+					; Read register number			
+					MOVE.L		D0,D1
+					LSR.L		#8,D1
+					AND.B		#%111,D1
+					MOVE.B		D1,LEA_REG
+
+					; Read effective address mode
+					MOVE.L		D0,D1
+					LSR.L		#3,D1
+					AND.B		#%111,D1
+					MOVE.B		D1,LEA_EA_MODE
+
+					; Read effective address register
+					MOVE.L		D0,D1
+					AND.B		#%111,D1
+					MOVE.B		D1,LEA_EA_REG
+															
+					; Print opcode tab
+					JSR			PRINT_OPCODE_TAB
+					
+					; Print effective address
+					MOVE.B		LEA_EA_REG,D0
+					MOVE.B		LEA_EA_MODE,D1
+					
+					; No need to add size params, data param is undefined for LEA
+					JSR			PRINT_PARAM
+					
+					; Print divider
+					JSR			PRINT_DIVIDER
+					
+					; Print address register
+					MOVE.B		LEA_REG,D0
+					JSR			PRINT_A_REG				
+			
 					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
+
+
+
 
 
 

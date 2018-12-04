@@ -28,16 +28,16 @@ Make sure your EASy68K editor complies with the following: (Options -> Editor Op
 - [X] NOP
 - [X] MOVE
 - [X] MOVEA
-- [ ] MOVEQ
-- [ ] MOVEM
-- [ ] ADD
-- [ ] ADDA
-- [ ] ADDQ
-- [ ] SUB
-- [ ] MULS
+- [X] MOVEQ
+- [X] MOVEM
+- [X] ADD
+- [X] ADDA
+- [X] ADDQ
+- [X] SUB
+- [X] MULS
 - [X] DIVU
 - [X] LEA
-- [ ] AND
+- [X] AND
 - [X] OR
 - [X] NOT
 - [X] LSL
