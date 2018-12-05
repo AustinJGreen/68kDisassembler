@@ -211,7 +211,8 @@ PRINT_D_REG:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 * A1 - Holds register string
 *--------------------------------------------------------------------
 PRINT_A_REG:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
-					MOVE.L		D0,D1						; Save D0 in D1
+					CLR.L		D1							; Clear D1 so only first byte from D0 is used
+					MOVE.B		D0,D1						; Save D0 in D1
 					LEA			A_REG_STR,A1				; Load A string
 					MOVE.B		#14,D0						; Set task 14
 					TRAP		#15							; Run trap 15
@@ -511,6 +512,8 @@ GET_INPUT_KEY:		MOVEM.L		D0/D7,-(SP)
 					
 					MOVEM.L		(SP)+,D0/D7
 					RTS					
+
+
 
 
 

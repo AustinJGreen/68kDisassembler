@@ -24,7 +24,7 @@ WRITEHEX:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					
 					MOVE.L		#$F0000000,D4				; Initialize mask
 					
-					MOVE.L		D0,D3						; Save original value of D0
+					MOVE.B		D0,D3						; Save original value of D0
 					
 .SHIFT_MASK:		CMPI.B		#8,D0						; Check if done iterating
 					BEQ			.CHAR_START
@@ -35,7 +35,7 @@ WRITEHEX:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					
 					; Start of letter by letter loop
 
-.CHAR_START:		MOVE.L		D3,D0						; Restore original value of D0
+.CHAR_START:		MOVE.B		D3,D0						; Restore original value of D0
 
 					CMP.L		D3,D6						; D3 holds length to write, check with D6 to see ...
 					BEQ			.END						; ... if we are at nth hex char then quit (0 indexed)
@@ -43,7 +43,7 @@ WRITEHEX:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					MOVE.L		D7,D5						; Copy over current buffer 
 					AND.L		D4,D5						; Get current character 
 
-.ALIGN_RIGHT:		CMPI		#1,D0
+.ALIGN_RIGHT:		CMPI.B		#1,D0
 					BEQ			.ALIGN_END					; Letter is aligned at 1st spot, exit loop
 					
 					LSR.L		#4,D5						; Rotate the letter right 4 bits
@@ -95,7 +95,7 @@ WRITEHEX_TRIM:		MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					
 					MOVE.L		#$F0000000,D4				; Initialize mask
 					
-					MOVE.L		D0,D3						; Save original value of D0
+					MOVE.B		D0,D3						; Save original value of D0
 					
 .SHIFT_MASK:		CMPI.B		#8,D0						; Check if done iterating
 					BEQ			.CHAR_START
@@ -106,7 +106,7 @@ WRITEHEX_TRIM:		MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 
 					; Start of letter by letter loop
 
-.CHAR_START:		MOVE.L		D3,D0						; Restore original value of D0
+.CHAR_START:		MOVE.B		D3,D0						; Restore original value of D0
 
 					CMP.L		D3,D6						; D3 holds length to write, check with D6 to see ...
 					BEQ			.END						; ... if we are at nth hex char then quit (0 indexed)
@@ -114,7 +114,7 @@ WRITEHEX_TRIM:		MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					MOVE.L		D7,D5						; Copy over current buffer 
 					AND.L		D4,D5						; Get current character 
 
-.ALIGN_RIGHT:		CMPI		#1,D0
+.ALIGN_RIGHT:		CMPI.B		#1,D0
 					BEQ			.ALIGN_END					; Letter is aligned at 1st spot, exit loop
 					
 					LSR.L		#4,D5						; Rotate the letter right 4 bits
@@ -148,6 +148,7 @@ WRITEHEX_TRIM:		MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 
 .END:				MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
 
 
 
