@@ -46,8 +46,7 @@ READHEX:
 					SUBQ		#1,D0						; Decrement amount of characters left
 					BRA			.LOOP_S						; Go back to beginning of loop
 
-.INPUT_INVALID:
-					MOVE.L		#-1,D1						; Put -1 in D1 to represent invalid input
+.INPUT_INVALID:		MOVE.B		#1,ERROR_FLAG				; Set error flag to True
 					BRA			.READHEX_END				; Go to function end
 			
 .CONVERT_LOWER:			   
@@ -71,6 +70,8 @@ READHEX:
 .READHEX_END:
 					MOVEM.L		(SP)+,D0-D1/A1				; Restore all registers
 					RTS										; Return
+
+
 
 
 

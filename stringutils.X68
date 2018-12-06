@@ -373,6 +373,29 @@ PRINT_BACK_SLASH:	MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 					RTS										; Return
 
 *--------------------------------------------------------------------
+* CLEAR_LINE
+* Clears the current line, assuming the cursor is at 0
+*
+* REGISTER USE
+* D0 - Holds column number
+*--------------------------------------------------------------------
+CLEAR_LINE: 		MOVEM.L		D0,-(SP)
+					
+					MOVE.B		#0,D0
+.LOOP:				CMPI.B		#78,D0
+					BEQ			.END
+					
+					LEA			SPACE_STR,A0
+					JSR			PRINT_STR
+					
+					ADDQ		#1,D0
+					BRA			.LOOP		
+					
+.END:				MOVEM.L		(SP)+,D0
+					RTS
+
+
+*--------------------------------------------------------------------
 * CLEAR_OPCODE_DATA
 * Goes to the index where the opcode data starts, and clears the space
 * where opcode data is filled
@@ -603,6 +626,7 @@ GET_INPUT_KEY:		MOVEM.L		D0/D7,-(SP)
 					
 					MOVEM.L		(SP)+,D0/D7
 					RTS					
+
 
 
 
