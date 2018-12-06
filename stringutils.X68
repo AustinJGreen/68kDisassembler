@@ -8,6 +8,7 @@ TAB					EQU			$09							; ASCII code for Horizontal Tab
 
 TAB_STR				DC.B		TAB,0
 NEWLINE_STR			DC.B		CR,LF,0
+SPACE_STR			DC.B		' ',0
 D_REG_STR			DC.B		'D',0
 A_REG_STR			DC.B		'A',0
 LEFT_PAREN			DC.B		'(',0
@@ -177,7 +178,7 @@ PRINT_SIZE:			MOVEM.L		D0-D1/A1,-(SP)
 					MOVE.L		#3,D1						; Display 3 bytes for .,(size),0
 					TRAP		#15							; Run Trap 15						
 						
-.END					MOVEM.L		(SP)+,D0-D1/A1
+.END:				MOVEM.L		(SP)+,D0-D1/A1
 					RTS
 
 *--------------------------------------------------------------------
@@ -191,13 +192,22 @@ PRINT_SIZE:			MOVEM.L		D0-D1/A1,-(SP)
 * A1 - Holds register string
 *--------------------------------------------------------------------
 PRINT_D_REG:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
+
+					CMPI.B		#7,D0						; Check for invalid register
+					BGT			.ERROR
+
 					MOVE.B		D0,D1						; Save 1st byte of D0 in D1
 					LEA			D_REG_STR,A1				; Load D string
 					MOVE.B		#14,D0						; Set task 14
 					TRAP		#15							; Run trap 15
 					MOVE.B		#3,D0						; Set task 3
 					TRAP		#15							; Run trap 15
-					MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
+					BRA			.END
+					
+.ERROR:				MOVE.B		#1,ERROR_FLAG
+					BRA			.END	
+					
+.END:				MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
 					RTS										; Return
 
 *--------------------------------------------------------------------
@@ -211,6 +221,10 @@ PRINT_D_REG:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 * A1 - Holds register string
 *--------------------------------------------------------------------
 PRINT_A_REG:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
+
+					CMPI.B		#7,D0						; Check for invalid register
+					BGT			.ERROR	
+
 					CLR.L		D1							; Clear D1 so only first byte from D0 is used
 					MOVE.B		D0,D1						; Save D0 in D1
 					LEA			A_REG_STR,A1				; Load A string
@@ -218,7 +232,12 @@ PRINT_A_REG:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 					TRAP		#15							; Run trap 15
 					MOVE.B		#3,D0						; Set task 3
 					TRAP		#15							; Run trap 15
-					MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
+					BRA			.END
+
+.ERROR:				MOVE.B		#1,ERROR_FLAG
+					BRA			.END	
+					
+.END:				MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
 					RTS										; Return
 
 *--------------------------------------------------------------------
@@ -232,6 +251,10 @@ PRINT_A_REG:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 * A1 - Holds register string
 *--------------------------------------------------------------------
 PRINT_A_DIR:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
+
+					CMPI.B		#7,D0						; Check for invalid register
+					BGT			.ERROR
+
 					MOVE.L		D0,D1						; Save D0 in D1
 					LEA			LEFT_PAREN,A1				; Load (
 					MOVE.B		#14,D0						
@@ -241,7 +264,12 @@ PRINT_A_DIR:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 					LEA			RIGHT_PAREN,A1				; Load )
 					MOVE.B		#14,D0
 					TRAP		#15							; Print )
-					MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
+					BRA			.END
+
+.ERROR:				MOVE.B		#1,ERROR_FLAG
+					BRA			.END	
+					
+.END:				MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
 					RTS										; Return
 
 *--------------------------------------------------------------------
@@ -255,13 +283,22 @@ PRINT_A_DIR:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 * A1 - Holds register string
 *--------------------------------------------------------------------
 PRINT_A_PRE:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
+
+					CMPI.B		#7,D0						; Check for invalid register
+					BGT			.ERROR
+
 					MOVE.L		D0,D1						; Save D0 in D1
 					LEA			DECREMENT,A1				; Load -
 					MOVE.B		#14,D0				
 					TRAP		#15							; Print -
 					MOVE.L		D1,D0						; Put D1 back in D0
 					JSR			PRINT_A_DIR					; Print (An)
-					MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
+					BRA			.END
+
+.ERROR:				MOVE.B		#1,ERROR_FLAG
+					BRA			.END	
+					
+.END:				MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
 					RTS										; Return
 
 *--------------------------------------------------------------------
@@ -274,12 +311,21 @@ PRINT_A_PRE:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 * REGISTER USE
 * A1 - Holds register string
 *--------------------------------------------------------------------					 
-PRINT_A_POST:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers			   
+PRINT_A_POST:		MOVEM.L		D0-D1/A1,-(SP)				; Save registers	
+
+					CMPI.B		#7,D0						; Check for invalid register
+					BGT			.ERROR
+		   
 					JSR			PRINT_A_DIR					; Print (An)
 					LEA			INCREMENT,A1				; Load +
 					MOVE.B		#14,D0
 					TRAP		#15							; Print +
-					MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
+					BRA			.END
+					
+.ERROR:				MOVE.B		#1,ERROR_FLAG
+					BRA			.END	
+					
+.END:				MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
 					RTS										; Return
 					
 *--------------------------------------------------------------------
@@ -326,6 +372,49 @@ PRINT_BACK_SLASH:	MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 					MOVEM.L		(SP)+,D0-D1/A1				; Restore registers
 					RTS										; Return
 
+*--------------------------------------------------------------------
+* CLEAR_OPCODE_DATA
+* Goes to the index where the opcode data starts, and clears the space
+* where opcode data is filled
+*
+* REGISTER USE
+* D0 - Holds column number
+*--------------------------------------------------------------------
+CLEAR_OPCODE_DATA: 	MOVEM.L		D0,-(SP)
+					JSR			GOTO_OPCODE_START
+					
+					MOVE.B		#18,D0
+.LOOP:				CMPI.B		#78,D0
+					BEQ			.END
+					
+					LEA			SPACE_STR,A0
+					JSR			PRINT_STR
+					
+					ADDQ		#1,D0
+					BRA			.LOOP		
+					
+.END:				MOVEM.L		(SP)+,D0
+					RTS
+
+*--------------------------------------------------------------------
+* GOTO_OPCODE_START
+* Goes to the index where the opcode data starts, to overwrite a 
+* failed opcode. Sets cursor to 18
+*
+* REGISTER USE
+* D0 - Holds task number
+* D1 - Holds row and column position
+* D2 - Holds temporary value of LINE_NUMBER
+*--------------------------------------------------------------------
+GOTO_OPCODE_START:	MOVEM.L		D0-D2,-(SP)
+					MOVE.L		#11,D0					; Task 11
+					MOVE.B		#18,D1					; Column 16
+					LSL.W		#8,D1					; Shift 32 over to the high byte
+					MOVE.L		LINE_NUMBER,D2
+					MOVE.B		D2,D1					; Move byte of line number to low byte
+					TRAP		#15						; Run trap 15
+					MOVEM.L		(SP)+,D0-D2
+					RTS
 
 *--------------------------------------------------------------------
 * PRINT_OPCODE_TAB
@@ -336,7 +425,7 @@ PRINT_BACK_SLASH:	MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 * 00000002    NOT.B    D1
 * 
 * Which looks unaligned. Using PRINT_OPCODE_TAB puts the cursor at
-* column 24. 8 for the address, 8 for the double tab and 12 for the opcode space.
+* column 32. 8 for the address, 8 for the double tab and 12 for the opcode space.
 *
 * REGISTER USE
 * D0 - Holds task number
@@ -344,12 +433,12 @@ PRINT_BACK_SLASH:	MOVEM.L		D0-D1/A1,-(SP)				; Save registers
 * D2 - Holds temporary value of LINE_NUMBER
 *--------------------------------------------------------------------
 PRINT_OPCODE_TAB:	MOVEM.L		D0-D2,-(SP)
-					MOVE.L		#11,D0
-					MOVE.B		#32,D1
-					LSL.W		#8,D1
+					MOVE.L		#11,D0					; Task 11
+					MOVE.B		#32,D1					; Column 32
+					LSL.W		#8,D1					; Shift 32 over to the high byte
 					MOVE.L		LINE_NUMBER,D2
-					MOVE.B		D2,D1
-					TRAP		#15
+					MOVE.B		D2,D1					; Move byte of line number to low byte
+					TRAP		#15						; Run trap 15
 					MOVEM.L		(SP)+,D0-D2
 					RTS
 
@@ -387,7 +476,7 @@ PRINT_PARAM:		MOVEM.L		D0-D1/A0,-(SP)
 					CMPI.B		#%100,D1
 					BEQ			.PRINT_A_PRE
 					CMPI.B		#%111,D1
-					BNE			.END
+					BNE			.ERROR
 					
 					CMPI.B		#%000,D0
 					BEQ			.PRINT_WORD
@@ -396,6 +485,8 @@ PRINT_PARAM:		MOVEM.L		D0-D1/A0,-(SP)
 					CMPI.B		#%100,D0
 					BEQ			.PRINT_DATA
 					
+					; Invalid parameter
+.ERROR:				MOVE.B		#1,ERROR_FLAG		
 					BRA			.END
 					
 .PRINT_DN:			JSR			PRINT_D_REG
@@ -512,6 +603,10 @@ GET_INPUT_KEY:		MOVEM.L		D0/D7,-(SP)
 					
 					MOVEM.L		(SP)+,D0/D7
 					RTS					
+
+
+
+
 
 
 

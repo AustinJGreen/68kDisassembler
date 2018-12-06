@@ -85,13 +85,13 @@ HANDLE_JSR:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					
 					BRA			.END
 					
-.INVALID:			; TODO: I'm not sure what to do here...
-
-					SIMHALT									
+					; Set error flag and return
+.INVALID:			MOVE.B		#1,ERROR_FLAG
+					BRA			.END								
 					
-.END:				
-					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
+.END:				MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
 
 
 
