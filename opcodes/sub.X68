@@ -62,7 +62,7 @@ HANDLE_SUB	MOVEM.L	D0-D7,-(SP)
 				ANDI.B	#%111,D0
 				MOVE.B	D0,SUB_REG
 				
-				*Print OPMODE
+				*Print OPCode
 				LEA		SUB_OUT,A0
 				JSR		PRINT_STR
 				
@@ -75,7 +75,7 @@ HANDLE_SUB	MOVEM.L	D0-D7,-(SP)
 				JSR		PRINT_OPCODE_TAB
 				
 				*check opmode
-				CMPI.B	#0,SUB_OPMODE
+				CMPI.B	#1,SUB_OPMODE
 				BEQ		.SRC_DN
 				BRA		.SRC_EA
 				
@@ -91,7 +91,7 @@ HANDLE_SUB	MOVEM.L	D0-D7,-(SP)
                 BRA     .DEST
                 
 .DEST:          JSR     PRINT_DIVIDER
-                CMPI.B  #0,SUB_OPMODE
+                CMPI.B  #1,SUB_OPMODE
                 BEQ     .DEST_EA
                 BRA     .DEST_DN
                 
@@ -114,6 +114,10 @@ HANDLE_SUB	MOVEM.L	D0-D7,-(SP)
 				
 				
 				
+
+
+
+
 
 *~Font name~Courier New~
 *~Font size~10~
