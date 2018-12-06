@@ -19,12 +19,14 @@
 	INCLUDE		"opcodes\bra.X68"
 	INCLUDE		"opcodes\beq.X68"
 	INCLUDE		"opcodes\ble.X68"
+	INCLUDE		"opcodes\blt.X68"
 	INCLUDE		"opcodes\bgt.X68"
 	INCLUDE		"opcodes\divu.X68"
 	INCLUDE		"opcodes\muls.X68"
 	INCLUDE		"opcodes\and.X68"
 	INCLUDE		"opcodes\addadda.X68"
 	INCLUDE		"opcodes\movem.X68"
+
 
 
 

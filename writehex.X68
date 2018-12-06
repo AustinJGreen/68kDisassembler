@@ -84,6 +84,7 @@ WRITEHEX:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 * D4 - Stores mask
 * D3 - Temporary Swap Register
 * D2 - Holds boolean true or false if we've hit a non-zero letter
+* D1 - For printing letter
 *-----------------------------------------------------------------
 WRITEHEX_TRIM:		MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					
@@ -109,7 +110,7 @@ WRITEHEX_TRIM:		MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 .CHAR_START:		MOVE.B		D3,D0						; Restore original value of D0
 
 					CMP.L		D3,D6						; D3 holds length to write, check with D6 to see ...
-					BEQ			.END						; ... if we are at nth hex char then quit (0 indexed)
+					BEQ			.END_CHECK					; ... if we are at nth hex char then quit (0 indexed)
 					
 					MOVE.L		D7,D5						; Copy over current buffer 
 					AND.L		D4,D5						; Get current character 
@@ -146,8 +147,21 @@ WRITEHEX_TRIM:		MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 	  
 					; Done writing string
 
-.END:				MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
+					; Before exiting, check to make sure we have printed at least one char
+.END_CHECK:			CMPI.B		#0,D2						; Check if we still are with leading 0s
+					BEQ			.PRINT_ZERO
+					BRA			.END
+					
+					; Print zero, dont need to change A1 since 0 is first two bytes
+.PRINT_ZERO:		LEA			HEX_ALPHABET,A1				; Load hexadecimal alphabet address into A1
+					MOVE.L		#1,D0						; Use Task 1
+					MOVE.L		#2,D1						; Display 2 bytes (1st byte is letter, 2nd is null terminator)
+					TRAP		#15							; Run Trap 15
+					BRA			.END
+
+.END				MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
 
 
 
