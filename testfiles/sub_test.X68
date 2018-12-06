@@ -3,7 +3,7 @@
                 SUB.B		(A1),D5
 				SUB.B		(A0)+,D6
 				SUB.B		-(A0),D7
-				SUB.B		D1,D3				
+				SUB.W		D1,A3				
 				SUB.B		D1,(A1)
 				SUB.B		D1,(A1)+
 				SUB.B		D1,-(A1)
@@ -30,6 +30,7 @@
 				SUB.L		D1,-(A1)
 				SUB.L		D1,$5134
 				SUB.L		D1,$F134
+
 
 
 
