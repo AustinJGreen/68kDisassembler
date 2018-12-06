@@ -39,6 +39,7 @@ START:				JSR			TREE_INIT					; Initialize binary tree
 					JSR			LOAD_BEQ
 					JSR			LOAD_BLE
 					JSR			LOAD_BGT
+					JSR			LOAD_BLT
 					JSR			LOAD_DIVU
 					JSR			LOAD_MULS
 					JSR			LOAD_ADD_ADDA

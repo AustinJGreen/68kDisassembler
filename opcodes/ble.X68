@@ -25,14 +25,41 @@ HANDLE_BLE:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 
 					JSR			PRINT_OPCODE_TAB
 
-					; Read word of displacement
+					; Read 8-bit displacement into D0
+					AND.B		#%11111111,D0	
 
-					MOVEA.W		(A4)+,A0
+					; Check for 00, which means WORD displacement
+					CMPI.B		#$00,D0
+					BEQ			.WORD_ADDR
+					
+					; Check for FF which means LONG displacement
+					CMPI.B		#$FF,D0
+					BEQ			.LONG_ADDR
+						
+					; No extra data, display data and continue to end					
+					MOVE.W		D0,A0
+					MOVE.L		#2,D0
+					JSR			PRINT_ADDRESS	
+					
+					BRA			.END	
+						
+					; Read word of displacement
+.WORD_ADDR:			MOVEA.W		(A4)+,A0
+					
 					MOVE.L		#4,D0
-					JSR			PRINT_ADDRESS					
-.END:				
-					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
+					JSR			PRINT_ADDRESS	
+					BRA			.END
+					
+					; Read long of displacement
+.LONG_ADDR:			MOVEA.L		(A4)+,A0
+
+					MOVE.L		#8,D0
+					JSR			PRINT_ADDRESS	
+					BRA			.END
+				
+.END:				MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
 
 
 

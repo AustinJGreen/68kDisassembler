@@ -1,7 +1,18 @@
-		BGT	.END
-		BLE	.END
-		BEQ	.END
+		BGT			.END
+		BLE			.END
+		BLT			.END
+		BEQ.B     	.END	
+   		BGT.B     	.END
+    	BGT.B     	.END
+    	BLE.B     	.END
+    	BGT.B     	.END
+    	BLE.B     	.END
+    	BEQ.W     	.END
+		
 .END	NOP
+
+
+
 
 
 *~Font name~Courier New~

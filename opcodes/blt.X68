@@ -1,6 +1,6 @@
 *--------------------------------------------------------------------------------------
-* Title			: BGT Handler function
-* Description	: Handles the BGT opcode, outputs the full disassembled instruction
+* Title			: BLT Handler function
+* Description	: Handles the BLT opcode, outputs the full disassembled instruction
 * Manual Page # : 129
 * 
 * INPUTS
@@ -11,16 +11,16 @@
 * D6 - Holds register value
 * D7 - Register used to hold Opcode data
 *--------------------------------------------------------------------------------------  
-BGT_OUT				DC.B		'BGT',0
+BLT_OUT				DC.B		'BLT',0
 
-LOAD_BGT:			MOVE.L		#%01101110,D0
+LOAD_BLT:			MOVE.L		#%01101101,D0
 					MOVE.L		#8,D1
-					LEA			HANDLE_BGT,A0
+					LEA			HANDLE_BLT,A0
 					JSR			TREE_ADD_NODE
 					RTS
 
-HANDLE_BGT:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
-					LEA			BGT_OUT,A0
+HANDLE_BLT:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
+					LEA			BLT_OUT,A0
 					JSR			PRINT_STR
 
 					JSR			PRINT_OPCODE_TAB
@@ -59,6 +59,32 @@ HANDLE_BGT:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 				
 .END:				MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
