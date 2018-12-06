@@ -50,28 +50,32 @@ LOAD_LEA:			MOVE.L		#10,D1						; All nodes below have 10 bits
 					LEA			HANDLE_LEA,A0
 					JSR			TREE_ADD_NODE
 					
+					MOVE.L		#%0100111111,D0				; Add for A7
+					LEA			HANDLE_LEA,A0
+					JSR			TREE_ADD_NODE
+					
 					RTS
 
 HANDLE_LEA:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					LEA			LEA_OUT,A0
 					JSR			PRINT_STR
-				
-					; Read register number			
-					MOVE.L		D0,D1
-					LSR.L		#8,D1
-					AND.B		#%111,D1
-					MOVE.B		D1,LEA_REG
-
-					; Read effective address mode
-					MOVE.L		D0,D1
-					LSR.L		#3,D1
-					AND.B		#%111,D1
-					MOVE.B		D1,LEA_EA_MODE
-
+								
 					; Read effective address register
 					MOVE.L		D0,D1
 					AND.B		#%111,D1
-					MOVE.B		D1,LEA_EA_REG
+					MOVE.B		D1,LEA_EA_REG											
+					
+					; Read effective address mode
+					LSR.L		#3,D0
+					MOVE.L		D0,D1
+					AND.B		#%111,D1
+					MOVE.B		D1,LEA_EA_MODE	
+
+					; Read register number	
+					LSR.L		#6,D0		
+					MOVE.L		D0,D1		
+					AND.B		#%111,D1
+					MOVE.B		D1,LEA_REG	
 															
 					; Print opcode tab
 					JSR			PRINT_OPCODE_TAB
@@ -92,6 +96,8 @@ HANDLE_LEA:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 			
 					MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
+
 
 
 

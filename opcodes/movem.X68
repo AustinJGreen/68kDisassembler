@@ -203,7 +203,7 @@ PRINT_REG_TO_MEM:	CLR		D0
 					BEQ		.RTM_CONT_PRINT		* sinc we are now printing An
 					JSR		PRINT_BACK_SLASH
 		
-.RTM_CONT_PRINT	MOVE.B	#7,D0	* zeroth bit corresponds to A7
+.RTM_CONT_PRINT		MOVE.B	#7,D0	* zeroth bit corresponds to A7
 					SUB.B	D6,D0	* print starting register
 					MOVE.B	D4,D1
 					JSR		PRINT_PARAM
@@ -233,7 +233,7 @@ PRINT_REG_TO_MEM:	CLR		D0
 					MOVE.B	#7,D0
 					SUB.B	D5,D0				* print ending register
 					MOVE.B	D4,D1
-					JSR		PRINT_PARAM
+					JSR		PRINT_PARAM	
 					MOVE.W	#0,D5		* reset range head
 					BRA		.RTM_SKIP
 					
@@ -251,6 +251,7 @@ PRINT_AN:	CLR		D0
 			
 			RTS
 *-----------------------------------------------------------	
+
 
 
 
