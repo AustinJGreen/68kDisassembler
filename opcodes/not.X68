@@ -86,11 +86,13 @@ HANDLE_NOT:			MOVEM.L		D0-D7,-(SP)
 					JSR			PRINT_A_PRE 
 					BRA			.END
 					
-.INVALID:			; TODO: I'm not sure what to do here...
-					SIMHALT
-.END		 
-					MOVEM.L		(SP)+,D0-D7
+					; Set error flag and return
+.INVALID:			MOVE.B		#1,ERROR_FLAG
+					BRA			.END
+					
+.END:		 		MOVEM.L		(SP)+,D0-D7
 					RTS
+
 
 
 

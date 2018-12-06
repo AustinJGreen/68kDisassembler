@@ -7,6 +7,8 @@
 
 					ORG			$1000						; Organize code at 0x1000 (Specification 5)
 
+ERROR_FLAG			DC.B		1
+
 					INCLUDE		"binarytree.X68"			; Load Binary tree object
 					INCLUDE		"stringutils.X68"			; Load String Utils
 					INCLUDE		"readhex.X68"				; Load ReadHex Function
@@ -17,7 +19,8 @@
 
 					; Load information for tree
 
-START:				JSR			TREE_INIT					; Initialize binary tree
+START:				MOVE.B		#0,ERROR_FLAG				; Set ERROR_FLAG to 0 (False)
+					JSR			TREE_INIT					; Initialize binary tree
 
 					;--------------------------------------------------------------------------
 					; Add OpCodes to tree
@@ -97,14 +100,16 @@ READ_START:			CMPA.L		A4,A5
 					MOVE.L		#0,D0						; Clear all 32-bits so handler files are looking at a clean 16-bits just to be safe
 					MOVE.W		(A4)+,D0					; Read 16-bits at a time
 
-					CMPI.W		#$FFFF,D0					; Check if data is 0xFFFF (at the end of loaded program memory)
-					BEQ			END_PROMPT					; Go to end if data is 0xFFFF
+					CMPI.W		#$FFFF,D0					; Check if data is 0xFFFF (no opcode)
+					BEQ			READ_START					; Go to next line if 0xFFFF
 
 					; Write current memory location (Specification 10)
 
 					EXG.L		D1,D0						; Swap D1 with D0 temporarily for writehex
 
-					MOVEA.L		A4,A0
+					MOVE.L		A4,D2
+					SUB.L		#2,D2						; Subtract word length to get start address
+					MOVE.L		D2,A0
 					MOVE.L		#8,D0
 					JSR			WRITEHEX
 					JSR			PRINT_TAB					; Print tab
@@ -122,8 +127,14 @@ READ_START:			CMPA.L		A4,A5
 					BEQ			INVALID_OPCODE
 					BRA			VALID_OPCODE
 
-					; Print invalid opcode as DATA $ABCD (Specification 8)
+					; Opcode error occured, reset cursor
+OPCODE_ERROR:		MOVE.B		#0,ERROR_FLAG				; Reset ERROR_FLAG
+					JSR			CLEAR_OPCODE_DATA			; Clear opcode data
+					JSR			GOTO_OPCODE_START			; Go to opcode start			
+	
+					BRA			INVALID_OPCODE
 
+					; Print invalid opcode as DATA $ABCD (Specification 8)
 INVALID_OPCODE:		LEA			DATA_STR,A0
 					JSR			PRINT_STR
 					JSR			PRINT_OPCODE_TAB
@@ -134,6 +145,11 @@ INVALID_OPCODE:		LEA			DATA_STR,A0
 					MOVE.L		#4,D0
 					JSR			PRINT_ADDRESS
 					JSR			PRINT_NEWLINE
+					ADDI.L		#1,LINE_NUMBER				; Add 1 to line number
+					
+					CMPI.L		#31,LINE_NUMBER
+					BEQ			BOTTOM_PAGE
+					BRA			READ_START
 
 					BRA			READ_START
 
@@ -141,7 +157,9 @@ INVALID_OPCODE:		LEA			DATA_STR,A0
 
 VALID_OPCODE:		JSR			GOTO_ADDR					; Goto A0 found in tree
 
-					; TODO: Check if opcode handler was able to complete successfully, if not, set cursor back and goto INVALID_OPCODE
+					; Check if ERROR_FLAG is set, if so, set cursor back and goto INVALID_OPCODE
+					CMPI.B		#0,ERROR_FLAG
+					BNE			OPCODE_ERROR					
 
 					JSR			PRINT_NEWLINE				; Print newline
 					ADDI.L		#1,LINE_NUMBER				; Add 1 to line number
@@ -199,6 +217,8 @@ ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
 DONE_STR			DC.B		'Done. Press <ENTER> to disassemble another range, or press the any key to exit.',0
 
 					END			START						; Last line of source
+
+
 
 
 

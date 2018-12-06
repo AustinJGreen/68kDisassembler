@@ -99,10 +99,13 @@ HANDLE_OR:			MOVEM.L		D0-D7,-(SP)
 					JSR			PRINT_D_REG
 					BRA			.END
 
-.INVALID:			SIMHALT		; TODO
+					; Set error flag
+.INVALID:			MOVE.B		#1,ERROR_FLAG
+					BRA			.END
 
 .END:				MOVEM.L		(SP)+,D0-D7
 					RTS
+
 
 
 

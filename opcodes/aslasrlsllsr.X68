@@ -191,12 +191,13 @@ HANDLE_ASL_ASR_LSL_LSR:		MOVEM.L		D0-D7,-(SP)
 .PRE:						JSR			PRINT_A_PRE
 							BRA			.END	
 
-.INVALID:					; TODO: Return invalid
-							SIMHALT
+							; Set error flag and return
+.INVALID:					MOVE.B		#1,ERROR_FLAG
 							BRA			.END
 	
 .END						MOVEM.L		(SP)+,D0-D7
 							RTS
+
 
 
 
