@@ -17,12 +17,7 @@
 
 					; Load information for tree
 
-START:				MOVE.B		#8,D0
-					MOVE.W		#0,A0
-					JSR			WRITEHEX_TRIM
-
-
-					JSR			TREE_INIT					; Initialize binary tree
+START:				JSR			TREE_INIT					; Initialize binary tree
 
 					;--------------------------------------------------------------------------
 					; Add OpCodes to tree
