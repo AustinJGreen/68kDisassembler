@@ -19,8 +19,7 @@ ERROR_FLAG			DC.B		1
 
 					; Load information for tree
 
-START:				MOVE.B		#0,ERROR_FLAG				; Set ERROR_FLAG to 0 (False)
-					JSR			TREE_INIT					; Initialize binary tree
+START:				JSR			TREE_INIT					; Initialize binary tree
 
 					;--------------------------------------------------------------------------
 					; Add OpCodes to tree
@@ -52,9 +51,10 @@ START:				MOVE.B		#0,ERROR_FLAG				; Set ERROR_FLAG to 0 (False)
 					; Prompt user for start and end memory address
 					;--------------------------------------------------------------------------
 
-					; Display about
+BEGIN:				MOVE.B		#0,ERROR_FLAG				; Set ERROR_FLAG to 0 (False)
 
-BEGIN:				LEA			ABOUT_STR,A0				; Load about string
+					; Display about
+					LEA			ABOUT_STR,A0				; Load about string
 					JSR			PRINT_STR					; Print about information
 
 					LEA			BEGIN_PROMPT,A0				; Load information about input
@@ -63,22 +63,45 @@ BEGIN:				LEA			ABOUT_STR,A0				; Load about string
 					; At startup, prompt the user for the starting location and
 					; ending location in hexadecimal format. (Specification 6)
 
-					LEA			START_ADDR_STR,A0			; Load question and prompt to user
+IO_START:			LEA			START_ADDR_STR,A0			; Load question and prompt to user
 					JSR			PRINT_STR					; Print question
 					JSR			READHEX
 
-					; TODO: Check for invalid input -1, for now I'm assuming input is valid
+					CMPI.B		#0,ERROR_FLAG				; Check if IO error occured for start address
+					BNE			IO_START_ERR
+					BRA			IO_END
+					
+IO_START_ERR:		MOVE.B		#0,ERROR_FLAG				; Reset ERROR_FLAG
+					MOVE.B		#11,D0
+					MOVE.W		#2,D1
+					TRAP		#15							; Set cursor back to start of line (row 2)
+					JSR			CLEAR_LINE					; Clear line
+					MOVE.B		#11,D0					
+					MOVE.W		#2,D1
+					TRAP		#15							; Set cursor back to start of line
+					BRA			IO_START					; Go back to question
 
-					MOVE.L		D2,A4						; Move start address to A4
+IO_END:				MOVE.L		D2,A4						; Move start address to A4
 
 					LEA			END_ADDR_STR,A0				; Load question and prompt to user
 					JSR			PRINT_STR					; Print question
 					JSR			READHEX
 
-					; TODO: Check for invalid input -1 and make sure end address is greater than start
-					; For now I'm assuming input is valid
+					CMPI.B		#0,ERROR_FLAG				; Check if IO error occured for end address
+					BNE			IO_END_ERR
+					BRA			VALID_INPUT
+					
+IO_END_ERR:			MOVE.B		#0,ERROR_FLAG				; Reset ERROR_FLAG
+					MOVE.B		#11,D0
+					MOVE.W		#3,D1
+					TRAP		#15							; Set cursor back to start of line (row 2)
+					JSR			CLEAR_LINE					; Clear line
+					MOVE.B		#11,D0					
+					MOVE.W		#3,D1
+					TRAP		#15							; Set cursor back to start of line
+					BRA			IO_END						; Go back to question
 
-					MOVE.L		D2,A5						; Move end address to A5
+VALID_INPUT:		MOVE.L		D2,A5						; Move end address to A5
 
 					;--------------------------------------------------------------------------
 					; Read and process memory
