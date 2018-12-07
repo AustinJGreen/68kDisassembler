@@ -88,7 +88,14 @@ MOVEM_CONTINUE:		MOVE.W 	D0,D7
 						JSR		PRINT_MEM_TO_REG
 						BRA		.FIN_MOVEM
 						
-.REG_TO_MEM				JSR		PRINT_REG_TO_MEM
+.AN_SPECIAL				JSR		PRINT_MEM_TO_REG
+						JSR		PRINT_DIVIDER
+						JSR		PRINT_AN
+						BRA		.FIN_MOVEM
+						
+.REG_TO_MEM				CMP.B	#%010,MOVEM_ADDR_MODE
+						BEQ		.AN_SPECIAL    			
+						JSR		PRINT_REG_TO_MEM
 						JSR		PRINT_DIVIDER
 						JSR		PRINT_AN
 						
@@ -251,6 +258,10 @@ PRINT_AN:	CLR		D0
 			
 			RTS
 *-----------------------------------------------------------	
+
+
+
+
 
 
 
