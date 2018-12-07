@@ -59,6 +59,9 @@ BEGIN:				MOVE.B		#0,ERROR_FLAG				; Set ERROR_FLAG to 0 (False)
 
 					LEA			BEGIN_PROMPT,A0				; Load information about input
 					JSR			PRINT_STR
+					
+					LEA			EXTRA_PROMPT,A0				; Load extra constraints about input
+					JSR			PRINT_STR
 
 					; At startup, prompt the user for the starting location and
 					; ending location in hexadecimal format. (Specification 6)
@@ -67,17 +70,20 @@ IO_START:			LEA			START_ADDR_STR,A0			; Load question and prompt to user
 					JSR			PRINT_STR					; Print question
 					JSR			READHEX
 
+					CMPI.L		#$FFFFFF,D2					; Too big of input
+					BGE			IO_START_ERR
+
 					CMPI.B		#0,ERROR_FLAG				; Check if IO error occured for start address
 					BNE			IO_START_ERR
 					BRA			IO_END
 					
 IO_START_ERR:		MOVE.B		#0,ERROR_FLAG				; Reset ERROR_FLAG
 					MOVE.B		#11,D0
-					MOVE.W		#2,D1
+					MOVE.W		#3,D1
 					TRAP		#15							; Set cursor back to start of line (row 2)
 					JSR			CLEAR_LINE					; Clear line
 					MOVE.B		#11,D0					
-					MOVE.W		#2,D1
+					MOVE.W		#3,D1
 					TRAP		#15							; Set cursor back to start of line
 					BRA			IO_START					; Go back to question
 
@@ -89,15 +95,19 @@ IO_END:				MOVE.L		D2,A4						; Move start address to A4
 
 					CMPI.B		#0,ERROR_FLAG				; Check if IO error occured for end address
 					BNE			IO_END_ERR
+					
+					CMPI.L		#$FFFFFF,D2					; Too big of input
+					BGE			IO_END_ERR
+					
 					BRA			VALID_INPUT
 					
 IO_END_ERR:			MOVE.B		#0,ERROR_FLAG				; Reset ERROR_FLAG
 					MOVE.B		#11,D0
-					MOVE.W		#3,D1
-					TRAP		#15							; Set cursor back to start of line (row 2)
+					MOVE.W		#4,D1
+					TRAP		#15							; Set cursor back to start of line (row 4)
 					JSR			CLEAR_LINE					; Clear line
 					MOVE.B		#11,D0					
-					MOVE.W		#3,D1
+					MOVE.W		#4,D1
 					TRAP		#15							; Set cursor back to start of line
 					BRA			IO_END						; Go back to question
 
@@ -116,7 +126,7 @@ VALID_INPUT:		MOVE.L		D2,A5						; Move end address to A5
 					; Begin reading at start address
 
 READ_START:			CMPA.L		A4,A5
-					BEQ			END_PROMPT					; Go to end if reached end address
+					BLT			END_PROMPT					; Go to end if reached end address
 
 					; Read from binary stream
 
@@ -232,7 +242,8 @@ END_PROMPT:			LEA			DONE_STR,A0
 LINE_NUMBER			DS.L		1							; 1 long for line number
 
 ABOUT_STR			DC.B		'68k Disassembler by Austin Green, Damian Forrester, Jacob Lefeat.',CR,LF,0
-BEGIN_PROMPT		DC.B		'Please enter hexadecimal characters only. (0123456789abcdefABCDEF)',CR,LF,0
+BEGIN_PROMPT		DC.B		'Please enter hexadecimal characters only. (0123456789abcdefABCDEF).',CR,LF,0
+EXTRA_PROMPT		DC.B		'Please enter addresses between 0 and FFFFFF.',CR,LF,0
 START_ADDR_STR		DC.B		'Starting address : ',0
 END_ADDR_STR		DC.B		'Ending address   : ',0
 DATA_STR			DC.B		'DATA',0
@@ -240,6 +251,8 @@ ENTER_STR			DC.B		'Press <ENTER> to display next page...',0
 DONE_STR			DC.B		'Done. Press <ENTER> to disassemble another range, or press the any key to exit.',0
 
 					END			START						; Last line of source
+
+
 
 
 

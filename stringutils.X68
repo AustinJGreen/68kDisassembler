@@ -20,7 +20,7 @@ BACK_SLASH			DC.B		'/',0
 ADDRESS_STR			DC.B		'$',0
 DECDATA_STR			DC.B		'#',0
 HEXDATA_STR			DC.B		'#$',0
-SIZE_CODES			DC.B		'.B',0,'.W',0,'.L',0,'.$',0
+SIZE_CODES			DC.B		'.B',0,'.W',0,'.L',0,'.?',0
 
 *--------------------------------------------------------------------
 * PRINT_STR
@@ -626,6 +626,7 @@ GET_INPUT_KEY:		MOVEM.L		D0/D7,-(SP)
 					
 					MOVEM.L		(SP)+,D0/D7
 					RTS					
+
 
 
 
