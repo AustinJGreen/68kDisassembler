@@ -24,6 +24,7 @@ WRITEHEX:			MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					
 					MOVE.L		#$F0000000,D4				; Initialize mask
 					
+					CLR.L		D3
 					MOVE.B		D0,D3						; Save original value of D0
 					
 .SHIFT_MASK:		CMPI.B		#8,D0						; Check if done iterating
@@ -96,6 +97,7 @@ WRITEHEX_TRIM:		MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 					
 					MOVE.L		#$F0000000,D4				; Initialize mask
 					
+					CLR.L		D3
 					MOVE.B		D0,D3						; Save original value of D0
 					
 .SHIFT_MASK:		CMPI.B		#8,D0						; Check if done iterating
@@ -161,6 +163,7 @@ WRITEHEX_TRIM:		MOVEM.L		D0-D7/A0,-(SP)				; Save registers
 
 .END				MOVEM.L		(SP)+,D0-D7/A0				; Restore registers
 					RTS
+
 
 
 

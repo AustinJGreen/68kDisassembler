@@ -27,7 +27,7 @@ HANDLE_BGT:			MOVEM.L		D0-D7/A0/A5,-(SP)				; Save registers
 
 					JSR			PRINT_OPCODE_TAB
 					
-					MOVE.L		A4,D4							; Store next address
+					MOVE.L		A4,D3							; Store next address
 					
 					; Read 8-bit displacement into D0
 					AND.B		#%11111111,D0	
@@ -42,9 +42,17 @@ HANDLE_BGT:			MOVEM.L		D0-D7/A0/A5,-(SP)				; Save registers
 						
 					; No extra data, display data and continue to end
 					MOVE.L		D0,D5
+					MOVE.L		D3,D4
 					AND.L		#%11111111,D5
 					ADD.B		D5,D4
-					MOVE.W		D4,A0
+					BVS			.OVERFLOW
+					BRA			.CONTINUE
+					
+.OVERFLOW:			MOVE.L		D3,D4
+					ADD.W		D5,D4
+					BRA			.CONTINUE
+					
+.CONTINUE:			MOVE.W		D4,A0
 					MOVE.L		#4,D0
 					JSR			PRINT_ADDRESS	
 					
@@ -52,6 +60,7 @@ HANDLE_BGT:			MOVEM.L		D0-D7/A0/A5,-(SP)				; Save registers
 						
 					; Read word of displacement and calculate absolute address
 .WORD_ADDR:			MOVE.W		(A4)+,D5
+					MOVE.L		D3,D4
 					ADD.W		D5,D4
 					MOVE.W		D4,A0
 					MOVE.L		#4,D0
@@ -60,6 +69,7 @@ HANDLE_BGT:			MOVEM.L		D0-D7/A0/A5,-(SP)				; Save registers
 					
 					; Read long of displacement
 .LONG_ADDR:			MOVE.L		(A4)+,D5
+					MOVE.L		D3,D4
 					ADD.L		D5,D4
 					MOVE.L		D4,A0
 					MOVE.L		#8,D0
@@ -69,6 +79,7 @@ HANDLE_BGT:			MOVEM.L		D0-D7/A0/A5,-(SP)				; Save registers
 .END:				MOVEM.L		(SP)+,D0-D7/A0/A5				; Restore registers
 					RTS
 			
+
 
 
 
